@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo | Mentes Brilhantes</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #1a1a1a;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: #ffffff;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+            border-right: 1px solid #e2e8f0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-text h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .logo-text p {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        .sidebar-nav {
+            padding: 2rem 0;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section-title {
+            padding: 0 2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .nav-item {
+            margin: 0.25rem 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #475569;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background: #f1f5f9;
+            color: #3730a3;
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: #ef4444;
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-description {
+            color: #64748b;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #667eea;
+            transition: transform 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-icon.users { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .stat-icon.heart { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .stat-icon.doctors { background: linear-gradient(135deg, #10b981, #059669); }
+        .stat-icon.pending { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .stat-trend.positive { color: #059669; }
+        .stat-trend.warning { color: #d97706; }
+
+        /* Data Cards */
+        .data-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .data-card-header {
+            padding: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .data-card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #f8fafc;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            width: 300px;
+            position: relative;
+        }
+
+        .search-bar input {
+            border: none;
+            background: none;
+            outline: none;
+            font-size: 0.875rem;
+            width: 100%;
+            color: #1e293b;
+        }
+
+        .search-bar input::placeholder {
+            color: #94a3b8;
+        }
+
+        .search-bar i {
+            color: #64748b;
+        }
+
+        .search-clear {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .search-clear:hover {
+            background: #e2e8f0;
+        }
+
+        .search-results-count {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-top: 1rem;
+            padding: 0 2rem;
+            font-style: italic;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 1.5rem 2rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.875rem;
+            color: #374151;
+            vertical-align: middle;
+        }
+
+        .data-table tbody tr:hover {
+            background: #fafbfc;
+        }
+
+        .data-table tbody tr.clickable {
+            cursor: pointer;
+        }
+
+        .data-table tbody tr.clickable:hover {
+            background: #f0f7ff;
+        }
+
+        .data-table tbody tr.hidden {
+            display: none;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #64748b;
+            font-style: italic;
+            display: none;
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        /* User Avatar */
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-details h4 {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-details p {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8fafc;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        /* Request Cards */
+        .requests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .request-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #f59e0b;
+            transition: transform 0.2s ease;
+        }
+
+        .request-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .request-header {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .request-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .request-info h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .request-info p {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .request-specialization {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .request-specialization h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .request-specialization p {
+            color: #4b5563;
+            line-height: 1.6;
+            font-size: 0.875rem;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        /* Autistas Detail Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .autista-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .autista-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #ef4444;
+        }
+
+        .autista-card h4 {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .autista-info {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Mobile menu button */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-bar {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .page-header {
+                padding: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .requests-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .data-table {
+                font-size: 0.8rem;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 1rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+                width: 95%;
+            }
+
+            .autista-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>Mentes Brilhantes</h1>
+                        <p>Centro de Apoio Especializado</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Principal</div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link active" onclick="showSection('dashboard')">
+                            <i class="fas fa-chart-line"></i>
+                            Dashboard
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link" onclick="showSection('responsaveis')">
+                            <i class="fas fa-users"></i>
+                            Famílias Cadastradas
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link" onclick="showSection('especialistas')">
+                            <i class="fas fa-user-md"></i>
+                            Solicitações de Parceria
+                            <span class="nav-badge">4</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Configurações</div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-cog"></i>
+                            Configurações
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Sair
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <div class="content-section active" id="dashboard">
+                <div class="page-header">
+                    <h1 class="page-title">Visão Geral do Sistema</h1>
+                    <p class="page-description">Acompanhe as métricas principais da plataforma e monitore o crescimento da comunidade Mentes Brilhantes.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon heart">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">152</div>
+                        <div class="stat-label">Pessoas Autistas Atendidas</div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            12 novos cadastros este mês
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon users">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">94</div>
+                        <div class="stat-label">Famílias Ativas</div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            7 novas famílias esta semana
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon doctors">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">28</div>
+                        <div class="stat-label">Especialistas Parceiros</div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            4 aprovações recentes
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon pending">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Solicitações Pendentes</div>
+                        <div class="stat-trend warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Aguardando análise
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Responsáveis Section -->
+            <div class="content-section" id="responsaveis">
+                <div class="page-header">
+                    <h1 class="page-title">Famílias Cadastradas</h1>
+                    <p class="page-description">Gerencie as famílias registradas na plataforma e acesse informações dos autistas vinculados a cada responsável.</p>
+                </div>
+
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h2 class="data-card-title">Lista de Responsáveis</h2>
+                        <div class="search-bar">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="Buscar por nome, email, telefone ou autista...">
+                            <button class="search-clear" id="clearSearch" title="Limpar busca">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="search-results-count" id="searchResultsCount"></div>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Responsável</th>
+                                <th>Contato</th>
+                                <th>Autistas Vinculados</th>
+                                <th>Data de Cadastro</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="responsaveisTable">
+                            <tr class="clickable" onclick="viewAutistas('Maria Silva Santos', 'maria-silva')">
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">MS</div>
+                                        <div class="user-details">
+                                            <h4>Maria Silva Santos</h4>
+                                            <p>Mãe e Cuidadora Principal</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>maria.silva@gmail.com</div>
+                                    <div style="color: #64748b; font-size: 0.8rem;">(11) 99876-5432</div>
+                                </td>
+                                <td>
+                                    <span style="font-weight: 600; color: #3730a3;">2 pessoas</span>
+                                    <div style="font-size: 0.8rem; color: #64748b;">Gabriel (8 anos), Ana (12 anos)</div>
+                                </td>
+                                <td>22/05/2025</td>
+                                <td><span class="status-badge status-active">Ativo</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                        Editar
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="clickable" onclick="viewAutistas('Roberto Fernandes', 'roberto-fernandes')">
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">RF</div>
+                                        <div class="user-details">
+                                            <h4>Roberto Fernandes</h4>
+                                            <p>Pai e Advogado</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>roberto.fernandes@gmail.com</div>
+                                    <div style="color: #64748b; font-size: 0.8rem;">(11) 96543-2109</div>
+                                </td>
+                                <td>
+                                    <span style="font-weight: 600; color: #3730a3;">1 pessoa</span>
+                                    <div style="font-size: 0.8rem; color: #64748b;">Matheus (11 anos)</div>
+                                </td>
+                                <td>12/05/2025</td>
+                                <td><span class="status-badge status-active">Ativo</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                        Editar
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="clickable" onclick="viewAutistas('Juliana Mendes', 'juliana-mendes')">
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">JM</div>
+                                        <div class="user-details">
+                                            <h4>Juliana Mendes</h4>
+                                            <p>Mãe Solo e Professora</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>ju.mendes@hotmail.com</div>
+                                    <div style="color: #64748b; font-size: 0.8rem;">(11) 95432-1098</div>
+                                </td>
+                                <td>
+                                    <span style="font-weight: 600; color: #3730a3;">2 pessoas</span>
+                                    <div style="font-size: 0.8rem; color: #64748b;">Isabella (7 anos), Pedro (10 anos)</div>
+                                </td>
+                                <td>08/05/2025</td>
+                                <td><span class="status-badge status-active">Ativo</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                        Editar
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="clickable" onclick="viewAutistas('Carlos Oliveira', 'carlos-oliveira')">
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">CO</div>
+                                        <div class="user-details">
+                                            <h4>Carlos Oliveira</h4>
+                                            <p>Pai e Empresário</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>carlos.oliveira@empresarial.com.br</div>
+                                    <div style="color: #64748b; font-size: 0.8rem;">(11) 91234-5678</div>
+                                </td>
+                                <td>
+                                    <span style="font-weight: 600; color: #3730a3;">1 pessoa</span>
+                                    <div style="font-size: 0.8rem; color: #64748b;">Lucas (9 anos)</div>
+                                </td>
+                                <td>15/04/2025</td>
+                                <td><span class="status-badge status-active">Ativo</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                        Editar
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="clickable" onclick="viewAutistas('Ana Paula Santos', 'ana-paula-santos')">
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">AP</div>
+                                        <div class="user-details">
+                                            <h4>Ana Paula Santos</h4>
+                                            <p>Mãe e Enfermeira</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>ana.paula@saude.gov.br</div>
+                                    <div style="color: #64748b; font-size: 0.8rem;">(11) 98765-4321</div>
+                                </td>
+                                <td>
+                                    <span style="font-weight: 600; color: #3730a3;">3 pessoas</span>
+                                    <div style="font-size: 0.8rem; color: #64748b;">João (6 anos), Maria (14 anos), Paulo (16 anos)</div>
+                                </td>
+                                <td>02/04/2025</td>
+                                <td><span class="status-badge status-active">Ativo</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                        Editar
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="no-results" id="noResults">
+                        <i class="fas fa-search"></i>
+                        <h3>Nenhum resultado encontrado</h3>
+                        <p>Tente buscar com outros termos ou verifique a ortografia.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Especialistas Section -->
+            <div class="content-section" id="especialistas">
+                <div class="page-header">
+                    <h1 class="page-title">Solicitações de Parceria</h1>
+                    <p class="page-description">Analise e aprove pedidos de especialistas interessados em fazer parte da rede de parceiros da Mentes Brilhantes.</p>
+                </div>
+
+                <div class="requests-grid">
+                    <div class="request-card">
+                        <div class="request-header">
+                            <div class="request-avatar">MF</div>
+                            <div class="request-info">
+                                <h3>Dra. Marina Fernandes</h3>
+                                <p>Psicóloga Clínica Especializada</p>
+                                <p><i class="fas fa-envelope"></i> marina.fernandes@clinicaespecializada.com.br</p>
+                                <p><i class="fas fa-phone"></i> (11) 3456-7890</p>
+                            </div>
+                        </div>
+                        <div class="request-specialization">
+                            <h4>Área de Especialização</h4>
+                            <p>Especialista em Transtorno do Espectro Autista com 15 anos de experiência clínica. Mestre em Psicologia do Desenvolvimento pela USP com foco em terapias comportamentais para crianças e adolescentes autistas. Atualmente coordena um centro de referência em TEA na zona sul de São Paulo.</p>
+                        </div>
+                        <div class="request-actions">
+                            <button class="btn btn-success btn-sm" onclick="approveRequest(this, 'Dra. Marina Fernandes')">
+                                <i class="fas fa-check"></i>
+                                Aprovar Parceria
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectRequest(this, 'Dra. Marina Fernandes')">
+                                <i class="fas fa-times"></i>
+                                Recusar
+                            </button>
+                            <button class="btn btn-secondary btn-sm">
+                                <i class="fas fa-file-alt"></i>
+                                Ver Documentos
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="request-card">
+                        <div class="request-header">
+                            <div class="request-avatar">RB</div>
+                            <div class="request-info">
+                                <h3>Dr. Roberto Barbosa</h3>
+                                <p>Terapeuta Ocupacional</p>
+                                <p><i class="fas fa-envelope"></i> roberto.barbosa@terapiaocupacional.com.br</p>
+                                <p><i class="fas fa-phone"></i> (11) 2345-6789</p>
+                            </div>
+                        </div>
+                        <div class="request-specialization">
+                            <h4>Área de Especialização</h4>
+                            <p>Terapeuta Ocupacional especializado em integração sensorial e desenvolvimento de habilidades motoras para pessoas autistas. Pós-graduação em Neuropsicologia pela UNIFESP. 12 anos de experiência em centros de reabilitação, com foco em autonomia e independência funcional.</p>
+                        </div>
+                        <div class="request-actions">
+                            <button class="btn btn-success btn-sm" onclick="approveRequest(this, 'Dr. Roberto Barbosa')">
+                                <i class="fas fa-check"></i>
+                                Aprovar Parceria
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectRequest(this, 'Dr. Roberto Barbosa')">
+                                <i class="fas fa-times"></i>
+                                Recusar
+                            </button>
+                            <button class="btn btn-secondary btn-sm">
+                                <i class="fas fa-file-alt"></i>
+                                Ver Documentos
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="request-card">
+                        <div class="request-header">
+                            <div class="request-avatar">CS</div>
+                            <div class="request-info">
+                                <h3>Dra. Carla Santos</h3>
+                                <p>Fonoaudióloga Especializada</p>
+                                <p><i class="fas fa-envelope"></i> carla.santos@comunicacaointegrada.com.br</p>
+                                <p><i class="fas fa-phone"></i> (11) 3567-8901</p>
+                            </div>
+                        </div>
+                        <div class="request-specialization">
+                            <h4>Área de Especialização</h4>
+                            <p>Fonoaudióloga especializada em comunicação alternativa e desenvolvimento da linguagem para pessoas autistas. Mestre em Distúrbios da Comunicação Humana pela PUC-SP. Experiência em sistemas de comunicação aumentativa e alternativa (CAA), com certificação internacional em PECS.</p>
+                        </div>
+                        <div class="request-actions">
+                            <button class="btn btn-success btn-sm" onclick="approveRequest(this, 'Dra. Carla Santos')">
+                                <i class="fas fa-check"></i>
+                                Aprovar Parceria
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectRequest(this, 'Dra. Carla Santos')">
+                                <i class="fas fa-times"></i>
+                                Recusar
+                            </button>
+                            <button class="btn btn-secondary btn-sm">
+                                <i class="fas fa-file-alt"></i>
+                                Ver Documentos
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="request-card">
+                        <div class="request-header">
+                            <div class="request-avatar">AF</div>
+                            <div class="request-info">
+                                <h3>Dr. André Ferreira</h3>
+                                <p>Neurologista Pediátrico</p>
+                                <p><i class="fas fa-envelope"></i> andre.ferreira@neuropediatria.med.br</p>
+                                <p><i class="fas fa-phone"></i> (11) 4567-8902</p>
+                            </div>
+                        </div>
+                        <div class="request-specialization">
+                            <h4>Área de Especialização</h4>
+                            <p>Neurologista pediátrico com especialização em Transtornos do Neurodesenvolvimento. Doutor pela UNIFESP com fellowship em Autismo pela Harvard Medical School. 18 anos de experiência no diagnóstico precoce e acompanhamento neurológico de crianças e adolescentes autistas.</p>
+                        </div>
+                        <div class="request-actions">
+                            <button class="btn btn-success btn-sm" onclick="approveRequest(this, 'Dr. André Ferreira')">
+                                <i class="fas fa-check"></i>
+                                Aprovar Parceria
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectRequest(this, 'Dr. André Ferreira')">
+                                <i class="fas fa-times"></i>
+                                Recusar
+                            </button>
+                            <button class="btn btn-secondary btn-sm">
+                                <i class="fas fa-file-alt"></i>
+                                Ver Documentos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Autistas Details -->
+    <div class="modal" id="autistasModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Autistas Vinculados</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="autistasContent">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for autistas
+        const autistasData = {
+            'maria-silva': [
+                {
+                    name: 'Gabriel Santos Silva',
+                    age: '8 anos',
+                    supportLevel: 'Nível 1 de Suporte',
+                    diagnosis: 'TEA - Síndrome de Asperger',
+                    therapies: 'Psicologia, Fonoaudiologia',
+                    school: 'Escola Inclusiva São Paulo',
+                    interests: 'Matemática, Robótica, Astronomia',
+                    registerDate: '15/07/2025'
+                },
+                {
+                    name: 'Ana Beatriz Santos Silva',
+                    age: '12 anos',
+                    supportLevel: 'Nível 2 de Suporte',
+                    diagnosis: 'TEA com Déficit Intelectual Leve',
+                    therapies: 'Psicologia, Terapia Ocupacional, ABA',
+                    school: 'APAE São Paulo',
+                    interests: 'Desenho, Música, Dança',
+                    registerDate: '15/07/2025'
+                }
+            ],
+            'roberto-fernandes': [
+                {
+                    name: 'Matheus Fernandes',
+                    age: '11 anos',
+                    supportLevel: 'Nível 2 de Suporte',
+                    diagnosis: 'TEA com Sensibilidade Sensorial',
+                    therapies: 'Terapia Ocupacional, Integração Sensorial',
+                    school: 'Instituto Educacional Especializado',
+                    interests: 'Quebra-cabeças, Lego, Mapas',
+                    registerDate: '12/05/2025'
+                }
+            ],
+            'juliana-mendes': [
+                {
+                    name: 'Isabella Mendes',
+                    age: '7 anos',
+                    supportLevel: 'Nível 1 de Suporte',
+                    diagnosis: 'TEA com Ecolalia',
+                    therapies: 'Fonoaudiologia, Psicologia Comportamental',
+                    school: 'Escola Inclusiva Montessori',
+                    interests: 'Livros, Histórias, Teatro',
+                    registerDate: '08/05/2025'
+                },
+                {
+                    name: 'Pedro Henrique Mendes',
+                    age: '10 anos',
+                    supportLevel: 'Nível 1 de Suporte',
+                    diagnosis: 'TEA com Ansiedade Social',
+                    therapies: 'Psicologia, Terapia de Grupo',
+                    school: 'Escola Estadual Prof. João Silva',
+                    interests: 'Esportes, Futebol, Videogames',
+                    registerDate: '08/05/2025'
+                }
+            ],
+            'carlos-oliveira': [
+                {
+                    name: 'Lucas Oliveira',
+                    age: '9 anos',
+                    supportLevel: 'Nível 1 de Suporte',
+                    diagnosis: 'TEA com Hiperfoco',
+                    therapies: 'Psicologia, Psicopedagogia',
+                    school: 'Colégio Particular Elite',
+                    interests: 'Programação, Games, Tecnologia',
+                    registerDate: '15/04/2025'
+                }
+            ],
+            'ana-paula-santos': [
+                {
+                    name: 'João Santos',
+                    age: '6 anos',
+                    supportLevel: 'Nível 3 de Suporte',
+                    diagnosis: 'TEA Severo com Deficiência Intelectual',
+                    therapies: 'ABA, Terapia Ocupacional, Fonoaudiologia',
+                    school: 'Escola Especial Vida Nova',
+                    interests: 'Música, Texturas, Brinquedos Sensoriais',
+                    registerDate: '02/04/2025'
+                },
+                {
+                    name: 'Maria Clara Santos',
+                    age: '14 anos',
+                    supportLevel: 'Nível 1 de Suporte',
+                    diagnosis: 'TEA com Altas Habilidades',
+                    therapies: 'Psicologia, Arteterapia',
+                    school: 'ETEC São Paulo',
+                    interests: 'Arte, Pintura, Literatura',
+                    registerDate: '02/04/2025'
+                },
+                {
+                    name: 'Paulo César Santos',
+                    age: '16 anos',
+                    supportLevel: 'Nível 2 de Suporte',
+                    diagnosis: 'TEA com Transtorno de Ansiedade',
+                    therapies: 'Psicologia, Terapia Cognitivo-Comportamental',
+                    school: 'Colégio Técnico Federal',
+                    interests: 'Eletrônica, Robótica, Ciências',
+                    registerDate: '02/04/2025'
+                }
+            ]
+        };
+
+        // Enhanced search functionality
+        function initializeSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const clearButton = document.getElementById('clearSearch');
+            const resultsCount = document.getElementById('searchResultsCount');
+            const noResults = document.getElementById('noResults');
+            const tableRows = document.querySelectorAll('#responsaveisTable tr');
+            
+            // Store original display state
+            const originalRowsCount = tableRows.length;
+
+            function performSearch(searchTerm) {
+                searchTerm = searchTerm.toLowerCase().trim();
+                let visibleCount = 0;
+                
+                if (searchTerm === '') {
+                    // Show all rows when search is empty
+                    tableRows.forEach(row => {
+                        row.classList.remove('hidden');
+                        visibleCount++;
+                    });
+                    resultsCount.textContent = '';
+                    noResults.style.display = 'none';
+                    clearButton.style.display = 'none';
+                } else {
+                    // Filter rows based on search term
+                    tableRows.forEach(row => {
+                        const searchableText = extractSearchableText(row);
+                        if (searchableText.includes(searchTerm)) {
+                            row.classList.remove('hidden');
+                            visibleCount++;
+                        } else {
+                            row.classList.add('hidden');
+                        }
+                    });
+                    
+                    // Update results display
+                    updateSearchResults(visibleCount, originalRowsCount, searchTerm);
+                    clearButton.style.display = 'block';
+                }
+            }
+
+            function extractSearchableText(row) {
+                // Extract text from various parts of the row for comprehensive search
+                const responsibleName = row.querySelector('.user-details h4')?.textContent || '';
+                const responsibleRole = row.querySelector('.user-details p')?.textContent || '';
+                const email = row.querySelector('td:nth-child(2) div:first-child')?.textContent || '';
+                const phone = row.querySelector('td:nth-child(2) div:last-child')?.textContent || '';
+                const autistasInfo = row.querySelector('td:nth-child(3) div:last-child')?.textContent || '';
+                const registerDate = row.querySelector('td:nth-child(4)')?.textContent || '';
+                const status = row.querySelector('.status-badge')?.textContent || '';
+                
+                return [
+                    responsibleName,
+                    responsibleRole,
+                    email,
+                    phone,
+                    autistasInfo,
+                    registerDate,
+                    status
+                ].join(' ').toLowerCase();
+            }
+
+            function updateSearchResults(visibleCount, totalCount, searchTerm) {
+                const resultsCount = document.getElementById('searchResultsCount');
+                const noResults = document.getElementById('noResults');
+                
+                if (visibleCount === 0) {
+                    resultsCount.textContent = `Nenhum resultado encontrado para "${searchTerm}"`;
+                    noResults.style.display = 'block';
+                } else if (visibleCount === totalCount) {
+                    resultsCount.textContent = '';
+                    noResults.style.display = 'none';
+                } else {
+                    resultsCount.textContent = `Encontrado${visibleCount === 1 ? '' : 's'} ${visibleCount} resultado${visibleCount === 1 ? '' : 's'} de ${totalCount} para "${searchTerm}"`;
+                    noResults.style.display = 'none';
+                }
+            }
+
+            function clearSearch() {
+                searchInput.value = '';
+                performSearch('');
+                searchInput.focus();
+            }
+
+            // Event listeners
+            searchInput.addEventListener('input', (e) => {
+                performSearch(e.target.value);
+            });
+
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    clearSearch();
+                }
+            });
+
+            clearButton.addEventListener('click', clearSearch);
+
+            // Initial state
+            performSearch('');
+        }
+
+        // Core functionality
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            if (window.innerWidth <= 1024) {
+                document.getElementById('sidebar').classList.remove('open');
+            }
+
+            // Initialize search when responsaveis section is shown
+            if (sectionId === 'responsaveis') {
+                setTimeout(initializeSearch, 100);
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function viewAutistas(responsibleName, responsibleId) {
+            const modal = document.getElementById('autistasModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const autistasContent = document.getElementById('autistasContent');
+            modalTitle.textContent = `Autistas vinculados a ${responsibleName}`;
+            const autistas = autistasData[responsibleId] || [];
+            
+            autistasContent.innerHTML = autistas.length === 0 
+                ? '<p>Nenhum autista cadastrado para este responsável.</p>'
+                : `<div class="autista-grid">${autistas.map(autista => `
+                    <div class="autista-card">
+                        <h4>${autista.name}</h4>
+                        <div class="autista-info"><strong>Idade:</strong> ${autista.age}</div>
+                        <div class="autista-info"><strong>Nível:</strong> ${autista.supportLevel}</div>
+                        <div class="autista-info"><strong>Diagnóstico:</strong> ${autista.diagnosis}</div>
+                        <div class="autista-info"><strong>Terapias:</strong> ${autista.therapies}</div>
+                        <div class="autista-info"><strong>Escola:</strong> ${autista.school}</div>
+                        <div class="autista-info"><strong>Interesses:</strong> ${autista.interests}</div>
+                        <div class="autista-info"><strong>Cadastrado em:</strong> ${autista.registerDate}</div>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-secondary btn-sm">
+                                <i class="fas fa-edit"></i> Editar Perfil
+                            </button>
+                        </div>
+                    </div>
+                `).join('')}</div>`;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('autistasModal').classList.remove('active');
+        }
+
+        function approveRequest(button, specialistName) {
+            if (confirm(`Confirma a aprovação da solicitação de parceria de ${specialistName}?`)) {
+                const card = button.closest('.request-card');
+                card.style.borderLeftColor = '#10b981';
+                card.style.backgroundColor = '#f0fdf4';
+                card.querySelector('.request-actions').innerHTML = '<span class="status-badge status-active"><i class="fas fa-check-circle"></i> Parceria Aprovada</span>';
+                showNotification(`${specialistName} foi aprovado(a) como especialista parceiro!`, 'success');
+                updateBadge(-1);
+            }
+        }
+
+        function rejectRequest(button, specialistName) {
+            if (confirm(`Tem certeza que deseja recusar a solicitação de ${specialistName}?`)) {
+                const card = button.closest('.request-card');
+                card.style.borderLeftColor = '#ef4444';
+                card.style.backgroundColor = '#fef2f2';
+                card.querySelector('.request-actions').innerHTML = '<span class="status-badge status-inactive"><i class="fas fa-times-circle"></i> Solicitação Recusada</span>';
+                showNotification(`Solicitação de ${specialistName} foi recusada.`, 'error');
+                updateBadge(-1);
+            }
+        }
+
+        function updateBadge(change) {
+            const badge = document.querySelector('.nav-badge');
+            const newCount = Math.max(0, parseInt(badge.textContent) + change);
+            badge.textContent = newCount;
+            if (newCount === 0) badge.style.display = 'none';
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `position: fixed; top: 20px; right: 20px; padding: 1rem 2rem; border-radius: 12px; color: white; font-weight: 500; z-index: 10000; opacity: 0; transform: translateX(100%); transition: all 0.3s ease; max-width: 400px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); ${type === 'success' ? 'background: linear-gradient(135deg, #10b981, #059669);' : 'background: linear-gradient(135deg, #ef4444, #dc2626);'}`;
+            notification.innerHTML = `<div style="display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i><span>${message}</span></div>`;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => document.body.contains(notification) && document.body.removeChild(notification), 300);
+            }, 4000);
+        }
+
+        // Event listeners
+        document.getElementById('autistasModal').addEventListener('click', e => e.target === e.currentTarget && closeModal());
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 1024) document.getElementById('sidebar').classList.remove('open');
+        });
+
+        document.addEventListener('click', e => {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            if (window.innerWidth <= 1024 && !sidebar.contains(e.target) && !menuBtn.contains(e.target) && sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        // Initialize search on page load if responsaveis section is active
+        document.addEventListener('DOMContentLoaded', () => {
+            const responsaveisSection = document.getElementById('responsaveis');
+            if (responsaveisSection.classList.contains('active')) {
+                initializeSearch();
+            }
+        });
+    </script>
+</body>
+</html>

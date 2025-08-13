@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentes Brilhantes - Assistente TEA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e6f3ff 0%, #cce7ff 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            background: white;
+            box-shadow: 2px 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            border-right: 3px solid #e3f2fd;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            padding: 24px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text h1 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .logo-text p {
+            font-size: 13px;
+            color: #bbdefb;
+        }
+
+        .new-chat-btn {
+            width: 100%;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .new-chat-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .conversations-section {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .conversations-title {
+            color: #666;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .conversation-item {
+            width: 100%;
+            text-align: left;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            border: 2px solid transparent;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .conversation-item:hover {
+            background: #e3f2fd;
+        }
+
+        .conversation-item.active {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+
+        .conversation-title {
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .conversation-meta {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .info-panel {
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 16px;
+            border-radius: 12px;
+        }
+
+        .welcome-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .welcome-title {
+            font-weight: 600;
+            color: #1565c0;
+            font-size: 14px;
+        }
+
+        .welcome-text {
+            font-size: 12px;
+            color: #1976d2;
+            line-height: 1.4;
+        }
+
+        /* Main Chat Area */
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f5f5f5;
+        }
+
+        .chat-header {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .chat-header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .bot-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bot-avatar {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bot-details h2 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .bot-details p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .status-badge {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Messages Area */
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            background: #f8f9fa;
+        }
+
+        .welcome-screen {
+            text-align: center;
+            padding: 48px 24px;
+        }
+
+        .welcome-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .welcome-avatar {
+            background: #e3f2fd;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+
+        .welcome-content h3 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .welcome-description {
+            color: #666;
+            margin-bottom: 32px;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            text-align: left;
+        }
+
+        .feature-card {
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .feature-card.tea { background: #e3f2fd; }
+        .feature-card.family { background: #e8f5e8; }
+        .feature-card.project { background: #fce4ec; }
+        .feature-card.resources { background: #fff3e0; }
+
+        .feature-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .tea .feature-title { color: #1565c0; }
+        .family .feature-title { color: #2e7d32; }
+        .project .feature-title { color: #c2185b; }
+        .resources .feature-title { color: #f57c00; }
+
+        .feature-text {
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .tea .feature-text { color: #1976d2; }
+        .family .feature-text { color: #388e3c; }
+        .project .feature-text { color: #d81b60; }
+        .resources .feature-text { color: #fb8c00; }
+
+        .message {
+            display: flex;
+            margin-bottom: 20px;
+            gap: 12px;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: #1976d2;
+            color: white;
+        }
+
+        .message.ai .message-avatar {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: #1976d2;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 16px 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .message.user .message-content {
+            background: #1976d2;
+            color: white;
+        }
+
+        .message.ai .message-content {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+        }
+
+        .message-text {
+            white-space: pre-line;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #2196f3;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Input Area */
+        .input-area {
+            background: white;
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 12px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #2196f3;
+        }
+
+        .send-btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 16px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: #1565c0;
+        }
+
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        /* Icons */
+        .icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .icon-sm {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 280px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .message-content {
+                max-width: 85%;
+            }
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Header -->
+            <div class="sidebar-header">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M20,9V7C20,5.89 19.1,5 18,5H16V3C16,1.89 15.1,1 14,1H10C8.89,1 8,1.89 8,3V5H6C4.89,5 4,5.89 4,7V9C4,10.1 4.89,11 6,11H8V13H6C4.89,13 4,13.89 4,15V17C4,18.1 4.89,19 6,19H8V21C8,22.1 8.89,23 10,23H14C15.1,23 16,22.1 16,21V19H18C19.1,19 20,18.1 20,17V15C20,13.89 19.1,13 18,13H16V11H18C19.1,11 20,10.1 20,9M14,3V5H10V3H14M6,7H18V9H6V7M10,11H14V13H10V11M6,15H18V17H6V15M10,19H14V21H10V19Z"/>
+                        </svg>
+                    </div>
+                    <div class="logo-text">
+                        <h1>Mentes Brilhantes</h1>
+                        <p>Assistente TEA</p>
+                    </div>
+                </div>
+                
+                <button class="new-chat-btn" onclick="createNewConversation()">
+                    <svg class="icon-sm" viewBox="0 0 24 24">
+                        <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+                    </svg>
+                    Nova Conversa
+                </button>
+            </div>
+
+            <!-- Conversations List -->
+            <div class="conversations-section">
+                <h3 class="conversations-title">
+                    <svg class="icon-sm" viewBox="0 0 24 24">
+                        <path d="M12,3C6.5,3 2,6.58 2,11C2.05,13.15 3.06,15.17 4.75,16.5C4.75,17.1 4.33,18.67 2,21C4.37,20.89 6.64,20 8.47,18.5C9.61,18.83 10.81,19 12,19C17.5,19 22,15.42 22,11C22,6.58 17.5,3 12,3Z"/>
+                    </svg>
+                    Conversas
+                </h3>
+                <div id="conversations-list">
+                    <div class="conversation-item active" data-id="1">
+                        <div class="conversation-title">Nova Conversa</div>
+                        <div class="conversation-meta">0 mensagens</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Panel -->
+            <div class="info-panel">
+                <div class="welcome-card">
+                    <div class="welcome-header">
+                        <svg class="icon-sm" viewBox="0 0 24 24" style="color: #1565c0;">
+                            <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"/>
+                        </svg>
+                        <h4 class="welcome-title">Espaço de Acolhimento</h4>
+                    </div>
+                    <p class="welcome-text">
+                        Este é um espaço seguro para esclarecer dúvidas sobre TEA e nosso projeto. 
+                        Estamos aqui para apoiar você! 💙
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="main-chat">
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <div class="chat-header-content">
+                    <div class="bot-info">
+                        <div class="bot-avatar">
+                            <svg class="icon" viewBox="0 0 24 24" style="color: #1976d2;">
+                                <path d="M17.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,9A1.5,1.5 0 0,1 19,10.5A1.5,1.5 0 0,1 17.5,12M10,10.5C10,11.3 9.3,12 8.5,12S7,11.3 7,10.5C7,9.7 7.7,9 8.5,9S10,9.7 10,10.5M12,14C9.66,14 7.69,15.46 6.74,17.5H17.26C16.31,15.46 14.34,14 12,14M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                            </svg>
+                        </div>
+                        <div class="bot-details">
+                            <h2>Assistente Mentes Brilhantes</h2>
+                            <p>Especialista em TEA e Suporte Familiar</p>
+                        </div>
+                    </div>
+                    
+                    <div class="status-badge">Online</div>
+                </div>
+            </div>
+
+            <!-- Messages Area -->
+            <div class="messages-area" id="messages-area">
+                <div class="welcome-screen" id="welcome-screen">
+                    <div class="welcome-content">
+                        <div class="welcome-avatar">
+                            <svg class="icon" viewBox="0 0 24 24" style="color: #1976d2; width: 40px; height: 40px;">
+                                <path d="M17.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,9A1.5,1.5 0 0,1 19,10.5A1.5,1.5 0 0,1 17.5,12M10,10.5C10,11.3 9.3,12 8.5,12S7,11.3 7,10.5C7,9.7 7.7,9 8.5,9S10,9.7 10,10.5M12,14C9.66,14 7.69,15.46 6.74,17.5H17.26C16.31,15.46 14.34,14 12,14M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                            </svg>
+                        </div>
+                        <h3>Bem-vindo ao Mentes Brilhantes! 🌟</h3>
+                        <p class="welcome-description">
+                            Sou sua assistente especializada em TEA e estou aqui para esclarecer suas dúvidas sobre 
+                            o Transtorno do Espectro Autista e nosso projeto. Pode me perguntar sobre:
+                        </p>
+                        
+                        <div class="features-grid">
+                            <div class="feature-card tea">
+                                <div class="feature-header">
+                                    <svg class="icon-sm" viewBox="0 0 24 24">
+                                        <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/>
+                                    </svg>
+                                    <h4 class="feature-title">Sobre TEA</h4>
+                                </div>
+                                <p class="feature-text">
+                                    Características, sintomas, níveis de suporte e intervenções
+                                </p>
+                            </div>
+                            
+                            <div class="feature-card family">
+                                <div class="feature-header">
+                                    <svg class="icon-sm" viewBox="0 0 24 24">
+                                        <path d="M16,4C18.2,4 20,5.8 20,8C20,10.2 18.2,12 16,12C13.8,12 12,10.2 12,8C12,5.8 13.8,4 16,4M16,14C18.7,14 22,15.3 22,18V20H10V18C10,15.3 13.3,14 16,14M8,4C10.2,4 12,5.8 12,8C12,10.2 10.2,12 8,12C5.8,12 4,10.2 4,8C4,5.8 5.8,4 8,4M8,14C10.7,14 14,15.3 14,18V20H2V18C2,15.3 5.3,14 8,14Z"/>
+                                    </svg>
+                                    <h4 class="feature-title">Suporte Familiar</h4>
+                                </div>
+                                <p class="feature-text">
+                                    Dicas para cuidadores, familiares e redes de apoio
+                                </p>
+                            </div>
+                            
+                            <div class="feature-card project">
+                                <div class="feature-header">
+                                    <svg class="icon-sm" viewBox="0 0 24 24">
+                                        <path d="M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M19,19H5V5H19V19Z"/>
+                                    </svg>
+                                    <h4 class="feature-title">Projeto</h4>
+                                </div>
+                                <p class="feature-text">
+                                    Funcionalidades, tecnologias e objetivos do Mentes Brilhantes
+                                </p>
+                            </div>
+                            
+                            <div class="feature-card resources">
+                                <div class="feature-header">
+                                    <svg class="icon-sm" viewBox="0 0 24 24">
+                                        <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/>
+                                    </svg>
+                                    <h4 class="feature-title">Recursos</h4>
+                                </div>
+                                <p class="feature-text">
+                                    Atividades, terapias e ferramentas de desenvolvimento
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="messages-container" class="hidden">
+                    <!-- Messages will be inserted here -->
+                </div>
+
+                <div id="typing-indicator" class="typing-indicator hidden">
+                    <div class="message-avatar">
+                        <svg class="icon" viewBox="0 0 24 24" style="color: #1976d2;">
+                            <path d="M17.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,9A1.5,1.5 0 0,1 19,10.5A1.5,1.5 0 0,1 17.5,12M10,10.5C10,11.3 9.3,12 8.5,12S7,11.3 7,10.5C7,9.7 7.7,9 8.5,9S10,9.7 10,10.5M12,14C9.66,14 7.69,15.46 6.74,17.5H17.26C16.31,15.46 14.34,14 12,14M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                        </svg>
+                    </div>
+                    <div class="message-content">
+                        <div class="typing-dots">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <div class="input-container">
+                    <input 
+                        type="text" 
+                        id="message-input"
+                        class="input-field" 
+                        placeholder="Digite sua pergunta sobre TEA ou o projeto Mentes Brilhantes..."
+                        onkeypress="handleKeyPress(event)"
+                    />
+                    <button class="send-btn" id="send-btn" onclick="sendMessage()">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="footer-text">
+                    IA especializada em TEA • Projeto Mentes Brilhantes • ETEC Jardim Ângela
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var conversations = [
+            { id: 1, title: 'Nova Conversa', messages: [] }
+        ];
+        var activeConversation = 1;
+        var isTyping = false;
+
+        function getAIResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            // Verificar se a pergunta é relevante ao TEA ou ao projeto
+            var relevantKeywords = [
+            'neurodivergente', 'neuroatípico', 'diagnóstico', 'intervenção precoce', 'aba', 'fonoaudiologia',
+'psicologia', 'psicopedagogia', 'psicomotricidade', 'teacch', 'pecs', 'linguagem receptiva',
+'linguagem expressiva', 'transtorno do desenvolvimento', 'regulação emocional', 'hiperfoco',
+'estereotipia', 'crises', 'agenda visual', 'rotina visual', 'adaptativo', 'socialização',
+'habilidades sociais', 'autonomia', 'empatia', 'mediação', 'criança', 'adolescente', 'jovem',
+'rotina escolar', 'pai', 'mãe', 'tutor', 'escola', 'educador', 'profissional de saúde',
+'acompanhamento multidisciplinar', 'individualizado', 'acolhimento', 'suporte emocional',
+'vínculo', 'progressos', 'metas', 'inclusão digital', 'acessibilidade cognitiva', 'estímulo',
+'gamificação', 'personalização', 'notificações', 'lembretes', 'gráficos de progresso',
+'relatórios', 'engajamento', 'interação', 'diário comportamental', 'feedback', 
+'autocuidado', 'ansiedade', 'culpa', 'conquista', 'emoções', 'afeto', 'autoconfiança',
+'reconhecimento', 'relacionamento', 'conexão', 'cansaço', 'amor', 'presença', 'superação',
+'resiliência', 'força', 'apoio', 'coragem', 'consistência', 'descanso', 'compreensão',
+'frustração', 'acolhido', 'sobrecarregado', 'felicidade', 'esperança', 'dedicação',
+'família atípica', 'sensibilidade', 'aceitação', 'rotina adaptada', 'aplicativo',
+'mobile', 'app', 'tecnologia', 'interface', 'acesso', 'login', 'segurança', 'privacidade',
+'usuário', 'cadastramento', 'painel', 'dados', 'perfis', 'ferramentas', 'interativo',
+'inclusivo', 'intuitivo', 'responsivo', 'acessível', 'plataforma', 'recursos', 'desempenho',
+'monitoramento', 'perfil do usuário', 'chatbot', 'funcionalidade', 'inteligência artificial',
+'suporte técnico', 'educação inclusiva', 'conhecimento', 'participação', 'informação',
+'dignidade', 'valor', 'vida diária', 'monitoramento diário',
+'adaptação sensorial', 'sobrecarga sensorial', 'desenvolvimento infantil',
+'interação social', 'treinamento comportamental', 'planejamento familiar',
+'educação especial', 'estratégias educativas', 'recursos pedagógicos', 'envolvimento familiar',
+'treinamento de habilidades', 'assessoria psicopedagógica', 'suporte multidisciplinar',
+'programas personalizados', 'terapia ocupacional', 'monitoramento remoto', 'atendimento virtual',
+'conselhos parentais', 'rede de apoio', 'grupos de suporte', 'capacitação profissional',
+'capacitação para cuidadores', 'plataformas digitais', 'ferramentas adaptativas', 'acessibilidade digital',
+'treinamento de autonomia', 'gestão de tempo', 'controle emocional', 'habilidades de vida',
+'autogestão', 'monitoramento contínuo', 'metodologias ativas', 'inclusão social',
+'promoção da saúde mental', 'bem-estar emocional', 'respeito à diversidade', 'educação emocional',
+'comunicação alternativa', 'tecnologia assistiva', 'usabilidade', 'design inclusivo',
+'treinamento cognitivo', 'estímulos sensoriais', 'educação personalizada', 'transição para vida adulta',
+'planejamento terapêutico', 'avaliação funcional', 'relatórios clínicos', 'dados analíticos',
+'análise comportamental', 'evidências científicas', 'direitos das pessoas com deficiência',
+'políticas públicas', 'empoderamento familiar', 'qualidade de vida', 'suporte psicológico',
+'estratégias de enfrentamento', 'autoestima', 'desenvolvimento pessoal', 'construção de vínculos',
+'feedback positivo', 'estratégias de ensino', 'intervenções baseadas em evidências', 'habilidades motoras',
+'suporte educacional', 'orientação profissional', 'acolhimento social', 'promoção da inclusão',
+'educação tecnológica', 'aprendizado digital', 'plataformas educacionais', 'integração escolar',
+'planos de aprendizagem', 'diagnóstico precoce', 'monitoramento do progresso', 'adaptação curricular',
+'suporte individualizado', 'conscientização social', 'capacitação continuada', 'atendimento especializado',
+'desenvolvimento emocional', 'atividades recreativas', 'participação comunitária', 'suporte familiar',
+'planejamento de carreira', 'habilitação social', 'aprendizagem significativa', 'intervenção comportamental',
+'monitoramento fisiológico', 'suporte à inclusão', 'relacionamento interpessoal', 'treinamento parental',
+'comunicação aumentativa', 'ferramentas digitais', 'acessibilidade universal', 'assistência técnica',
+'comunicação não verbal', 'flexibilidade cognitiva', 'atividades sensoriais', 'controle comportamental',
+'autonomia funcional', 'habilidades adaptativas', 'tecnologia móvel', 'ferramentas de apoio',
+'integração familiar', 'suporte psicológico online', 'monitoramento em tempo real', 'educação para a diversidade',
+'práticas inclusivas', 'interação mediada', 'gestão de crises', 'reabilitação cognitiva',
+'promoção do bem-estar', 'ambiente terapêutico', 'suporte emocional contínuo', 'treinamento de cuidadores',
+'desenvolvimento de competências', 'avaliação neuropsicológica', 'orientação vocacional', 'participação ativa',
+'transição escolar', 'plano individual de atendimento', 'formação continuada', 'integração social',
+'monitoramento psicossocial', 'habilidades comunicativas', 'estímulos visuais', 'planejamento pedagógico',
+'intervenção interdisciplinar', 'apoio educacional', 'avaliação multidimensional'
+            ];
+
+            // Respostas sobre TEA
+            if ((lowerMessage.includes('explique') || lowerMessage.includes('explica') || lowerMessage.includes('explicação') || 
+    lowerMessage.includes('pode detalhar') || lowerMessage.includes('não entendi') || lowerMessage.includes('como funciona') || 
+    lowerMessage.includes('como usar') || lowerMessage.includes('o que é')) && 
+    (lowerMessage.includes('app') || lowerMessage.includes('aplicativo') || lowerMessage.includes('mente brilhantes'))) {
+    const respostas = [
+        "O aplicativo Mentes Brilhantes foi cuidadosamente desenvolvido para oferecer um suporte prático e acessível a pessoas com TEA, seus cuidadores e profissionais. Ele facilita a organização da rotina diária, oferece lembretes personalizados e atividades que estimulam o desenvolvimento cognitivo e emocional, tudo isso de forma intuitiva para garantir fácil acesso e uso.",
+        "Nosso app integra diversas funcionalidades como agenda visual, que ajuda a estruturar o dia com clareza, notificações para lembrar compromissos e um painel de progresso que permite acompanhar as conquistas e identificar áreas que precisam de atenção, promovendo um acompanhamento contínuo e individualizado.",
+        "Para usar o Mentes Brilhantes, basta criar um perfil personalizado onde é possível configurar rotinas adaptadas às necessidades específicas, receber alertas importantes e registrar informações essenciais para que cuidadores e profissionais possam acompanhar o desenvolvimento e apoiar o crescimento da pessoa de forma colaborativa.",
+        "A plataforma foi criada para facilitar a comunicação entre usuários, cuidadores e profissionais de saúde, promovendo um ambiente integrado onde o suporte é contínuo e eficiente. Além disso, o app preza pela segurança e privacidade dos dados, garantindo que todas as informações estejam protegidas e acessíveis somente para quem foi autorizado.",
+        "Pensando na diversidade e na inclusão, o Mentes Brilhantes é projetado para ser acessível e intuitivo, com uma interface responsiva que atende às diferentes habilidades e preferências, para que qualquer pessoa, independentemente de seu grau de familiaridade com tecnologia, possa se beneficiar de seus recursos."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if ((lowerMessage.includes('explique') || lowerMessage.includes('explica') || lowerMessage.includes('pode detalhar') || lowerMessage.includes('não entendi')) && 
+    (lowerMessage.includes('autismo') || lowerMessage.includes('tea') || lowerMessage.includes('espectro'))) {
+    const respostas = [
+        "O Transtorno do Espectro Autista, ou TEA, é uma condição neurológica que impacta a forma como a pessoa se comunica, interage socialmente e percebe o mundo. Cada indivíduo no espectro apresenta características únicas, o que reforça a importância de abordagens personalizadas e respeitosas para seu desenvolvimento e inclusão.",
+        "Pessoas com TEA possuem maneiras próprias de perceber e responder aos estímulos do ambiente, apresentando desafios e também habilidades específicas que podem ser valorizadas quando recebem o suporte adequado e o reconhecimento das suas potencialidades.",
+        "Importante destacar que o autismo não é uma doença, mas sim uma diversidade neurológica que precisa ser compreendida e respeitada. O conhecimento sobre o TEA contribui para reduzir preconceitos e promover uma sociedade mais inclusiva e acolhedora.",
+        "Compreender o autismo é fundamental para que familiares, educadores e profissionais possam oferecer o suporte necessário para o desenvolvimento das habilidades sociais, emocionais e cognitivas de cada pessoa, respeitando seu ritmo e individualidade.",
+        "Caso deseje, posso ajudar a detalhar os sinais mais comuns do TEA e orientar sobre os caminhos para diagnóstico e intervenções adequadas, que são fundamentais para um melhor acompanhamento."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if ((lowerMessage.includes('explique') || lowerMessage.includes('explica') || lowerMessage.includes('pode detalhar') || lowerMessage.includes('não entendi')) && 
+    (lowerMessage.includes('cuidador') || lowerMessage.includes('família') || lowerMessage.includes('apoio emocional'))) {
+    const respostas = [
+        "Os cuidadores desempenham um papel central no suporte às pessoas com TEA, oferecendo acolhimento, paciência e orientação que respeitam o ritmo individual, além de promover um ambiente seguro e previsível que contribua para o bem-estar e desenvolvimento.",
+        "É essencial que cuidadores estejam preparados para lidar com os desafios diários, como crises e mudanças repentinas, utilizando estratégias baseadas em empatia e calma para ajudar a pessoa a se reorganizar emocionalmente.",
+        "O apoio da família é um fator decisivo para o sucesso do cuidado, fortalecendo vínculos afetivos e criando uma rede segura de proteção e incentivo, que promove a autonomia e a qualidade de vida da pessoa acompanhada.",
+        "Criar um ambiente acolhedor e estruturado ajuda a reduzir a ansiedade e permite que a pessoa se sinta valorizada e compreendida, o que é fundamental para o desenvolvimento de suas habilidades sociais e emocionais.",
+        "Além disso, é importante que os cuidadores cuidem também de sua própria saúde emocional, buscando apoio e momentos de descanso, pois um cuidador bem cuidado é mais capaz de oferecer um suporte consistente e afetivo."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if ((lowerMessage.includes('explique') || lowerMessage.includes('explica') || lowerMessage.includes('pode detalhar') || lowerMessage.includes('não entendi')) && 
+    (lowerMessage.includes('rotina') || lowerMessage.includes('agenda visual') || lowerMessage.includes('organização'))) {
+    const respostas = [
+        "Rotinas estruturadas e previsíveis são fundamentais para criar um ambiente de segurança e tranquilidade para pessoas com TEA, ajudando a minimizar a ansiedade e facilitar o planejamento do dia a dia.",
+        "A agenda visual é uma ferramenta prática que representa graficamente as atividades programadas, tornando mais claro e acessível o entendimento do que acontecerá, o que contribui para a autonomia e o controle das situações.",
+        "Organizar a rotina com o apoio de lembretes e sinais visuais auxilia na construção de hábitos saudáveis, na gestão do tempo e no desenvolvimento da responsabilidade pessoal, aspectos essenciais para o crescimento individual.",
+        "Adaptar a rotina às necessidades específicas de cada pessoa promove um equilíbrio emocional maior, permitindo que ela se sinta mais confortável e confiante para enfrentar os desafios diários.",
+        "No aplicativo Mentes Brilhantes, você pode personalizar a agenda visual e as notificações para que se encaixem da melhor forma possível à sua realidade, facilitando o acompanhamento e a execução das tarefas."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if ((lowerMessage.includes('explique') || lowerMessage.includes('explica') || lowerMessage.includes('pode detalhar') || lowerMessage.includes('não entendi')) && 
+    (lowerMessage.includes('emocional') || lowerMessage.includes('sentimentos') || lowerMessage.includes('ansiedade') || lowerMessage.includes('autocuidado'))) {
+    const respostas = [
+        "O cuidado com a saúde emocional é um aspecto essencial para o equilíbrio e o bem-estar, especialmente para pessoas que enfrentam desafios como o TEA, pois permite maior controle sobre as próprias emoções e reações.",
+        "Reconhecer, nomear e expressar sentimentos são passos importantes para reduzir a ansiedade e fortalecer a autoconfiança, facilitando a comunicação e as relações interpessoais.",
+        "Práticas de autocuidado, como momentos de descanso, atividades prazerosas e técnicas de relaxamento, são fundamentais para manter a estabilidade emocional e prevenir o estresse excessivo.",
+        "O suporte emocional oferecido por familiares, cuidadores e profissionais cria um ambiente seguro, onde a pessoa pode desenvolver resiliência e sentir-se acolhida e compreendida.",
+        "O aplicativo Mentes Brilhantes dispõe de ferramentas que auxiliam no monitoramento do humor e fornecem sugestões para o gerenciamento emocional, promovendo um cuidado integrado e constante."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if (lowerMessage.includes('obrigado') || lowerMessage.includes('agradecido') || lowerMessage.includes('agradeço') || lowerMessage.includes('valeu')) {
+    const agradecimentos = [
+        "De nada! Fico muito feliz em poder ajudar. 😊 Sempre que precisar, conte comigo para o que for necessário.",
+        "Por nada! Estou aqui para apoiar você em sua jornada, então não hesite em me procurar quando precisar.",
+        "Obrigado pelo seu reconhecimento! É um prazer enorme poder contribuir para o seu desenvolvimento e bem-estar.",
+        "Fico à disposição para qualquer dúvida ou suporte que precisar. Seu progresso é o que mais importa.",
+        "Valeu! Estou sempre por aqui para oferecer o apoio que você e sua família merecem."
+    ];
+    const index = Math.floor(Math.random() * agradecimentos.length);
+    return agradecimentos[index];
+}
+
+if (lowerMessage.includes('tchau') || lowerMessage.includes('adeus') || lowerMessage.includes('até mais') || lowerMessage.includes('até logo') || lowerMessage.includes('falou')) {
+    const despedidas = [
+        "Até mais! Cuide-se bem e volte sempre que precisar. Estarei aqui para ajudar no que for preciso. 😊",
+        "Tchau! Foi um prazer conversar com você hoje. Desejo tudo de melhor no seu caminho.",
+        "Até logo! Lembre-se que pode contar comigo sempre que precisar de apoio ou informações.",
+        "Falou! Tenha um ótimo dia ou noite, e saiba que estou sempre à disposição para ajudar.",
+        "Adeus! Que sua jornada seja cheia de conquistas e crescimento. Estarei aqui para apoiar você em cada passo."
+    ];
+    const index = Math.floor(Math.random() * despedidas.length);
+    return despedidas[index];
+}
+
+if (lowerMessage.includes('oi') || lowerMessage.includes('olá') || lowerMessage.includes('bom dia') || lowerMessage.includes('boa tarde') || lowerMessage.includes('boa noite') || lowerMessage.includes('oii') || lowerMessage.includes('ole') || lowerMessage.includes('opa')) {
+    const cumprimentos = [
+        "Olá! Seja muito bem-vindo ao Mentes Brilhantes, um projeto dedicado a oferecer suporte e inclusão para pessoas com TEA e seus cuidadores. Eu sou sua assistente virtual, pronta para ajudar você com informações, orientações e muito mais. Como posso ajudar no seu dia de hoje? 😊",
+        "Oi! Que alegria ter você aqui no Mentes Brilhantes, um aplicativo pensado para facilitar a rotina e promover o desenvolvimento de pessoas com autismo. Eu sou sua assistente virtual, e estou à disposição para o que precisar.",
+        "Bom dia! Espero que seu dia esteja tranquilo. Estou aqui, como assistente do projeto Mentes Brilhantes, para apoiar você com informações e orientações que possam facilitar o seu caminho.",
+        "Boa tarde! Como está se sentindo hoje? Sou a assistente virtual do Mentes Brilhantes, um projeto que busca ajudar famílias e profissionais a acompanhar o desenvolvimento de pessoas com TEA. Conte comigo para o que quiser.",
+        "Boa noite! Espero que seu dia tenha sido bom. Eu sou sua assistente virtual do projeto Mentes Brilhantes, pronta para conversar, esclarecer dúvidas e oferecer suporte sempre que você precisar."
+    ];
+    const index = Math.floor(Math.random() * cumprimentos.length);
+    return cumprimentos[index];
+}
+
+if ((lowerMessage.includes('app') || lowerMessage.includes('aplicativo') || lowerMessage.includes('mobile')) && 
+    (lowerMessage.includes('funcionalidade') || lowerMessage.includes('o que faz') || lowerMessage.includes('benefícios') || lowerMessage.includes('vantagens') || lowerMessage.includes('como funciona') || lowerMessage.includes('como é'))) {
+    const respostas = [
+        "O aplicativo Mentes Brilhantes oferece funcionalidades cuidadosamente pensadas para apoiar pessoas com TEA e seus cuidadores, incluindo agenda visual, lembretes personalizados, atividades cognitivas e monitoramento detalhado do progresso, promovendo autonomia e desenvolvimento contínuo.",
+        "Além de facilitar a organização do dia a dia, o app melhora a comunicação entre usuários e cuidadores e oferece suporte emocional, criando um ambiente seguro e acolhedor para o crescimento individual.",
+        "O Mentes Brilhantes reúne diversas ferramentas integradas, como notificações, gráficos de progresso e atividades personalizadas, que tornam o acompanhamento mais eficiente e personalizado.",
+        "Com uma interface intuitiva e acessível, o aplicativo ajuda a manter a rotina organizada e estimula o engajamento e a motivação do usuário, respeitando suas necessidades e preferências.",
+        "A plataforma é desenvolvida para ser inclusiva e responsiva, garantindo que tanto usuários quanto cuidadores possam acompanhar o desenvolvimento de forma contínua e segura."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+
+if ( lowerMessage.includes('segurança')&&(lowerMessage.includes('app') || lowerMessage.includes('aplicativo'))) {
+    const respostas = [
+        "No Mentes Brilhantes, a sua segurança e privacidade são nossa maior prioridade. Sabemos o quanto é importante sentir que suas informações estão protegidas, por isso usamos tecnologias modernas que mantêm seus dados sempre seguros e inacessíveis para quem não tem permissão. Tudo o que você compartilha conosco é cuidado com muito respeito e atenção, garantindo que suas informações permaneçam privadas e protegidas contra qualquer alteração indevida.",
+        "Nosso compromisso com a sua privacidade é sério e constante. Trabalhamos com regras rígidas para evitar qualquer tipo de problema ou risco, para que você possa usar o aplicativo com total tranquilidade e confiança. Pensamos em cada detalhe para oferecer um ambiente seguro, onde você se sinta acolhido e protegido.",
+        "Você pode contar conosco todos os dias, sabendo que estamos sempre aplicando os melhores métodos e práticas para cuidar dos seus dados. Nosso objetivo é que você tenha a melhor experiência possível, com a certeza de que sua privacidade está em boas mãos.",
+        "Estamos aqui para cuidar de você e das suas informações, porque sua confiança é o que nos motiva a fazer sempre o melhor."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if ((lowerMessage.includes('notificações') || lowerMessage.includes('lembretes')) && (lowerMessage.includes('app') || lowerMessage.includes('aplicativo'))) {
+    const respostas = [
+        "As notificações inteligentes do aplicativo são essenciais para ajudar os usuários a lembrar das tarefas e compromissos importantes, promovendo uma rotina mais organizada e menos estressante.",
+        "Com lembretes totalmente personalizáveis, o app apoia o desenvolvimento da autonomia e da disciplina, facilitando o gerenciamento das atividades diárias.",
+        "Essas notificações garantem que nenhuma tarefa seja esquecida, oferecendo suporte para o planejamento do dia e ajudando a manter o foco no que é importante.",
+        "Os lembretes são configurados para atender às necessidades individuais, tornando a rotina mais estável e previsível, o que é especialmente importante para pessoas com TEA."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if ( lowerMessage.includes('gráficos') && (lowerMessage.includes('app') || lowerMessage.includes('aplicativo'))) {
+    const respostas = [
+        "O aplicativo gera gráficos detalhados que ilustram o progresso e desenvolvimento ao longo do tempo, facilitando a avaliação por cuidadores e profissionais de saúde para tomadas de decisão mais informadas.",
+        "Gráficos visuais permitem uma compreensão clara dos avanços, ajudando a identificar pontos fortes e áreas que precisam de atenção, possibilitando ajustes personalizados nas estratégias de acompanhamento.",
+        "Com esses relatórios gráficos, o app oferece uma visão precisa do desempenho nas atividades, apoiando a criação de metas realistas e a motivação contínua do usuário.",
+        "A apresentação visual dos dados torna o monitoramento mais acessível e eficaz, fortalecendo o processo de intervenção e o suporte multidisciplinar."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if ((lowerMessage.includes('explique') || lowerMessage.includes('explica') || lowerMessage.includes('pode detalhar') || lowerMessage.includes('não entendi') || lowerMessage.includes('o que é')) && 
+    (lowerMessage.includes('app') || lowerMessage.includes('aplicativo') || lowerMessage.includes('mente brilhantes'))) {
+    const respostas = [
+        "O aplicativo Mentes Brilhantes foi desenvolvido com o propósito de oferecer um suporte completo e acessível para pessoas com Transtorno do Espectro Autista (TEA), seus cuidadores e profissionais envolvidos no cuidado. Nosso objetivo principal é facilitar a organização da rotina, o acompanhamento do desenvolvimento e o fortalecimento das habilidades sociais e emocionais de maneira personalizada e intuitiva.",
+        "Dentro do app, você encontra uma série de ferramentas pensadas para atender às necessidades específicas da comunidade TEA, como agenda visual adaptável, lembretes personalizados para tarefas e compromissos, atividades cognitivas que estimulam o aprendizado e o desenvolvimento, além de gráficos e relatórios que ajudam a monitorar o progresso de forma clara e detalhada.",
+        "A plataforma também promove a integração entre usuários, cuidadores e profissionais de saúde, facilitando a comunicação e o compartilhamento de informações importantes, o que contribui para um suporte mais coordenado e eficaz. Além disso, o app conta com recursos que valorizam a autonomia do usuário, incentivando o autocuidado e a regulação emocional por meio de orientações e monitoramento constante.",
+        "A interface do Mentes Brilhantes é projetada para ser acessível, intuitiva e responsiva, garantindo que pessoas com diferentes níveis de habilidade possam utilizá-la com facilidade. A privacidade e a segurança dos dados dos usuários são prioridades, asseguradas por tecnologias avançadas de criptografia e proteção das informações.",
+        "Em resumo, o Mentes Brilhantes não é apenas um aplicativo, mas uma ferramenta de inclusão digital que busca promover a qualidade de vida, a independência e o desenvolvimento contínuo das pessoas com TEA, apoiando toda a rede de suporte envolvida em sua jornada."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if ((lowerMessage.includes('o que é') || lowerMessage.includes('explique') || lowerMessage.includes('explica') || 
+    lowerMessage.includes('quero saber') || lowerMessage.includes('diga mais') || lowerMessage.includes('fale mais') || 
+    lowerMessage.includes('conte mais') || lowerMessage.includes('me explica')) && 
+    (lowerMessage.includes('app') || lowerMessage.includes('aplicativo') || lowerMessage.includes('mente brilhantes'))) {
+    
+    const respostas = [
+        "Claro! O aplicativo Mentes Brilhantes é uma plataforma especialmente desenvolvida para oferecer suporte integral a pessoas com Transtorno do Espectro Autista (TEA), seus familiares e cuidadores. Ele funciona como uma ferramenta multifuncional que auxilia na organização da rotina diária, no acompanhamento do desenvolvimento e no estímulo de habilidades cognitivas e emocionais, tudo isso de forma personalizada e acessível.",
+        "Quer saber mais? O app reúne diversas funcionalidades como agenda visual adaptativa, que ajuda a visualizar as tarefas do dia, lembretes que mantêm a rotina em dia, além de atividades interativas que promovem o desenvolvimento das capacidades individuais de cada usuário.",
+        "Fale mais comigo sobre suas dúvidas, mas posso adiantar que a plataforma também oferece gráficos detalhados e relatórios que facilitam o entendimento do progresso, permitindo que cuidadores e profissionais ajustem estratégias e metas conforme as necessidades.",
+        "Me explique o que você gostaria de saber, pois o Mentes Brilhantes também prioriza a segurança e a privacidade dos dados, utilizando tecnologias avançadas para garantir que as informações pessoais estejam sempre protegidas.",
+        "Diga mais! Posso contar que o design do app é intuitivo e pensado para garantir acessibilidade, promovendo a autonomia dos usuários e facilitando a comunicação entre toda a rede de apoio, fortalecendo vínculos e tornando o cuidado mais eficaz e acolhedor."
+    ];
+    
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+// Para respostas que não entram em nenhum caso acima, você pode manter uma resposta padrão:
+
+
+if (lowerMessage.includes('acompanhador') && (lowerMessage.includes('o que faz') || lowerMessage.includes('função'))) {
+    const respostas = [
+        "O acompanhador desempenha um papel fundamental ao oferecer suporte diário, auxiliando na organização da rotina, facilitando a comunicação e incentivando o desenvolvimento da pessoa com TEA, sempre promovendo autonomia e segurança.",
+        "Gostaria de saber mais? O acompanhador ajuda a criar um ambiente estruturado e acolhedor, garantindo que as necessidades individuais sejam respeitadas e apoiadas com paciência e atenção.",
+        "Fale comigo se quiser detalhes! A função do acompanhador é estar presente para mediar situações do dia a dia, promovendo o bem-estar e o progresso de quem acompanha.",
+        "Diga mais! O acompanhador atua como um facilitador, colaborando para que as atividades e interações ocorram de forma positiva e organizada, fortalecendo a confiança e a independência.",
+        "Posso explicar que o acompanhador também atua na identificação precoce de dificuldades e no suporte às estratégias de intervenção, tornando o cuidado mais eficaz e humano."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if (lowerMessage.includes('acompanhador') && (lowerMessage.includes('como ajudar') || lowerMessage.includes('apoio'))) {
+    const respostas = [
+        "Para ajudar como acompanhador, é essencial observar atentamente as necessidades individuais, agir com paciência e incentivar a participação ativa nas atividades diárias, sempre respeitando o ritmo da pessoa.",
+        "Quer saber como apoiar melhor? É importante oferecer um ambiente seguro e previsível, proporcionando estímulos adequados e acolhendo os sentimentos e reações da pessoa acompanhada.",
+        "Fale comigo para entender que apoiar é estar presente com empatia, auxiliando na resolução de desafios e celebrando cada conquista, por menor que seja.",
+        "Diga mais! Manter uma comunicação clara e utilizar recursos visuais pode facilitar a compreensão e aumentar a interação durante o apoio.",
+        "Posso detalhar que o acompanhador também precisa cuidar de si mesmo para oferecer um suporte constante e de qualidade, buscando equilíbrio entre cuidado e autocuidado."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if (lowerMessage.includes('acompanhador') && lowerMessage.includes('rotina')) {
+    const respostas = [
+        "O acompanhador tem um papel importante na organização da rotina, usando ferramentas como agendas visuais e lembretes para tornar o dia a dia mais previsível e tranquilo.",
+        "Quer entender melhor? Criar uma rotina estruturada ajuda a reduzir a ansiedade e aumenta a sensação de segurança para a pessoa acompanhada.",
+        "Fale comigo! O uso de recursos visuais facilita a compreensão das tarefas e promove a autonomia no cumprimento das atividades.",
+        "Diga mais! Adaptar a rotina às necessidades individuais faz toda a diferença para o equilíbrio emocional e o desenvolvimento pessoal.",
+        "Posso explicar que o acompanhamento constante permite ajustar a rotina conforme o progresso, garantindo que ela continue relevante e eficaz."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if (lowerMessage.includes('acompanhador') && lowerMessage.includes('habilidades sociais')) {
+    const respostas = [
+        "Apoiando a socialização, o acompanhador atua como mediador nas interações, incentivando o desenvolvimento das habilidades sociais e fortalecendo a comunicação.",
+        "Quer saber mais? Estimular a participação em atividades em grupo e o reconhecimento de sinais sociais ajuda a construir relacionamentos saudáveis.",
+        "Fale comigo! O acompanhamento respeitoso e paciente é fundamental para que a pessoa se sinta segura ao explorar novas formas de interação.",
+        "Diga mais! O acompanhador pode utilizar estratégias específicas para ajudar na compreensão das emoções próprias e dos outros, promovendo empatia e respeito.",
+        "Posso explicar que o desenvolvimento das habilidades sociais contribui para maior autonomia e qualidade de vida, e o acompanhador é peça chave nesse processo."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if (lowerMessage.includes('acompanhador') && lowerMessage.includes('desafios')) {
+    const respostas = [
+        "Os desafios do acompanhador incluem lidar com crises e mudanças inesperadas, sempre buscando soluções respeitosas e acolhedoras que priorizem o bem-estar da pessoa acompanhada.",
+        "Quer entender mais? Manter a calma e aplicar estratégias de regulação emocional são fundamentais para superar momentos difíceis com empatia e eficácia.",
+        "Fale comigo! Cada desafio é uma oportunidade de aprendizado e crescimento, tanto para o acompanhador quanto para quem recebe o cuidado.",
+        "Diga mais! É importante que o acompanhador esteja preparado para adaptar as abordagens conforme as necessidades e situações que surgirem.",
+        "Posso explicar que buscar apoio profissional e participar de capacitações contribui para fortalecer as habilidades do acompanhador diante dos desafios diários."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if (lowerMessage.includes('cuidador') && (lowerMessage.includes('como ajudar') || lowerMessage.includes('apoio'))) {
+    const respostas = [
+        "Para ajudar como cuidador, é essencial ouvir com atenção, respeitar o ritmo da pessoa e criar um ambiente seguro e acolhedor, onde a paciência seja uma constante companheira.",
+        "Quer saber mais? O apoio cuidadoso ajuda a construir confiança e promove o desenvolvimento emocional e social da pessoa sob seus cuidados.",
+        "Fale comigo! Oferecer suporte prático e emocional, valorizando cada conquista, fortalece o vínculo e incentiva a autonomia gradativa.",
+        "Diga mais! A empatia e a compreensão são ferramentas poderosas que facilitam a superação dos desafios do dia a dia.",
+        "Posso explicar que o autocuidado do cuidador também é fundamental para manter um suporte consistente e de qualidade."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if (lowerMessage.includes('cuidador') && lowerMessage.includes('lidar com crises')) {
+    const respostas = [
+        "Durante crises, manter a calma é fundamental. Evite estímulos excessivos e ofereça um espaço tranquilo para ajudar a pessoa a se reorganizar emocionalmente.",
+        "Quer entender mais? Com o tempo, você vai aprender a identificar os sinais que antecedem as crises, o que permite agir de forma preventiva e eficaz.",
+        "Fale comigo! Técnicas de respiração e apoio emocional são importantes para acalmar e confortar durante esses momentos.",
+        "Diga mais! É essencial que o cuidador também tenha momentos para descansar e se recompor, garantindo resiliência para continuar oferecendo suporte.",
+        "Posso explicar que buscar orientação profissional pode ajudar a desenvolver estratégias específicas para lidar melhor com as crises."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if (lowerMessage.includes('cuidador') && lowerMessage.includes('rotina')) {
+    const respostas = [
+        "Manter uma rotina previsível é uma estratégia eficaz para reduzir a ansiedade e facilitar a adaptação às atividades diárias da pessoa acompanhada.",
+        "Quer saber mais? A rotina estruturada promove segurança e ajuda a estabelecer hábitos saudáveis que contribuem para o bem-estar geral.",
+        "Fale comigo! Utilizar recursos visuais e lembretes pode tornar a rotina mais compreensível e acessível.",
+        "Diga mais! Ajustar a rotina conforme as necessidades e preferências individuais é importante para manter o equilíbrio emocional.",
+        "Posso explicar que o cuidador desempenha um papel importante em garantir a consistência e a flexibilidade necessárias na rotina."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if (lowerMessage.includes('cuidador') && lowerMessage.includes('comunicação')) {
+    const respostas = [
+        "Usar uma linguagem simples, clara e objetiva, aliada a recursos visuais, facilita muito a compreensão e a expressão da pessoa sob cuidado.",
+        "Quer entender mais? Comunicação efetiva é chave para reduzir frustrações e fortalecer o relacionamento entre cuidador e pessoa acompanhada.",
+        "Fale comigo! Atenção aos sinais não verbais também ajuda a interpretar necessidades e sentimentos que podem não ser expressos em palavras.",
+        "Diga mais! Adaptar a forma de comunicar-se, sempre respeitando o tempo e o modo da pessoa, promove um ambiente mais acolhedor e compreensivo.",
+        "Posso explicar que a comunicação é uma via de mão dupla, e o cuidador também aprende e se desenvolve com esse processo."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if (lowerMessage.includes('cuidador') && lowerMessage.includes('autonomia')) {
+    const respostas = [
+        "Estimular pequenas decisões e incentivar atividades independentes são formas eficazes de fortalecer a autoconfiança e promover a autonomia gradualmente.",
+        "Quer saber mais? Dar espaço para que a pessoa realize tarefas por conta própria ajuda no desenvolvimento das habilidades e na autoestima.",
+        "Fale comigo! O cuidador deve equilibrar o apoio e a liberdade, garantindo segurança enquanto estimula o crescimento pessoal.",
+        "Diga mais! Reconhecer e valorizar os avanços, mesmo que pequenos, é fundamental para motivar e manter o progresso.",
+        "Posso explicar que promover autonomia é um processo contínuo que requer paciência, dedicação e sensibilidade."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if (lowerMessage.includes('cuidador') && lowerMessage.includes('cansaço')) {
+    const respostas = [
+        "Cuidar pode ser uma tarefa desgastante, por isso é fundamental que o cuidador também cuide de si, buscando apoio, descanso e momentos de autocuidado.",
+        "Quer entender mais? Reconhecer os próprios limites ajuda a evitar o esgotamento e a manter a qualidade do cuidado oferecido.",
+        "Fale comigo! Participar de grupos de apoio e compartilhar experiências pode ser uma ótima forma de aliviar o peso emocional.",
+        "Diga mais! Reservar tempo para atividades que trazem prazer e relaxamento é essencial para recarregar as energias.",
+        "Posso explicar que um cuidador descansado e emocionalmente equilibrado está mais preparado para oferecer suporte eficaz e amoroso."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if (lowerMessage.includes('cuidador') && lowerMessage.includes('família')) {
+    const respostas = [
+        "Promover o diálogo aberto e constante com a família é fundamental, pois o apoio mútuo fortalece a rede de cuidado e o bem-estar de todos os envolvidos.",
+        "Quer saber mais? Compartilhar informações, sentimentos e desafios ajuda a criar um ambiente colaborativo e acolhedor.",
+        "Fale comigo! A união da família é um pilar importante para garantir continuidade e qualidade no cuidado oferecido.",
+        "Diga mais! Envolver a família nas decisões e no planejamento das atividades promove empatia e entendimento mútuo.",
+        "Posso explicar que fortalecer os vínculos familiares contribui diretamente para o desenvolvimento e felicidade da pessoa acompanhada."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if (lowerMessage.includes('cuidador') && lowerMessage.includes('tecnologia')) {
+    const respostas = [
+        "Aplicativos como o Mentes Brilhantes são aliados importantes para o cuidador, oferecendo ferramentas que facilitam o acompanhamento, organização e monitoramento do progresso.",
+        "Quer saber mais? A tecnologia pode ajudar a criar lembretes, registrar informações importantes e promover uma comunicação mais efetiva entre cuidadores e profissionais.",
+        "Fale comigo! Utilizar recursos tecnológicos pode tornar o cuidado mais eficiente, reduzindo o estresse e aumentando a segurança nas rotinas diárias.",
+        "Diga mais! O app é desenhado para ser acessível e intuitivo, facilitando a adaptação e o uso por cuidadores de diferentes perfis.",
+        "Posso explicar que a tecnologia é uma ferramenta valiosa para fortalecer o suporte e o acompanhamento, tornando o cuidado mais organizado e personalizado."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if (lowerMessage.includes('cuidador') && lowerMessage.includes('educação')) {
+    const respostas = [
+        "A capacitação contínua sobre o TEA, técnicas de cuidado e estratégias pedagógicas é essencial para oferecer um suporte atualizado e eficaz.",
+        "Quer entender mais? Buscar cursos, workshops e materiais especializados ajuda o cuidador a se sentir mais preparado e confiante.",
+        "Fale comigo! Conhecer as particularidades do TEA e as melhores práticas permite adaptar o cuidado às necessidades individuais.",
+        "Diga mais! A educação do cuidador é um investimento que reflete diretamente na qualidade do suporte oferecido e no desenvolvimento da pessoa acompanhada.",
+        "Posso explicar que aprender continuamente é fundamental para enfrentar os desafios e promover um ambiente acolhedor e estimulante."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+if (lowerMessage.includes('cuidador') && lowerMessage.includes('suporte emocional')) {
+    const respostas = [
+        "Oferecer suporte emocional significa estar presente com acolhimento, empatia e espaço para que a pessoa possa expressar suas emoções livremente.",
+        "Quer saber mais? Esse tipo de suporte fortalece a resiliência e ajuda a construir uma base segura para o desenvolvimento pessoal e social.",
+        "Fale comigo! Um cuidador emocionalmente disponível contribui para a redução da ansiedade e para o aumento do bem-estar geral.",
+        "Diga mais! Valorizar os sentimentos, escutar sem julgamentos e oferecer conforto são atitudes que fazem toda a diferença.",
+        "Posso explicar que o suporte emocional é uma peça chave para um cuidado humanizado e eficaz, promovendo vínculos fortes e duradouros."
+    ];
+    const index = Math.floor(Math.random() * respostas.length);
+    return respostas[index];
+}
+
+
+if (lowerMessage.includes('autismo') && (lowerMessage.includes('o que é') || lowerMessage.includes('explica'))) {
+    return "O autismo, também chamado de Transtorno do Espectro Autista (TEA), é uma forma única de o cérebro funcionar. Isso influencia a maneira como a pessoa percebe o mundo, se comunica e se relaciona com os outros. Cada pessoa autista tem seu próprio jeito de ser, com interesses, dificuldades e forças muito particulares. Quer saber mais sobre como o autismo se manifesta no dia a dia?";
+}
+
+if (lowerMessage.includes('por que') && lowerMessage.includes('me sinto diferente')) {
+    return "Sentir-se diferente não é algo ruim. Na verdade, todo mundo tem algo que o torna único. Quando você se sente assim, pode ser porque percebe o mundo de uma forma especial, com mais sensibilidade ou atenção a certos detalhes. Isso é algo precioso. Quer conversar mais sobre isso?";
+}
+
+if (lowerMessage.includes('como faço para') && lowerMessage.includes('me acalmar')) {
+    return "Existem algumas estratégias que podem ajudar você a se acalmar quando estiver se sentindo sobrecarregado. Respirar devagar e fundo, contar até dez, apertar uma bolinha antiestresse, ouvir uma música tranquila ou se afastar um pouco do que está incomodando são boas opções. Você quer descobrir outras formas que funcionam para você?";
+}
+
+if (lowerMessage.includes('é errado') && lowerMessage.includes('não gostar de barulho')) {
+    return "Não, isso não é errado. Algumas pessoas — especialmente autistas — têm maior sensibilidade a sons, luzes e cheiros. Não gostar de barulho mostra que seu corpo está te dizendo o que precisa para se sentir bem. E tudo bem buscar ambientes mais calmos quando necessário. Quer que eu te ajude com dicas para lidar com isso?";
+}
+
+if (lowerMessage.includes('posso') && lowerMessage.includes('ter amigos')) {
+    return "Sim, você pode ter amigos! E os verdadeiros amigos são aqueles que gostam da gente do jeitinho que somos. Às vezes pode demorar um pouco para encontrar essas pessoas, mas elas existem. Quer conversar sobre como começar uma amizade ou manter uma já existente?";
+}
+
+if (lowerMessage.includes('como') && lowerMessage.includes('fazer amigos')) {
+    return "Fazer amigos pode ser mais fácil quando você compartilha algo que gosta com a outra pessoa — como um jogo, um desenho, um assunto interessante. Também ajuda ouvir com atenção e dar tempo para a amizade crescer. Quer que eu te conte mais estratégias que podem funcionar para você?";
+}
+
+if (lowerMessage.includes('por que') && lowerMessage.includes('fico nervoso')) {
+    return "Ficar nervoso é uma resposta natural do corpo quando enfrentamos algo novo, difícil ou inesperado. Isso acontece com todo mundo! Em pessoas autistas, isso pode ser mais frequente por causa da sensibilidade a estímulos. Mas há formas de entender melhor essas sensações e aprender a se acalmar. Quer explorar isso comigo?";
+}
+
+if (lowerMessage.includes('o que fazer') && lowerMessage.includes('quando fico triste')) {
+    return "Quando você estiver triste, é importante se permitir sentir e, se quiser, conversar com alguém de confiança. Fazer algo que você goste, desenhar, ouvir música ou até descansar pode aliviar o coração. Não se cobre tanto, tudo bem sentir tristeza. Posso te ajudar a encontrar formas de se cuidar nesses momentos?";
+}
+
+if (lowerMessage.includes('por que') && lowerMessage.includes('repito coisas')) {
+    return "Repetir frases, palavras ou movimentos pode ser uma forma do seu cérebro se acalmar, se organizar ou até mostrar que algo te interessa. Isso é comum no autismo e não tem nada de errado nisso. Você quer saber mais sobre por que isso acontece e como pode lidar com isso no seu dia a dia?";
+}
+
+if (lowerMessage.includes('como lidar') && lowerMessage.includes('com mudanças')) {
+    return "Mudanças podem ser difíceis, principalmente quando quebram uma rotina que traz segurança. Para lidar com isso, é legal se preparar com antecedência, usar lembretes visuais, conversar sobre o que vai acontecer e, claro, pedir ajuda se sentir que está demais. Quer que eu te mostre estratégias que ajudam a tornar as mudanças mais leves?";
+}
+
+
+            function responder(lowerMessage) {
+  // Exemplo para 'mentes brilhantes' + 'explicar' + 'tecnologia'
+if (lowerMessage.includes('mentes brilhantes') && lowerMessage.includes('explicar') && lowerMessage.includes('tecnologia')) {
+    const respostas = [
+    "O Mentes Brilhantes usa tecnologias como Kotlin, PHP e MySQL para criar um app acessível e intuitivo, pensado para pessoas com TEA.",
+    "Tecnologia é a base do Mentes Brilhantes, permitindo funcionalidades como agendas visuais e gráficos de progresso que ajudam no cuidado diário.",
+    "Com tecnologia moderna, o Mentes Brilhantes oferece uma plataforma segura e eficiente para apoiar pessoas com TEA e seus cuidadores."
+    ];
+    return respostas[Math.floor(Math.random() * respostas.length)];
+}
+
+  // Exemplo para 'app' ou 'aplicativo' + 'atividades'
+if ((lowerMessage.includes('app') || lowerMessage.includes('aplicativo') || lowerMessage.includes('mobile'))
+    && lowerMessage.includes('o que é') && lowerMessage.includes('Mentes Brilhantes') && lowerMessage.includes('Para que serve'))  {
+    const respostas = [
+"O aplicativo Mentes Brilhantes é uma solução mobile cuidadosamente desenvolvida para oferecer suporte real e diário a pessoas com Transtorno do Espectro Autista (TEA). Com uma interface amigável, acessível e acolhedora, ele integra tecnologia e empatia para proporcionar autonomia, organização e bem-estar. Através de ferramentas como agendas visuais, lembretes personalizados, gráficos de evolução e atividades interativas, o app busca facilitar o cotidiano de seus usuários, permitindo que cuidadores, familiares e profissionais acompanhem de perto o desenvolvimento da pessoa autista com carinho, respeito e praticidade.",
+"Mentes Brilhantes é mais do que um aplicativo — é uma ponte entre tecnologia e cuidado humano. Disponível para dispositivos móveis, ele foi criado com base em estudos sobre o espectro autista e nas reais necessidades de quem vive essa experiência. Reunindo recursos como atividades lúdicas que estimulam habilidades cognitivas, ferramentas de comunicação facilitada, organização de rotinas e acompanhamento do progresso, o app oferece uma experiência integrada, segura e intuitiva. Seu propósito é transformar o apoio ao TEA em algo mais próximo, eficiente e sensível às singularidades de cada indivíduo.",
+"Projetado com afeto e inteligência tecnológica, o aplicativo Mentes Brilhantes nasceu para oferecer um espaço digital onde pessoas com TEA possam se desenvolver com liberdade, apoio e respeito. Por meio de funcionalidades que estimulam a autonomia e o bem-estar emocional, o app permite que o usuário gerencie atividades do dia a dia, receba lembretes importantes, interaja com conteúdos criados para seu perfil sensorial e cognitivo, e se sinta mais seguro nas mudanças e transições da rotina. Ele também serve como uma poderosa ferramenta de suporte para pais, cuidadores e educadores, promovendo uma rede colaborativa de cuidado."
+    ];
+    return respostas[Math.floor(Math.random() * respostas.length)];
+}
+
+  // Exemplo para 'familia' ou 'pai' ou 'mãe' + 'suporte'
+// Suporte à família
+if ((lowerMessage.includes('familia') || lowerMessage.includes('pai') || lowerMessage.includes('mãe')) && lowerMessage.includes('suporte')) {
+    const respostas = [
+        "O suporte à família é uma das bases do aplicativo Mentes Brilhantes. Ele oferece ferramentas pensadas para acompanhar de perto o dia a dia da pessoa com TEA, trazendo mais tranquilidade, organização e bem-estar para pais, mães e cuidadores.",
+        "Sabemos o quanto pode ser desafiador cuidar de alguém com TEA. Por isso, o Mentes Brilhantes foi criado para estar ao lado da família, com recursos que ajudam a entender melhor as necessidades da pessoa autista e a lidar com cada etapa do processo com mais segurança e acolhimento.",
+        "Cuidar de alguém no espectro envolve muito afeto, mas também muita responsabilidade. O aplicativo foi desenvolvido para tornar essa caminhada mais leve, oferecendo suporte prático, emocional e informativo para toda a família envolvida."
+    ];
+    return respostas[Math.floor(Math.random() * respostas.length)];
+}
+
+// Notificações e lembretes
+if (lowerMessage.includes('notificações') || lowerMessage.includes('lembretes')) {
+    const respostas = [
+        "O aplicativo envia notificações personalizadas para lembrar atividades importantes, garantindo que a rotina da pessoa com TEA aconteça de forma estruturada, segura e previsível.",
+        "Com lembretes inteligentes, o Mentes Brilhantes contribui para a organização do dia a dia, ajudando a manter a regularidade nas tarefas e reduzindo o estresse causado por imprevistos ou esquecimentos.",
+        "As notificações são pensadas para oferecer mais autonomia e previsibilidade à pessoa autista. Elas ajudam a lembrar compromissos, estimular hábitos saudáveis e manter o acompanhamento constante das atividades planejadas."
+    ];
+    return respostas[Math.floor(Math.random() * respostas.length)];
+}
+
+
+  // Caso nenhuma condição seja atendida, retorno padrão
+return "Desculpe, não entendi. Pode reformular sua pergunta?";
+}
+
+if (lowerMessage.includes('mentes brilhantes') && (lowerMessage.includes('o que é') || lowerMessage.includes('do que se trata'))) {
+    return "O Mentes Brilhantes é um projeto inovador que combina tecnologia, sensibilidade e cuidado para apoiar pessoas com Transtorno do Espectro Autista (TEA). Por meio de um aplicativo mobile, ele oferece recursos acessíveis e personalizados, ajudando no dia a dia de famílias, cuidadores e profissionais. 💡📲";
+}
+
+if (lowerMessage.includes('mentes brilhantes') && (lowerMessage.includes('objetivo') || lowerMessage.includes('missão'))) {
+    return "A missão do Mentes Brilhantes é transformar vidas por meio da inclusão digital, promovendo autonomia, bem-estar e acolhimento para pessoas com TEA. O projeto busca unir tecnologia e empatia para criar soluções reais, pensadas para quem vive essa realidade todos os dias. ✨🧠";
+}
+
+if (lowerMessage.includes('mentes brilhantes') && (lowerMessage.includes('quem criou') || lowerMessage.includes('desenvolvimento'))) {
+    return "O Mentes Brilhantes foi desenvolvido por uma equipe multidisciplinar apaixonada por inovação social. Envolvendo estudantes, desenvolvedores e profissionais da saúde, o projeto nasceu da vontade de criar algo verdadeiramente útil, acolhedor e acessível. 👨‍💻🤝";
+}
+
+if (lowerMessage.includes('mentes brilhantes') && (lowerMessage.includes('para quem') || lowerMessage.includes('público-alvo'))) {
+    return "O projeto é voltado para pessoas com TEA, familiares, cuidadores, educadores e profissionais da saúde que desejam organizar a rotina, acompanhar o desenvolvimento e oferecer um suporte mais eficaz, respeitando a individualidade de cada pessoa. 👩‍👦📘";
+}
+
+if (lowerMessage.includes('mentes brilhantes') && (lowerMessage.includes('funciona') || lowerMessage.includes('como usar'))) {
+    return "O aplicativo Mentes Brilhantes funciona de forma intuitiva: você pode criar rotinas visuais, registrar atividades, configurar lembretes e acompanhar o progresso da pessoa com TEA por meio de gráficos e relatórios — tudo integrado em um único sistema acolhedor e eficiente. 📱✅";
+}
+
+if (lowerMessage.includes('mentes brilhantes') && (lowerMessage.includes('tecnologia') || lowerMessage.includes('como foi feito'))) {
+    return "O app foi desenvolvido com tecnologias modernas como Kotlin (Android), PHP (backend) e MySQL (banco de dados), com foco total em acessibilidade, responsividade e usabilidade. Cada funcionalidade foi pensada para se adaptar às necessidades reais do público neurodivergente. 💻🛠️";
+}
+
+if (lowerMessage.includes('mentes brilhantes') && (lowerMessage.includes('diferenciais') || lowerMessage.includes('por que usar'))) {
+    return "O grande diferencial do Mentes Brilhantes é seu olhar humanizado aliado à tecnologia. O app não é apenas funcional — ele acolhe, facilita, escuta e transforma a forma como cuidadores e pessoas com TEA interagem com o mundo digital. 💙🧩";
+}
+
+if (lowerMessage.includes('mentes brilhantes') && (lowerMessage.includes('impacto') || lowerMessage.includes('benefícios'))) {
+    return "O impacto do projeto é visível na prática: ele promove autonomia, reduz o estresse dos cuidadores, organiza o cotidiano e cria pontes entre pessoas com TEA e o mundo. Com o Mentes Brilhantes, a rotina deixa de ser um fardo e se torna mais leve, previsível e positiva. 🌍❤️";
+}
+
+if (lowerMessage.includes('mentes brilhantes') && (lowerMessage.includes('futuro') || lowerMessage.includes('planos'))) {
+    return "Os planos para o futuro incluem a implementação de inteligência artificial adaptativa, integração com profissionais da saúde em tempo real e a ampliação de atividades interativas personalizadas. O objetivo é evoluir junto com as necessidades dos usuários. 🚀📈";
+}
+
+if (lowerMessage.includes('mentes brilhantes') && (lowerMessage.includes('como participar') || lowerMessage.includes('colaborar'))) {
+    return "Você pode colaborar com o Mentes Brilhantes como voluntário, parceiro institucional, divulgador ou investidor social. Toda ajuda é bem-vinda para ampliar o alcance e a transformação que o projeto promove. Entre em contato com a equipe e venha fazer parte! 🤝💬";
+}
+
+
+if (lowerMessage.includes('pai') || lowerMessage.includes('mãe') || lowerMessage.includes('familia')) {
+    if (lowerMessage.includes('desafios') || lowerMessage.includes('dificuldades')) {
+        return "Ser pai ou mãe de uma criança com TEA traz desafios diários, mas também momentos de descobertas e conquistas únicas. Cada passo, por menor que pareça, é um avanço valioso. Saiba que você não está sozinho nessa caminhada — o app está aqui para apoiar e fortalecer você em cada etapa. 💙👣";
+    }
+}
+
+if (lowerMessage.includes('apoio') || lowerMessage.includes('me sinto sozinho')) {
+    if (lowerMessage.includes('emocional') || lowerMessage.includes('preciso de ajuda')) {
+        return "Cuidar de alguém com TEA pode ser emocionalmente intenso e às vezes solitário. Reconhecer suas emoções é um ato de coragem e amor. Reserve momentos para cuidar de si mesmo e lembre-se: buscar apoio é um sinal de força, não de fraqueza. Estamos aqui para acolher você. 🧡🫂";
+    }
+}
+
+if (lowerMessage.includes('culpa') || lowerMessage.includes('erro') || lowerMessage.includes('difícil')) {
+    if (lowerMessage.includes('sou culpado') || lowerMessage.includes('estou falhando')) {
+        return "Você está fazendo o melhor que pode com os recursos e o amor que tem. A jornada do cuidado é repleta de aprendizados e desafios, mas seu amor e dedicação são a base que sustenta tudo. Permita-se perdoar e reconhecer sua força. 💛🌱";
+    }
+}
+
+if (lowerMessage.includes('ansiedade') || lowerMessage.includes('preocupado')) {
+    if (lowerMessage.includes('futuro') || lowerMessage.includes('filho')) {
+        return "Sentir ansiedade pelo futuro do seu filho é algo natural e compreensível. Procure focar no presente, celebrar as pequenas vitórias e construir uma rede de apoio que fortaleça toda a família. Passo a passo, vocês vão avançando juntos. 🌅💙";
+    }
+}
+
+if (lowerMessage.includes('amor') || lowerMessage.includes('coração')) {
+    if (lowerMessage.includes('meu filho') || lowerMessage.includes('filha')) {
+        return "O amor que você sente é a força mais poderosa para o desenvolvimento do seu filho. Nunca subestime o impacto da sua presença, cuidado e afeto. Vocês estão crescendo lado a lado nessa jornada única. ❤️🧠";
+    }
+}
+
+if (lowerMessage.includes('cuidar de mim') || lowerMessage.includes('autocuidado')) {
+    if (lowerMessage.includes('importância') || lowerMessage.includes('como')) {
+        return "Cuidar de quem amamos começa por cuidar de nós mesmos. Reserve momentos para respirar, relaxar e se reconectar com suas próprias necessidades. Seu bem-estar é fundamental para poder oferecer um cuidado verdadeiro e sustentável. 🌿☀️";
+    }
+}
+
+if (lowerMessage.includes('sou pai') || lowerMessage.includes('sou mãe')) {
+    if (lowerMessage.includes('estou cansado') || lowerMessage.includes('preciso de força')) {
+        return "Você é muito mais forte do que imagina. Nos dias difíceis, lembre-se que sua presença e dedicação fazem toda a diferença. Respire fundo e reconheça o incrível trabalho que está fazendo. Estamos aqui para apoiar você. 🧸💪";
+    }
+}
+
+if (lowerMessage.includes('vale a pena') || lowerMessage.includes('tem sentido')) {
+    if (lowerMessage.includes('todo esforço') || lowerMessage.includes('o que faço')) {
+        return "Cada esforço, cada lágrima e cada sorriso têm um valor imenso. Mesmo quando parece que ninguém vê, o amor e a dedicação que você oferece transformam vidas — incluindo a sua. Continue acreditando na força do seu cuidado. 🌟👨‍👩‍👧";
+    }
+}
+
+if (lowerMessage.includes('como me conectar') || lowerMessage.includes('relacionamento')) {
+    if (lowerMessage.includes('com meu filho') || lowerMessage.includes('comunicação')) {
+        return "A conexão verdadeira vai além das palavras: acontece no olhar, no toque e na presença atenta. Esteja perto, observe com carinho e acolha o que seu filho expressa. Isso fortalece um vínculo seguro e cheio de significado. 🤝🫶";
+    }
+}
+
+if (lowerMessage.includes('mentes brilhantes') && lowerMessage.includes('me ajuda como pai')) {
+    return "O Mentes Brilhantes não é apenas uma ferramenta para seu filho — é um espaço de acolhimento e suporte para você também. Aqui, você encontra informações, lembretes e uma rede de apoio que entende suas necessidades e celebra suas conquistas. 💙📲";
+}
+
+if (lowerMessage.includes('app') || lowerMessage.includes('aplicativo') || lowerMessage.includes('mobile')) {
+    if (lowerMessage.includes('função') || lowerMessage.includes('para que serve')) {
+        return "O aplicativo Mentes Brilhantes foi criado para oferecer suporte completo e personalizado a pessoas com TEA e seus cuidadores, reunindo agendas visuais, atividades cognitivas, lembretes e acompanhamento de progresso em um só lugar. 📲🧠";
+    }
+}
+
+if (lowerMessage.includes('atividades') || lowerMessage.includes('cognitivas')) {
+    if (lowerMessage.includes('no aplicativo') || lowerMessage.includes('como são')) {
+        return "As atividades cognitivas do app são cuidadosamente planejadas para estimular memória, atenção, linguagem e resolução de problemas, sempre utilizando elementos visuais e lúdicos que respeitam as particularidades do público neurodivergente. 🎮🧩";
+    }
+}
+
+if (lowerMessage.includes('gráficos') || lowerMessage.includes('progresso')) {
+    if (lowerMessage.includes('como funciona') || lowerMessage.includes('o que mostra')) {
+        return "O aplicativo gera gráficos claros e detalhados baseados nas atividades realizadas e nas interações diárias, permitindo que cuidadores e profissionais acompanhem o desenvolvimento e ajustem as estratégias de cuidado com mais precisão. 📊📈";
+    }
+}
+
+if (lowerMessage.includes('notificações') || lowerMessage.includes('lembretes')) {
+    if (lowerMessage.includes('para que serve') || lowerMessage.includes('como usar')) {
+        return "As notificações e lembretes do app ajudam a estruturar a rotina da pessoa com TEA, enviando alertas sobre tarefas, compromissos e momentos importantes, promovendo autonomia, organização e bem-estar. ⏰🔔";
+    }
+}
+
+if (lowerMessage.includes('personalização') || lowerMessage.includes('ajustar')) {
+    if (lowerMessage.includes('como funciona') || lowerMessage.includes('configurações')) {
+        return "O app permite personalizar cores, ícones, sons e atividades para que a experiência seja confortável, agradável e adaptada às necessidades específicas de cada usuário com TEA. ⚙️🎨";
+    }
+}
+
+if (lowerMessage.includes('login') || lowerMessage.includes('acesso')) {
+    if (lowerMessage.includes('como fazer') || lowerMessage.includes('criar conta')) {
+        return "Criar uma conta no app é simples e seguro: basta informar um e-mail e senha. Cuidadores podem gerenciar perfis múltiplos, mantendo tudo organizado para um acompanhamento eficaz. 🔐👥";
+    }
+}
+
+if (lowerMessage.includes('segurança') || lowerMessage.includes('dados')) {
+    if (lowerMessage.includes('como protege') || lowerMessage.includes('privacidade')) {
+        return "O Mentes Brilhantes segue rigorosamente as diretrizes da LGPD, garantindo que seus dados sejam criptografados, protegidos e usados apenas para oferecer um suporte personalizado e seguro. 🔒📁";
+    }
+}
+
+if (lowerMessage.includes('quem pode usar') || lowerMessage.includes('público')) {
+    if (lowerMessage.includes('destinado') || lowerMessage.includes('perfil')) {
+        return "O aplicativo é indicado para pessoas com TEA de todas as idades, bem como para pais, cuidadores, educadores e profissionais de saúde que acompanham seu desenvolvimento no dia a dia. 👨‍👩‍👧‍👦📱";
+    }
+}
+
+if (lowerMessage.includes('interface') || lowerMessage.includes('usabilidade')) {
+    if (lowerMessage.includes('como é') || lowerMessage.includes('acessível')) {
+        return "A interface foi cuidadosamente desenhada para ser simples, intuitiva e visual, com poucos textos e uso de ícones, focando na acessibilidade cognitiva para facilitar o uso por pessoas com TEA. 🌈🧭";
+    }
+}
+
+if (lowerMessage.includes('mentes brilhantes') && (lowerMessage.includes('diferencial') || lowerMessage.includes('por que usar'))) {
+    return "O Mentes Brilhantes une tecnologia, acessibilidade e acompanhamento humanizado, criando um suporte real e adaptado para quem convive com TEA. É uma ferramenta pensada para transformar cuidados em experiências positivas. 💙📲";
+}
+
+if (lowerMessage.includes('diagnóstico') || lowerMessage.includes('avaliar')) {
+    if (lowerMessage.includes('como é feito') || lowerMessage.includes('quando buscar')) {
+        return "O diagnóstico do TEA é clínico e envolve observação cuidadosa, entrevistas e testes específicos, geralmente conduzidos por psicólogos, neuropediatras ou psiquiatras. Quanto mais cedo for feito, maiores as chances de um desenvolvimento saudável. 🧪🔍";
+    }
+}
+
+if (lowerMessage.includes('tecnologia') || lowerMessage.includes('inovação')) {
+    if (lowerMessage.includes('como ajuda') || lowerMessage.includes('no autismo')) {
+        return "A tecnologia é uma grande aliada para o TEA, possibilitando a criação de agendas visuais digitais, apps de comunicação alternativa, jogos educativos e plataformas de monitoramento que tornam o suporte mais prático, acessível e personalizado. 💻📱";
+    }
+}
+
+if (lowerMessage.includes('emocional') || lowerMessage.includes('sentimentos')) {
+    if (lowerMessage.includes('como apoiar') || lowerMessage.includes('expressar')) {
+        return "Pessoas com TEA podem ter dificuldade para expressar emoções. Usar escalas visuais, bonecos com expressões e validação verbal ajuda a reconhecer, nomear sentimentos e fortalecer os vínculos afetivos. 💬❤️";
+    }
+}
+
+if (lowerMessage.includes('fonoaudiologia') || lowerMessage.includes('fala')) {
+    if (lowerMessage.includes('importância') || lowerMessage.includes('função')) {
+        return "A fonoaudiologia é fundamental para desenvolver a linguagem verbal e não verbal, especialmente em crianças com TEA que enfrentam desafios na comunicação. Ela promove a interação e a expressão. 🗣️🎤";
+    }
+}
+
+if (lowerMessage.includes('autonomia') || lowerMessage.includes('independência')) {
+    if (lowerMessage.includes('como estimular') || lowerMessage.includes('estratégias')) {
+        return "Estimular a autonomia em pessoas com TEA envolve oferecer tarefas simples, rotinas previsíveis e incentivar escolhas conscientes, fortalecendo a autoconfiança e o senso de controle sobre a própria vida. 🧩👐";
+    }
+}
+
+if (lowerMessage.includes('rotina') || lowerMessage.includes('agenda visual')) {
+    if (lowerMessage.includes('como ajuda') || lowerMessage.includes('benefícios') || lowerMessage.includes('por que usar')) {
+        return "Rotinas estruturadas, como as agendas visuais, ajudam pessoas com TEA a compreenderem e se prepararem para o que vai acontecer ao longo do dia, reduzindo a ansiedade e promovendo maior previsibilidade. Isso contribui para autonomia, organização e sensação de segurança. 📅✨";
+    }
+}
+
+if (lowerMessage.includes('pecs') || lowerMessage.includes('comunicação alternativa')) {
+    if (lowerMessage.includes('como funciona') || lowerMessage.includes('para que serve')) {
+        return "O PECS (Picture Exchange Communication System) é um método de comunicação alternativa que utiliza figuras para permitir que pessoas com dificuldades na fala expressem desejos, necessidades e sentimentos. É especialmente eficaz para autistas não verbais, facilitando a interação. 🖼️🗣️";
+    }
+}
+
+if (lowerMessage.includes('terapia') || lowerMessage.includes('aba')) {
+    if (lowerMessage.includes('o que é') || lowerMessage.includes('como funciona')) {
+        return "A terapia ABA (Análise do Comportamento Aplicada) é uma abordagem científica que utiliza reforço positivo para ensinar habilidades novas e reduzir comportamentos desafiadores, ajudando no desenvolvimento funcional e social de pessoas com TEA. 🧠🎯";
+    }
+}
+
+if (lowerMessage.includes('sensorial') || lowerMessage.includes('hipersensibilidade')) {
+    if (lowerMessage.includes('como lidar') || lowerMessage.includes('o que é')) {
+        return "Pessoas com TEA muitas vezes apresentam hipersensibilidade sensorial, reagindo fortemente a sons, luzes, texturas e outros estímulos. Usar recursos como fones abafadores, ambientes silenciosos e espaços de calma pode ajudar a reduzir o desconforto e evitar a sobrecarga sensorial. 🎧🌈";
+    }
+}
+
+if (lowerMessage.includes('inclusão') || lowerMessage.includes('educação inclusiva')) {
+    if (lowerMessage.includes('importância') || lowerMessage.includes('por que')) {
+        return "A inclusão garante o acesso de pessoas com TEA a ambientes educacionais, sociais e culturais, respeitando suas necessidades e promovendo igualdade de oportunidades. É fundamental para o desenvolvimento pleno e para uma sociedade mais justa e diversa. 🤝📚";
+    }
+}
+
+if (lowerMessage.includes('familia') || lowerMessage.includes('pais')) {
+    if (lowerMessage.includes('como apoiar') || lowerMessage.includes('dicas')) {
+        return "O papel da família é fundamental no desenvolvimento de pessoas com TEA. Oferecer suporte emocional, estabelecer rotinas consistentes e participar ativamente das terapias são formas importantes de fortalecer o cuidado e promover o bem-estar. 💙🏡";
+    }
+}
+
+if (lowerMessage.includes('crises') || lowerMessage.includes('comportamento desafiador')) {
+    if (lowerMessage.includes('como agir') || lowerMessage.includes('o que fazer')) {
+        return "Durante crises, manter a calma e garantir a segurança são prioridades. Utilizar estratégias visuais, oferecer espaços tranquilos e respeitar o tempo da pessoa ajudam a regular emoções e comportamentos, já que cada indivíduo responde melhor a diferentes abordagens. 🧘‍♂️⚠️";
+    }
+}
+
+if (lowerMessage.includes('aplicativo') || lowerMessage.includes('app')) {
+    if (lowerMessage.includes('função') || lowerMessage.includes('para que serve')) {
+        return "O aplicativo Mentes Brilhantes reúne ferramentas como agendas visuais, gráficos de progresso, lembretes e atividades terapêuticas para apoiar o desenvolvimento de pessoas com TEA e facilitar o acompanhamento por parte de cuidadores e profissionais. 📱🌟";
+    }
+}
+
+if (lowerMessage.includes('profissionais') || lowerMessage.includes('acompanhamento')) {
+    if (lowerMessage.includes('quem são') || lowerMessage.includes('papel')) {
+        return "O acompanhamento de pessoas com TEA envolve uma equipe multidisciplinar, incluindo psicólogos, fonoaudiólogos, terapeutas ocupacionais e pedagogos, que colaboram para promover um desenvolvimento integral e adaptado às necessidades individuais. 👩‍⚕️🧑‍🏫";
+    }
+}
+
+if (lowerMessage.includes('socialização') || lowerMessage.includes('habilidades sociais')) {
+    if (lowerMessage.includes('como desenvolver') || lowerMessage.includes('atividades')) {
+        return "Atividades em grupo, jogos de imitação, dramatizações e treinos orientados por profissionais são estratégias eficazes para desenvolver habilidades sociais em pessoas com TEA, fortalecendo a comunicação e a interação social. 🗣️🤗";
+    }
+}
+            if (lowerMessage.includes('tea') || lowerMessage.includes('autismo') || lowerMessage.includes('autista') || lowerMessage.includes('espectro')) {
+                if (lowerMessage.includes('o que é') || lowerMessage.includes('definição') || lowerMessage.includes('conceito')) {
+                    return "O TEA (Transtorno do Espectro Autista) é uma condição neurológica caracterizada por diferenças na comunicação social, interação e padrões de comportamento. É chamado de 'espectro' porque as características variam muito entre as pessoas. Cada pessoa no espectro é única, com suas próprias habilidades e desafios. 🧩";
+                }
+                
+                if (lowerMessage.includes('sintomas') || lowerMessage.includes('sinais') || lowerMessage.includes('características')) {
+                    return "As principais características do TEA incluem:\n\n• Dificuldades na comunicação verbal e não-verbal\n• Desafios na interação social\n• Comportamentos repetitivos ou interesses restritos\n• Sensibilidade sensorial (sons, texturas, luzes)\n• Necessidade de rotinas previsíveis\n\nLembre-se: cada pessoa é única e pode apresentar diferentes combinações dessas características. 💙";
+                }
+                
+                if (lowerMessage.includes('níveis') || lowerMessage.includes('graus') || lowerMessage.includes('quais são')) {
+                    return "O TEA é classificado em 3 níveis de suporte:\n\n🔹 Nível 1: Precisa de pouco suporte\n🔹 Nível 2: Precisa de suporte substancial\n🔹 Nível 3: Precisa de muito suporte\n\nEssa classificação ajuda profissionais a entenderem as necessidades específicas de cada pessoa e planejar intervenções adequadas.";
+                }
+                
+                if (lowerMessage.includes('diagnóstico') || lowerMessage.includes('identificar')) {
+                    return "O diagnóstico do TEA deve ser feito por profissionais especializados como psicólogos, psiquiatras ou neuropediatras. Geralmente envolve:\n\n• Avaliação do desenvolvimento\n• Observação comportamental\n• Entrevistas com familiares\n• Testes específicos\n\nSe você suspeita de TEA, procure ajuda profissional. O diagnóstico precoce é fundamental! 🏥";
+                }
+            }
+
+            // Respostas sobre terapias e intervenções
+            if (lowerMessage.includes('terapia') || lowerMessage.includes('tratamento') || lowerMessage.includes('intervenção')) {
+                return "Existem várias terapias eficazes para pessoas com TEA:\n\n🎯 ABA (Análise do Comportamento Aplicada)\n🗣️ Terapia da Fala/Fonoaudiologia\n🤲 Terapia Ocupacional\n🎵 Musicoterapia\n🐎 Equoterapia\n💭 Psicoterapia\n\nCada pessoa pode se beneficiar de diferentes combinações. É importante trabalhar com uma equipe multidisciplinar! ✨";
+            }
+
+            // Respostas sobre família e cuidadores
+            if (lowerMessage.includes('família') || lowerMessage.includes('cuidador') || lowerMessage.includes('responsável') || lowerMessage.includes('pais')) {
+                return "Para famílias e cuidadores, algumas dicas importantes:\n\n💙 Busque informação de fontes confiáveis\n🤝 Conecte-se com outras famílias\n⏰ Estabeleça rotinas previsíveis\n🎉 Celebre pequenas conquistas\n🧘 Cuide da sua saúde mental também\n📚 Aprenda sobre TEA continuamente\n\nLembre-se: você não está sozinho nessa jornada! O apoio faz toda diferença.";
+            }
+
+            // Respostas sobre o projeto Mentes Brilhantes
+            if (lowerMessage.includes('projeto') || lowerMessage.includes('mentes brilhantes') || lowerMessage.includes('app') || lowerMessage.includes('aplicativo')) {
+                if (lowerMessage.includes('o que é') || lowerMessage.includes('sobre')) {
+                    return "O Mentes Brilhantes é um projeto desenvolvido na ETEC Jardim Ângela que visa criar uma plataforma digital para apoiar pessoas com TEA e suas famílias. Nosso objetivo é facilitar o acompanhamento do desenvolvimento e conectar famílias com recursos importantes. 📱✨";
+                }
+                
+                if (lowerMessage.includes('funcionalidades') || lowerMessage.includes('recursos') || lowerMessage.includes('o que faz')) {
+                    return "O projeto Mentes Brilhantes oferece:\n\n📊 Acompanhamento do desenvolvimento\n📝 Registro de atividades diárias\n🎯 Atividades personalizadas\n👥 Conexão entre cuidadores\n📚 Recursos educativos\n🏥 Informações sobre profissionais\n📈 Relatórios de progresso\n\nTudo pensado para facilitar o cuidado e desenvolvimento! 🌟";
+                }
+                
+                if (lowerMessage.includes('tecnologias') || lowerMessage.includes('técnico')) {
+                    return "Nosso projeto utiliza tecnologias modernas:\n\n📱 App Mobile em Kotlin\n🌐 Backend em PHP\n🗄️ Banco de dados MySQL\n☁️ Hospedagem em nuvem\n🔒 Segurança de dados\n📊 Interface intuitiva\n\nTudo desenvolvido com foco na acessibilidade e usabilidade! 💻";
+                }
+            }
+
+            // Respostas sobre atividades e desenvolvimento
+            if (lowerMessage.includes('atividades') || lowerMessage.includes('exercícios') || lowerMessage.includes('desenvolvimento')) {
+                return "Atividades benéficas para pessoas com TEA:\n\n🎨 Atividades artísticas e criativas\n🧩 Jogos de encaixe e quebra-cabeças\n🎵 Música e ritmo\n🏃 Atividades físicas adaptadas\n📖 Leitura interativa\n🧠 Exercícios de concentração\n🤝 Atividades sociais estruturadas\n\nO importante é respeitar os interesses e ritmo de cada pessoa! 🌈";
+            }
+
+            // Respostas sobre comunicação
+            if (lowerMessage.includes('comunicação') || lowerMessage.includes('fala') || lowerMessage.includes('linguagem')) {
+                return "Para desenvolver a comunicação:\n\n🗣️ Use linguagem clara e direta\n👁️ Mantenha contato visual quando possível\n🖼️ Use apoios visuais (figuras, símbolos)\n⏰ Dê tempo para processar informações\n📱 Considere tecnologias assistivas\n🎭 Pratique em diferentes contextos\n\nCada pessoa tem seu próprio ritmo de desenvolvimento! 💬";
+            }
+
+            // Respostas sobre rotina e comportamento
+            if (lowerMessage.includes('rotina') || lowerMessage.includes('comportamento') || lowerMessage.includes('organização')) {
+                return "Dicas para estabelecer rotinas:\n\n📅 Crie horários visuais\n🔄 Mantenha consistência\n⚠️ Prepare para mudanças com antecedência\n🎯 Estabeleça expectativas claras\n🏆 Use sistemas de recompensa\n😌 Seja flexível quando necessário\n\nRotinas bem estruturadas trazem segurança e previsibilidade! ⏰";
+            }
+
+            // Respostas sobre inclusão e educação
+            if (lowerMessage.includes('inclusão') || lowerMessage.includes('escola') || lowerMessage.includes('educação')) {
+                return "Para promover a inclusão:\n\n🏫 Trabalhe em parceria com a escola\n👩‍🏫 Informe educadores sobre as necessidades específicas\n📋 Desenvolva um plano educacional individualizado\n🤝 Promova a conscientização sobre TEA\n🎯 Adapte metodologias quando necessário\n💙 Celebre a diversidade\n\nA educação inclusiva beneficia toda a comunidade escolar! 📚";
+            }
+
+            // Respostas sobre ETEC
+            if (lowerMessage.includes('etec') || lowerMessage.includes('jardim ângela') || lowerMessage.includes('escola')) {
+                return "O projeto Mentes Brilhantes foi desenvolvido na ETEC Jardim Ângela como parte de nosso compromisso com projetos sociais e inovação tecnológica. Nossa escola acredita no poder da tecnologia para transformar vidas e apoiar comunidades! 🎓💙";
+            }
+            if ((lowerMessage.includes('inclusão') || lowerMessage.includes('trabalho') || lowerMessage.includes('emprego'))) {
+    return "A inclusão no ambiente de trabalho é fundamental para garantir que pessoas com TEA tenham oportunidades reais e sejam valorizadas por suas habilidades únicas. Adaptar o ambiente e promover a conscientização faz toda a diferença para um convívio respeitoso e produtivo. 🤝💼";
+}
+
+if ((lowerMessage.includes('dificuldade') || lowerMessage.includes('escola') || lowerMessage.includes('aprendizado'))) {
+    return "Dificuldades escolares são comuns, e cada pessoa com TEA pode precisar de estratégias diferentes para aprender. Trabalhar em parceria com professores e usar recursos visuais ou tecnológicos pode ajudar muito a superar esses desafios. 📚✨";
+}
+
+if ((lowerMessage.includes('fazer amigos') || lowerMessage.includes('socializar') || lowerMessage.includes('amizade'))) {
+    return "Fazer amigos pode ser mais difícil para quem tem TEA, mas atividades em grupo com interesses comuns e um ambiente acolhedor ajudam a construir laços verdadeiros, passo a passo. A paciência e o apoio fazem toda a diferença. 🧩🤗";
+}
+
+if ((lowerMessage.includes('comunicação alternativa') || lowerMessage.includes('pecs') || lowerMessage.includes('imagens'))) {
+    return "Sistemas de comunicação alternativa, como o PECS, usam imagens para facilitar a expressão e compreensão, especialmente para quem tem dificuldades na fala. Eles promovem autonomia e ajudam a evitar frustrações. 🖼️🗣️";
+}
+
+if ((lowerMessage.includes('ansiedade') || lowerMessage.includes('nervoso') || lowerMessage.includes('calma'))) {
+    return "A ansiedade é comum em pessoas com TEA, especialmente diante de novidades. Técnicas simples, como respiração profunda, uso de objetos de conforto e ambientes tranquilos, podem ajudar a recuperar a calma. 🌿🧘‍♂️";
+}
+
+if ((lowerMessage.includes('terapeuta') || lowerMessage.includes('função') || lowerMessage.includes('ajuda'))) {
+    return "Terapeutas ocupacionais, fonoaudiólogos e psicólogos têm papéis essenciais para ajudar no desenvolvimento de habilidades e na redução de dificuldades, trabalhando de forma personalizada para cada necessidade. 👩‍⚕️✨";
+}
+
+if ((lowerMessage.includes('tecnologia') || lowerMessage.includes('ajuda') || lowerMessage.includes('cuidar'))) {
+    return "A tecnologia facilita o cuidado com pessoas com TEA ao oferecer ferramentas de organização, comunicação e monitoramento, tornando o dia a dia mais simples e colaborativo para cuidadores e famílias. 💻📱";
+}
+
+if ((lowerMessage.includes('rotina') || lowerMessage.includes('app') || lowerMessage.includes('agenda'))) {
+    return "No app Mentes Brilhantes, você pode criar rotinas visuais que ajudam a pessoa a entender o que vai acontecer, promovendo previsibilidade e reduzindo a ansiedade. Tudo isso de forma fácil e personalizável. 📅✨";
+}
+
+if ((lowerMessage.includes('atividades') || lowerMessage.includes('atenção') || lowerMessage.includes('concentração'))) {
+    return "As atividades do app são pensadas para estimular a atenção e a concentração, usando jogos e exercícios lúdicos que respeitam o ritmo de cada pessoa, tornando o aprendizado mais prazeroso. 🎮🧠";
+}
+
+if ((lowerMessage.includes('apoio emocional') || lowerMessage.includes('sentimentos') || lowerMessage.includes('cuidado'))) {
+    return "O cuidado emocional é tão importante quanto o físico. Ouvir, validar sentimentos e oferecer um espaço seguro para expressar emoções ajuda muito no desenvolvimento e no bem-estar da pessoa com TEA. 💙🫂";
+}
+
+if ((lowerMessage.includes('crise') || lowerMessage.includes('comportamento') || lowerMessage.includes('o que fazer'))) {
+    return "Durante crises, manter a calma e garantir um ambiente seguro são essenciais. Usar técnicas sensoriais, como fones de ouvido ou um espaço tranquilo, pode ajudar a pessoa a se acalmar mais rápido. 🧘‍♂️⚠️";
+}
+
+if ((lowerMessage.includes('diagnóstico') || lowerMessage.includes('precoce') || lowerMessage.includes('sinais'))) {
+    return "Quanto mais cedo o diagnóstico de TEA for feito, mais eficaz será o suporte e o desenvolvimento de habilidades. Fique atento aos sinais e procure profissionais especializados para avaliação. 🕵️‍♀️🧩";
+}
+
+if ((lowerMessage.includes('família') || lowerMessage.includes('apoio') || lowerMessage.includes('importância'))) {
+    return "A família é a base do suporte e do desenvolvimento de uma pessoa com TEA. O envolvimento afetivo e prático ajuda a criar um ambiente seguro e estimulante para que ela cresça com confiança. 🏡💙";
+}
+
+if ((lowerMessage.includes('autonomia') || lowerMessage.includes('estimular') || lowerMessage.includes('independência'))) {
+    return "Estimular a autonomia envolve permitir que a pessoa com TEA tome pequenas decisões e realize atividades do dia a dia com supervisão, fortalecendo a confiança e o senso de responsabilidade. 👐🌟";
+}
+
+if ((lowerMessage.includes('lembretes') || lowerMessage.includes('notificações') || lowerMessage.includes('app'))) {
+    return "As notificações do app ajudam a lembrar de compromissos, tarefas e pausas importantes, garantindo que a rotina seja cumprida de forma organizada e promovendo maior independência. ⏰📲";
+}
+
+if ((lowerMessage.includes('autocuidado') || lowerMessage.includes('cuidador') || lowerMessage.includes('descanso'))) {
+    return "Cuidadores precisam cuidar de si mesmos para manter a saúde física e emocional. Reservar momentos para descanso, lazer e apoio social ajuda a prevenir o esgotamento. Você merece esse cuidado! 🌿💆‍♀️";
+}
+
+if ((lowerMessage.includes('jogos') || lowerMessage.includes('educativos') || lowerMessage.includes('aprendizado'))) {
+    return "Jogos educativos são ferramentas poderosas para desenvolver habilidades cognitivas e sociais, tornando o aprendizado mais divertido e acessível para pessoas com TEA. 🎲🧩";
+}
+
+if ((lowerMessage.includes('interface') || lowerMessage.includes('app') || lowerMessage.includes('acessível'))) {
+    return "O app Mentes Brilhantes foi desenvolvido com uma interface simples, colorida e intuitiva, pensada para ser acessível a pessoas com diferentes níveis de habilidades cognitivas. 🌈📱";
+}
+
+if ((lowerMessage.includes('educador') || lowerMessage.includes('professor') || lowerMessage.includes('ajuda'))) {
+    return "Professores podem usar recursos e informações para adaptar o ensino e criar um ambiente inclusivo, respeitando as necessidades individuais de alunos com TEA. A parceria com a família e profissionais é essencial. 👩‍🏫🤝";
+}
+
+if ((lowerMessage.includes('metas') || lowerMessage.includes('progresso') || lowerMessage.includes('acompanhamento'))) {
+    return "O app permite definir metas personalizadas e acompanhar o progresso por meio de relatórios visuais, facilitando ajustes no cuidado e motivando a pessoa a alcançar seus objetivos. 📈🏆";
+}
+if (lowerMessage.includes('música favorita') || lowerMessage.includes('gosta de música')) {
+    return "Embora eu não tenha preferências pessoais, muitas pessoas no espectro apreciam músicas com ritmos repetitivos e sons que tragam conforto e calma. 🎶🧩";
+}
+
+if (lowerMessage.includes('comida favorita') || lowerMessage.includes('gosta de comer')) {
+    return "Cada pessoa com TEA tem gostos diferentes, e a alimentação pode ser bastante seletiva. Respeitar essas preferências é importante para o bem-estar. 🍎🍽️";
+}
+
+if (lowerMessage.includes('animal de estimação') || lowerMessage.includes('gosta de animais')) {
+    return "Animais de estimação muitas vezes trazem conforto e companhia, ajudando na regulação emocional e no desenvolvimento social. 🐶🐱";
+}
+
+if (lowerMessage.includes('superpoder') || lowerMessage.includes('poder especial')) {
+    return "Se tivesse um superpoder, seria a capacidade de entender e respeitar todas as formas de ser e pensar, promovendo um mundo mais inclusivo. ✨🦸‍♂️";
+}
+
+if (lowerMessage.includes('viajar') || lowerMessage.includes('lugar favorito')) {
+    return "Viagens podem ser desafiadoras para algumas pessoas com TEA, mas lugares calmos e organizados costumam ser mais confortáveis. Planejar é essencial! 🌍✈️";
+}
+
+if (lowerMessage.includes('cor favorita') || lowerMessage.includes('gosta de cor')) {
+    return "Cores suaves e tons pastéis são preferidos por muitas pessoas com sensibilidade sensorial, pois causam menos estímulos e desconforto. 🎨🌈";
+}
+
+if (lowerMessage.includes('filme favorito') || lowerMessage.includes('gosta de filme')) {
+    return "Filmes com histórias claras, personagens consistentes e temas previsíveis costumam agradar e facilitar a compreensão. 🍿🎬";
+}
+
+if (lowerMessage.includes('brincadeira') || lowerMessage.includes('jogo favorito')) {
+    return "Brincadeiras estruturadas e jogos que seguem regras claras ajudam no desenvolvimento de habilidades sociais e cognitivas. 🧸🎲";
+}
+
+if (lowerMessage.includes('como é ser') || lowerMessage.includes('sentimento de autista')) {
+    return "Ser autista é experienciar o mundo de uma forma única, com desafios e talentos especiais que formam uma maneira singular de viver e pensar. 🧩💙";
+}
+
+if (lowerMessage.includes('fala sozinho') || lowerMessage.includes('fala consigo mesmo')) {
+    return "Falar sozinho pode ser uma forma de organizar pensamentos e se acalmar, algo comum e natural para muitas pessoas. 🗣️🤫";
+}
+
+if (lowerMessage.includes('medo') || lowerMessage.includes('fobia')) {
+    return "Medos e fobias são normais e podem ser intensos para quem tem TEA. Com apoio e estratégias adequadas, é possível aprender a lidar melhor com eles. 🛡️🌟";
+}
+
+if (lowerMessage.includes('comida estranha') || lowerMessage.includes('gosto esquisito')) {
+    return "Preferências alimentares incomuns podem estar relacionadas a sensibilidades sensoriais e rotinas. Respeitar isso é fundamental para a saúde e conforto. 🥒🍕";
+}
+
+if (lowerMessage.includes('sonho') || lowerMessage.includes('o que sonha')) {
+    return "Os sonhos são pessoais e variados, assim como as experiências de cada pessoa com TEA, refletindo seus interesses e emoções. 🌙✨";
+}
+
+if (lowerMessage.includes('superdotado') || lowerMessage.includes('genio')) {
+    return "Algumas pessoas com TEA têm talentos excepcionais em áreas específicas, mostrando que o espectro envolve uma diversidade incrível de habilidades. 🧠🌟";
+}
+
+if (lowerMessage.includes('meditação') || lowerMessage.includes('relaxar')) {
+    return "Práticas de meditação e relaxamento podem ser adaptadas para pessoas com TEA, ajudando a reduzir ansiedade e melhorar o foco. 🧘‍♀️🌿";
+}
+
+if (lowerMessage.includes('como dormir') || lowerMessage.includes('problemas para dormir')) {
+    return "Dificuldades para dormir são comuns e podem ser amenizadas com rotinas regulares, ambientes tranquilos e técnicas de relaxamento. 🌙💤";
+}
+
+if (lowerMessage.includes('cor favorita do app') || lowerMessage.includes('cores do aplicativo')) {
+    return "O app usa cores suaves e contrastes equilibrados para facilitar a usabilidade e causar conforto visual para usuários com sensibilidade. 🎨📱";
+}
+
+if (lowerMessage.includes('piada') || lowerMessage.includes('engraçado')) {
+    return "Sabia que o cérebro autista adora padrões? Acho que a piada é justamente essa: encontrar sentido onde outros veem bagunça! 😄🧩";
+}
+
+if (lowerMessage.includes('tempo') || lowerMessage.includes('previsão do tempo')) {
+    return "Não tenho como prever o tempo, mas posso ajudar a organizar sua rotina para qualquer clima com o app! ☀️🌧️";
+}
+
+if (lowerMessage.includes('esporte favorito') || lowerMessage.includes('gosta de esporte')) {
+    return "Esportes adaptados ajudam a desenvolver coordenação motora e interação social, sempre respeitando o ritmo e interesse de cada pessoa. ⚽🏀";
+}
+
+            return "Desculpe, não consegui responder sua pergunta. Pode reformular ou especificar melhor?";
+            // Resposta padrão para temas relacionados
+        
+        }
+
+        function getCurrentTime() {
+            const now = new Date();
+            return now.toLocaleTimeString('pt-BR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+        }
+
+        function addMessage(content, isUser = false) {
+            const conversation = conversations.find(conv => conv.id === activeConversation);
+            const message = {
+                id: Date.now(),
+                content: content,
+                isUser: isUser,
+                timestamp: getCurrentTime()
+            };
+            
+            conversation.messages.push(message);
+            
+            // Atualizar título da conversa se for a primeira mensagem do usuário
+            if (isUser && conversation.messages.filter(m => m.isUser).length === 1) {
+                conversation.title = content.length > 30 ? content.substring(0, 30) + '...' : content;
+                updateConversationsList();
+            }
+            
+            displayMessage(message);
+            updateConversationMeta();
+        }
+
+        function displayMessage(message) {
+            const messagesContainer = document.getElementById('messages-container');
+            const welcomeScreen = document.getElementById('welcome-screen');
+            
+            // Ocultar tela de boas-vindas na primeira mensagem
+            if (welcomeScreen && !welcomeScreen.classList.contains('hidden')) {
+                welcomeScreen.classList.add('hidden');
+                messagesContainer.classList.remove('hidden');
+            }
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${message.isUser ? 'user' : 'ai'}`;
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    ${message.isUser ?
+                        '<svg class="icon" viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,8.39C10.72,8.39 9.68,9.43 9.68,10.71C9.68,12 10.72,13.03 12,13.03C13.28,13.03 14.32,12 14.32,10.71C14.32,9.43 13.28,8.39 12,8.39M12,15.42C9.75,15.42 7.95,16.58 7.95,18.04V18.53H16.05V18.04C16.05,16.58 14.25,15.42 12,15.42Z"/></svg>' : 
+                        '<svg class="icon" viewBox="0 0 24 24"><path d="M17.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,9A1.5,1.5 0 0,1 19,10.5A1.5,1.5 0 0,1 17.5,12M10,10.5C10,11.3 9.3,12 8.5,12S7,11.3 7,10.5C7,9.7 7.7,9 8.5,9S10,9.7 10,10.5M12,14C9.66,14 7.69,15.46 6.74,17.5H17.26C16.31,15.46 14.34,14 12,14M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg>'
+                    }
+                </div>
+                <div class="message-content">
+                    <div class="message-text">${message.content}</div>
+                    <div class="message-time">${message.timestamp}</div>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            
+            // Scroll para a última mensagem
+            const messagesArea = document.getElementById('messages-area');
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            typingIndicator.classList.remove('hidden');
+            
+            // Scroll para mostrar o indicador
+            const messagesArea = document.getElementById('messages-area');
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            typingIndicator.classList.add('hidden');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('message-input');
+            const sendBtn = document.getElementById('send-btn');
+            const message = input.value.trim();
+            
+            if (message === '' || isTyping) return;
+            
+            // Desabilitar input e botão
+            input.disabled = true;
+            sendBtn.disabled = true;
+            isTyping = true;
+            
+            // Adicionar mensagem do usuário
+            addMessage(message, true);
+            
+            // Limpar input
+            input.value = '';
+            
+            // Mostrar indicador de digitação
+            showTypingIndicator();
+            
+            // Simular tempo de resposta da IA
+            setTimeout(() => {
+                hideTypingIndicator();
+                
+                // Gerar resposta da IA
+                const aiResponse = getAIResponse(message);
+                addMessage(aiResponse, false);
+                
+                // Reabilitar input e botão
+                input.disabled = false;
+                sendBtn.disabled = false;
+                isTyping = false;
+                
+                // Focar no input
+                input.focus();
+            }, 1500 + Math.random() * 1000); // 1.5-2.5 segundos
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function updateConversationsList() {
+            const conversationsList = document.getElementById('conversations-list');
+            conversationsList.innerHTML = '';
+            
+            conversations.forEach(conversation => {
+                const conversationDiv = document.createElement('div');
+                conversationDiv.className = `conversation-item ${conversation.id === activeConversation ? 'active' : ''}`;
+                conversationDiv.setAttribute('data-id', conversation.id);
+                conversationDiv.onclick = () => switchConversation(conversation.id);
+                
+                conversationDiv.innerHTML = `
+                    <div class="conversation-title">${conversation.title}</div>
+                    <div class="conversation-meta">${conversation.messages.length} mensagens</div>
+                `;
+                
+                conversationsList.appendChild(conversationDiv);
+            });
+        }
+
+        function updateConversationMeta() {
+            const conversation = conversations.find(conv => conv.id === activeConversation);
+            const conversationItem = document.querySelector(`[data-id="${activeConversation}"]`);
+            if (conversationItem) {
+                const metaElement = conversationItem.querySelector('.conversation-meta');
+                metaElement.textContent = `${conversation.messages.length} mensagens`;
+            }
+        }
+
+        function switchConversation(conversationId) {
+            if (isTyping) return; // Não permitir troca durante digitação da IA
+            
+            activeConversation = conversationId;
+            
+            // Atualizar sidebar
+            document.querySelectorAll('.conversation-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-id="${conversationId}"]`).classList.add('active');
+            
+            // Limpar área de mensagens
+            const messagesContainer = document.getElementById('messages-container');
+            const welcomeScreen = document.getElementById('welcome-screen');
+            
+            messagesContainer.innerHTML = '';
+            
+            const conversation = conversations.find(conv => conv.id === conversationId);
+            
+            if (conversation.messages.length === 0) {
+                // Mostrar tela de boas-vindas
+                welcomeScreen.classList.remove('hidden');
+                messagesContainer.classList.add('hidden');
+            } else {
+                // Mostrar mensagens da conversa
+                welcomeScreen.classList.add('hidden');
+                messagesContainer.classList.remove('hidden');
+                
+                conversation.messages.forEach(message => {
+                    displayMessage(message);
+                });
+            }
+        }
+
+        function createNewConversation() {
+            if (isTyping) return; // Não permitir criação durante digitação da IA
+            
+            const newId = Math.max(...conversations.map(c => c.id)) + 1;
+            const newConversation = {
+                id: newId,
+                title: 'Nova Conversa',
+                messages: []
+            };
+            
+            conversations.push(newConversation);
+            switchConversation(newId);
+            updateConversationsList();
+            
+            // Focar no input
+            document.getElementById('message-input').focus();
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            updateConversationsList();
+            document.getElementById('message-input').focus();
+        });
+    </script>
+</body>
+</html>

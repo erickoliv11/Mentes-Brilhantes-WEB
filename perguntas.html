@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perguntas Frequentes - Mentes Brilhantes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #2d2d2d;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: #2d2d2d;
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #6c63ff 0%, #4834d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .subtitle {
+            color: #6c757d;
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+
+        .welcome-message {
+            background: linear-gradient(135deg, #6c63ff 0%, #4834d4 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(108, 99, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-message::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+        }
+
+        .welcome-message p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #6c63ff, #4834d4);
+            border-radius: 20px;
+            margin: 0 auto 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.4);
+        }
+
+        .faq-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            color: #2d2d2d;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .faq-item {
+            margin-bottom: 16px;
+            border: 1px solid rgba(108, 99, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.15);
+            transform: translateY(-2px);
+            border-color: rgba(108, 99, 255, 0.3);
+        }
+
+        .faq-question {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 22px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #2d2d2d;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: none;
+        }
+
+        .faq-question:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            color: #6c63ff;
+        }
+
+        .faq-question.active {
+            background: linear-gradient(135deg, #6c63ff 0%, #4834d4 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .faq-arrow {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+            color: #6c63ff;
+        }
+
+        .faq-question.active .faq-arrow {
+            transform: rotate(180deg);
+            color: white;
+        }
+
+        .faq-answer {
+            padding: 0 22px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            background: white;
+        }
+
+        .faq-answer.active {
+            padding: 25px 22px;
+            max-height: 600px;
+        }
+
+        .faq-answer p {
+            color: #495057;
+            line-height: 1.8;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .faq-answer ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .faq-answer li {
+            color: #495057;
+            margin-bottom: 8px;
+            line-height: 1.7;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            color: #1976d2;
+        }
+
+        .care-badge {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, #6c63ff 0%, #4834d4 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(108, 99, 255, 0.3);
+        }
+
+        .contact-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+        }
+
+        .contact-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact-info h3 {
+            margin-bottom: 15px;
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+
+        .contact-info p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 10px;
+            opacity: 0.95;
+        }
+
+        .back-button {
+            background: linear-gradient(135deg, #6c63ff 0%, #4834d4 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+            letter-spacing: 0.3px;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.5);
+            background: linear-gradient(135deg, #5a52d5 0%, #3d2db0 100%);
+        }
+
+        .back-button:active {
+            transform: translateY(0);
+        }
+
+        .support-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .support-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .support-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .comfort-section {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            border-left: 5px solid #1976d2;
+            box-shadow: 0 8px 25px rgba(25, 118, 210, 0.15);
+        }
+
+        .comfort-section h3 {
+            color: #1976d2;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .comfort-section p {
+            color: #37474f;
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .faq-question {
+                font-size: 1rem;
+                padding: 18px;
+            }
+
+            .faq-answer.active {
+                padding: 20px 18px;
+            }
+
+            .support-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .support-btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
+        }
+
+        /* Smooth entry animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Floating elements animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Gradient text animation */
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .header h1 {
+            background-size: 200% 200%;
+            animation: gradient 3s ease infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header fade-in">
+            <div class="logo">MB</div>
+            <h1>Central de Ajuda</h1>
+            <div class="subtitle">Respostas carinhosas para suas dúvidas</div>
+            <button class="back-button" onclick="goBack()">
+                ← Voltar ao Início
+            </button>
+        </div>
+
+        <div class="welcome-message fade-in">
+            <p>💙 Bem-vindos, famílias! Sabemos que cada pergunta vem acompanhada de muito amor e cuidado. Estamos aqui para acolher suas dúvidas e oferecer o suporte que vocês merecem nessa jornada única e especial.</p>
+        </div>
+
+        <div class="comfort-section fade-in">
+            <h3>🤝 Você não está sozinho nessa caminhada</h3>
+            <p>Entendemos que buscar informações sobre o desenvolvimento infantil e autismo pode gerar muitas emoções. Nossa equipe está aqui para oferecer não apenas conhecimento técnico, mas também o acolhimento emocional que sua família precisa. Cada pergunta é válida, cada preocupação é legítima.</p>
+        </div>
+
+        <div class="faq-section fade-in">
+            <h2 class="section-title">🌱 Primeiros Passos e Sinais</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Como posso saber se minha criança precisa de apoio especializado?</span>
+                    <span class="faq-arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="care-badge">👶 Com carinho e atenção</div>
+                    <p>Primeiro, queremos tranquilizar: <span class="highlight">observar o desenvolvimento é um ato de amor</span>. Alguns sinais que podem indicar a necessidade de acompanhamento incluem:</p>
+                    <ul>
+                        <li>Diferenças na comunicação social (pouco contato visual, não responder ao nome)</li>
+                        <li>Padrões de comportamento específicos (movimentos repetitivos, interesses muito focados)</li>
+                        <li>Sensibilidades sensoriais (sons, texturas, luzes)</li>
+                        <li>Preferência por rotinas muito estruturadas</li>
+                    </ul>
+                    <p>Lembre-se: cada criança é única e tem seu próprio ritmo. Se você tem dúvidas, nossa equipe está aqui para acolher e orientar sem julgamentos.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Qual o melhor momento para buscar avaliação?</span>
+                    <span class="faq-arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="care-badge">⏰ Sem pressa, com cuidado</div>
+                    <p>Não existe um momento "perfeito", mas sabemos que <span class="highlight">o apoio precoce faz toda a diferença</span>. Recomendamos buscar orientação sempre que surgirem dúvidas, independentemente da idade.</p>
+                    <p>Nossa abordagem é acolhedora e respeitosa, focando no potencial único de cada criança. Oferecemos consultoria inicial para esclarecer dúvidas sem pressão ou pressa.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>E se eu estiver "imaginando coisas"? Medo de estar exagerando...</span>
+                    <span class="faq-arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="care-badge">💙 Validação e apoio</div>
+                    <p>Seus sentimentos e observações são completamente válidos. <span class="highlight">Confiar na intuição familiar é um ato de coragem</span>. Muitas famílias passam por essa dúvida, e isso mostra o quanto você se importa.</p>
+                    <p>Nossa equipe está aqui para ouvir sem julgamentos, validar suas preocupações e oferecer orientações baseadas em cada situação específica. Não existe pergunta "bobinha" quando se trata do bem-estar da sua criança.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-section fade-in">
+            <h2 class="section-title">🌈 Apoio e Desenvolvimento</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Como vocês trabalham com cada criança de forma individual?</span>
+                    <span class="faq-arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="care-badge">🎨 Personalização com afeto</div>
+                    <p>Cada criança é um universo único de possibilidades. Nossa <span class="highlight">abordagem personalizada e humanizada</span> inclui:</p>
+                    <ul>
+                        <li>Avaliação completa respeitando o ritmo da criança</li>
+                        <li>Plano de desenvolvimento baseado nos interesses e fortalezas</li>
+                        <li>Acompanhamento multidisciplinar com psicólogos, fonoaudiólogos e terapeutas ocupacionais</li>
+                        <li>Integração de tecnologia assistiva de forma lúdica e natural</li>
+                        <li>Envolvimento ativo da família em todo o processo</li>
+                    </ul>
+                    <p>Acreditamos que cada pequeno progresso merece ser celebrado, e estamos aqui para apoiar tanto a criança quanto a família em cada conquista.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Como vocês apoiam as famílias emocionalmente?</span>
+                    <span class="faq-arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="care-badge">🤗 Acolhimento integral</div>
+                    <p>Sabemos que as famílias também precisam de cuidado. Oferecemos <span class="highlight">suporte emocional completo</span>:</p>
+                    <ul>
+                        <li>Grupos de apoio para pais e responsáveis</li>
+                        <li>Orientações práticas para o dia a dia</li>
+                        <li>Suporte para irmãos e familiares</li>
+                        <li>Acompanhamento psicológico quando necessário</li>
+                        <li>Rede de contato com outras famílias</li>
+                    </ul>
+                    <p>Você não precisa passar por isso sozinho. Nossa comunidade está aqui para compartilhar experiências, dificuldades e principalmente as alegrias dessa jornada.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>O aplicativo realmente ajuda no dia a dia?</span>
+                    <span class="faq-arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="care-badge">📱 Tecnologia humanizada</div>
+                    <p>Nosso aplicativo foi desenvolvido com muito carinho, pensando nas <span class="highlight">necessidades reais das famílias</span>:</p>
+                    <ul>
+                        <li>Interface simples e acessível para toda a família</li>
+                        <li>Ferramentas de comunicação visual e alternativa</li>
+                        <li>Rotinas personalizáveis que reduzem ansiedade</li>
+                        <li>Jogos e atividades educativas adaptadas</li>
+                        <li>Conexão direta com profissionais especializados</li>
+                        <li>Espaço seguro para dúvidas e compartilhamento</li>
+                    </ul>
+                    <p>Mais que uma ferramenta, é um companheiro digital que cresce junto com sua família, adaptando-se às necessidades e celebrando cada conquista.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-section fade-in">
+            <h2 class="section-title">🏡 Vida Familiar e Escola</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Como preparar minha criança para a escola?</span>
+                    <span class="faq-arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="care-badge">🎒 Transição cuidadosa</div>
+                    <p>A entrada na escola é um marco importante. Trabalhamos em <span class="highlight">parceria próxima com as escolas</span> para garantir uma adaptação tranquila:</p>
+                    <ul>
+                        <li>Desenvolvimento de habilidades sociais em ambiente seguro</li>
+                        <li>Preparação gradual para rotinas escolares</li>
+                        <li>Comunicação efetiva com educadores</li>
+                        <li>Estratégias de autorregulação emocional</li>
+                        <li>Suporte na adaptação sensorial ao ambiente escolar</li>
+                    </ul>
+                    <p>Cada transição é única, e estamos aqui para apoiar tanto a criança quanto a família nesse processo importante.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Como lidar com momentos difíceis em casa?</span>
+                    <span class="faq-arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="care-badge">🏠 Harmonia familiar</div>
+                    <p>Momentos desafiadores fazem parte da jornada, e vocês não estão sozinhos. Ensinamos <span class="highlight">estratégias práticas e amorosas</span>:</p>
+                    <ul>
+                        <li>Identificação preventiva de situações estressantes</li>
+                        <li>Técnicas de regulação sensorial e emocional</li>
+                        <li>Comunicação respeitosa e efetiva</li>
+                        <li>Criação de ambientes seguros e acolhedores</li>
+                        <li>Cuidado com o bem-estar de toda a família</li>
+                    </ul>
+                    <p>Lembre-se: pedir ajuda é um sinal de força, não de fraqueza. Nossa equipe está sempre disponível para apoiar vocês.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-section fade-in">
+            <h2 class="section-title">💡 Sobre o Mentes Brilhantes</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>O que torna o Mentes Brilhantes especial?</span>
+                    <span class="faq-arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="care-badge">❤️ Feito com amor</div>
+                    <p>Somos mais que um centro de apoio - somos uma <span class="highlight">família estendida</span> que acredita no potencial de cada criança:</p>
+                    <ul>
+                        <li>Equipe multidisciplinar com especialização em neurodiversidade</li>
+                        <li>Ambiente acolhedor pensado para o conforto sensorial</li>
+                        <li>Abordagem baseada em evidências, mas sempre humanizada</li>
+                        <li>Tecnologia desenvolvida com e para a comunidade autista</li>
+                        <li>Suporte contínuo que vai além das sessões</li>
+                        <li>Celebração das conquistas de cada família</li>
+                    </ul>
+                    <p>Nosso objetivo é que cada família se sinta verdadeiramente apoiada, compreendida e empoderada nessa jornada única.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Como posso começar? Estou nervoso(a)...</span>
+                    <span class="faq-arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="care-badge">🌟 Primeiro passo acolhedor</div>
+                    <p>É completamente natural sentir nervosismo - isso mostra o quanto você se importa. Nosso <span class="highlight">primeiro contato é sempre acolhedor e sem pressão</span>:</p>
+                    <ul>
+                        <li>Conversa inicial gratuita e sem compromisso</li>
+                        <li>Escuta ativa das suas preocupações e expectativas</li>
+                        <li>Orientação personalizada sobre os próximos passos</li>
+                        <li>Apresentação da equipe e do espaço físico</li>
+                        <li>Tempo para todas as perguntas que quiser fazer</li>
+                    </ul>
+                    <p>Damos o primeiro passo juntos, no seu ritmo, com todo o cuidado que sua família merece.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-info fade-in">
+            <div class="contact-content">
+                <h3>💙 Estamos aqui para você</h3>
+                <p>Nossa equipe especializada está pronta para acolher sua família com todo o carinho e profissionalismo que vocês merecem.</p>
+                <p><strong>Cada pergunta é importante, cada família é única, cada criança é especial.</strong></p>
+                
+                <div class="support-buttons">
+                    <a href="#" class="support-btn" onclick="sendEmail()">
+                        ✉️ Conversar por Email
+                    </a>
+                    <a href="#" class="support-btn" onclick="contactSpecialist()">
+                        👨‍⚕️ Falar com Especialista
+                    </a>
+                    <a href="#" class="support-btn" onclick="scheduleVisit()">
+                        🏠 Agendar Visita
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const answer = this.nextElementSibling;
+                    const isActive = this.classList.contains('active');
+                    
+                    // Fechar todas as outras perguntas
+                    faqQuestions.forEach(q => {
+                        q.classList.remove('active');
+                        q.nextElementSibling.classList.remove('active');
+                    });
+                    
+                    // Abrir/fechar a pergunta clicada
+                    if (!isActive) {
+                        this.classList.add('active');
+                        answer.classList.add('active');
+                    }
+                });
+            });
+
+            // Animação de entrada suave
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+        });
+
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = '../index.html';
+            }
+        }
+
+        function sendEmail() {
+            window.location.href = "contato.html";
+        }
+
+        function contactSpecialist() {
+            const confirmed = confirm('Deseja ser redirecionado para agendar uma conversa acolhedora com nossos especialistas? É um espaço seguro para todas as suas dúvidas.');
+            if (confirmed) {
+                window.location.href = "mailto:especialistas@mentesbrilhantes.com?subject=Conversa Acolhedora&body=Olá, gostaria de conversar com um especialista sobre minha família. Obrigado pelo carinho e atenção de vocês.";
+            }
+        }
+
+        function scheduleVisit() {
+            alert('Ficamos felizes com seu interesse! Em breve você será redirecionado para agendar uma visita ao nosso espaço acolhedor. ❤️');
+        }
+
+        // Adicionar um toque de personalização baseado na hora
+        document.addEventListener('DOMContentLoaded', function() {
+            const hour = new Date().getHours();
+            const welcomeMessage = document.querySelector('.welcome-message p');
+            
+            if (hour < 12) {
+                welcomeMessage.innerHTML = '🌅 Bom dia, famílias queridas! ' + welcomeMessage.innerHTML.substring(welcomeMessage.innerHTML.indexOf('Sabemos'));
+            } else if (hour < 18) {
+                welcomeMessage.innerHTML = '☀️ Boa tarde, famílias especiais! ' + welcomeMessage.innerHTML.substring(welcomeMessage.innerHTML.indexOf('Sabemos'));
+            } else {
+                welcomeMessage.innerHTML = '🌙 Boa noite, famílias amadas! ' + welcomeMessage.innerHTML.substring(welcomeMessage.innerHTML.indexOf('Sabemos'));
+            }
+        });
+    </script>
+</body>
+</html>

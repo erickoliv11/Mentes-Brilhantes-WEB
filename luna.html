@@ -1,0 +1,2213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luna - IA Mentes Brilhantes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f7f7f8;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+        .footer-text {
+            text-align: center;
+            margin-top: 6px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: #202123;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #2d2d30;
+        }
+
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ececf1;
+        }
+
+        .welcome-phrase {
+            font-size: 13px;
+            color: #8e8ea0;
+            line-height: 1.4;
+            font-style: italic;
+        }
+
+        .new-chat-btn {
+            margin: 16px 16px 0 16px;
+            padding: 12px 16px;
+            background: transparent;
+            border: 1px solid #565869;
+            color: #ececf1;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .new-chat-btn:hover {
+            background: #2d2d30;
+        }
+
+        .chat-history {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .chat-history::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .chat-history::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-history::-webkit-scrollbar-thumb {
+            background: #565869;
+            border-radius: 2px;
+        }
+
+        .chat-tab {
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #ececf1;
+            transition: background 0.2s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-tab:hover {
+            background: #2d2d30;
+        }
+
+        .chat-tab.active {
+            background: #343541;
+        }
+
+        .chat-tab-icon {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid #2d2d30;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .user-info:hover {
+            background: #2d2d30;
+        }
+
+        .user-avatar-sidebar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-name {
+            font-size: 14px;
+            color: #ececf1;
+            font-weight: 500;
+        }
+
+        /* Mobile toggle */
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: #202123;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .main-header {
+            padding: 20px 32px;
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .luna-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .luna-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        .luna-text h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 2px;
+        }
+
+        .luna-text p {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .status-indicator {
+            position: absolute;
+            right: 32px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse-status 2s infinite;
+        }
+
+        @keyframes pulse-status {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .status-text {
+            font-size: 13px;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .blocked-status {
+            background: #ef4444 !important;
+            animation: none !important;
+        }
+
+        .blocked-text {
+            color: #ef4444 !important;
+        }
+
+        /* Chat area */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            padding-bottom: 80px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #fafafa;
+            max-height: calc(100vh - 200px);
+            scroll-behavior: smooth;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(229, 231, 235, 0.3);
+            border-radius: 4px;
+            margin: 8px 0;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #cbd5e1 0%, #9ca3af 100%);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+            transform: scaleX(1.2);
+        }
+
+        .chat-messages::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        .message {
+            margin-bottom: 24px;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .message.ai {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+            margin-top: 8px;
+        }
+
+        .message-content {
+            padding: 16px 20px;
+            border-radius: 18px;
+            line-height: 1.6;
+            word-wrap: break-word;
+            font-size: 15px;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            border-bottom-right-radius: 6px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .message.ai .message-content {
+            background: white;
+            color: #1f2937;
+            border: 1px solid #e5e7eb;
+            border-bottom-left-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .message.ai .message-content.violation {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+
+        .ai-mini-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-top: 8px;
+        }
+
+        /* Container para conteúdo da mensagem e timestamp */
+        .message-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 75%;
+        }
+
+        .message.user .message-wrapper {
+            align-items: flex-end;
+        }
+
+        .message.ai .message-wrapper {
+            align-items: flex-start;
+        }
+
+        /* Timestamp styles - CORRIGIDO */
+        .message-timestamp {
+            font-size: 10px;
+            color: #64748b;
+            font-weight: 500;
+            opacity: 0.8;
+            letter-spacing: 0.3px;
+            background: rgba(248, 250, 252, 0.9);
+            backdrop-filter: blur(4px);
+            padding: 2px 8px;
+            border-radius: 12px;
+            border: 1px solid rgba(226, 232, 240, 0.6);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+            width: fit-content;
+        }
+
+        .message.user .message-timestamp {
+            background: rgba(37, 99, 235, 0.1);
+            color: #1e40af;
+            border-color: rgba(37, 99, 235, 0.2);
+        }
+
+        .message.ai .message-timestamp {
+            background: rgba(71, 85, 105, 0.08);
+            color: #475569;
+            border-color: rgba(71, 85, 105, 0.15);
+        }
+
+        .message-timestamp:hover {
+            opacity: 1;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 16px 20px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            border-bottom-left-radius: 6px;
+            max-width: 75%;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            background: #2563eb;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% {
+                transform: scale(0.7);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Welcome message */
+        .welcome-message {
+            text-align: center;
+            padding: 48px 32px;
+            color: #4b5563;
+        }
+
+        .welcome-message h2 {
+            color: #1f2937;
+            margin-bottom: 16px;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome-message p {
+            font-size: 16px;
+            line-height: 1.7;
+            max-width: 580px;
+            margin: 0 auto 40px;
+            color: #6b7280;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 32px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .quick-action-btn {
+            background: white;
+            border: 2px solid #e5e7eb;
+            color: #374151;
+            padding: 16px 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: left;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .quick-action-btn:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Input area */
+        .input-container {
+            padding: 24px 32px 16px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        /* Footer */
+        .app-footer {
+            position: fixed;
+            bottom: 0;
+            left: 280px;
+            right: 0;
+            padding: 12px 32px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            font-size: 12px;
+            color: #6b7280;
+            line-height: 1.4;
+            z-index: 10;
+        }
+
+        .app-footer a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .app-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .input-wrapper {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .message-input {
+            width: 100%;
+            padding: 16px 56px 16px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            font-size: 15px;
+            resize: none;
+            outline: none;
+            transition: all 0.2s ease;
+            min-height: 52px;
+            max-height: 120px;
+            font-family: inherit;
+            background: #fafafa;
+        }
+
+        .message-input:focus {
+            border-color: #2563eb;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .message-input:disabled {
+            background: #f3f4f6;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .message-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .send-button {
+            position: absolute;
+            right: 8px;
+            top: 37%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
+        }
+
+        .send-button:hover:not(:disabled) {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .send-button:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: translateY(-50%);
+        }
+
+        /* Professional enhancements */
+        .message-content strong {
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .message-content em {
+            color: #2563eb;
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        .blocked-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(239, 68, 68, 0.1);
+            z-index: 10000;
+            display: none;
+            backdrop-filter: blur(2px);
+        }
+
+        .blocked-overlay.show {
+            display: block;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                z-index: 999;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .main-content {
+                width: 100%;
+            }
+
+            .main-header {
+                padding: 16px 20px;
+                padding-left: 60px;
+            }
+
+            .status-indicator {
+                right: 20px;
+            }
+
+            .chat-messages {
+                padding: 20px 16px;
+            }
+
+            .message-wrapper {
+                max-width: 85%;
+            }
+
+            .message-timestamp {
+                font-size: 9px;
+                padding: 1px 6px;
+                border-radius: 10px;
+            }
+
+            .input-container {
+                padding: 16px 20px 16px;
+            }
+
+            .app-footer {
+                left: 0;
+                padding: 8px 20px;
+                font-size: 11px;
+            }
+
+            .chat-container {
+                padding-bottom: 60px;
+            }
+
+            .welcome-message {
+                padding: 32px 20px;
+            }
+
+            .welcome-message h2 {
+                font-size: 28px;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .quick-action-btn {
+                text-align: center;
+            }
+        }
+
+        /* Overlay for mobile */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar-overlay.show {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Blocked Overlay -->
+    <div class="blocked-overlay" id="blockedOverlay"></div>
+
+    <!-- Sidebar Toggle for Mobile -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+    
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🌙 Luna</h2>
+            <p class="welcome-phrase">"Cada jornada é única, cada conquista é especial. Juntos, construímos pontes para o desenvolvimento."</p>
+        </div>
+
+        <button class="new-chat-btn" onclick="createNewChat()">
+            ✨ Nova Conversa
+        </button>
+
+        <div class="chat-history" id="chatHistory">
+            <div class="chat-tab active" data-chat-id="1">
+                <span class="chat-tab-icon">💬</span>
+                <span>Chat 1</span>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar-sidebar">M</div>
+                <div class="user-name">Usuário</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="main-header">
+            <div class="luna-info">
+                <div class="luna-avatar">👧</div>
+                <div class="luna-text">
+                    <h1>Luna</h1>
+                    <p>Assistente especializada em TEA</p>
+                </div>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span class="status-text" id="statusText">Online</span>
+            </div>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="welcome-message">
+                    <h2>Olá! Eu sou a Luna 👧</h2>
+                    <p>Sua assistente virtual do Mentes Brilhantes especializada em apoio a pessoas com Transtorno do Espectro Autista (TEA), familiares e cuidadores. Ofereço suporte personalizado, informações fundamentadas e auxílio na organização de rotinas estruturadas.</p>
+                    
+                    <div class="quick-actions">
+                        <button class="quick-action-btn" onclick="sendQuickMessage('Como posso criar uma rotina visual para meu filho?')">
+                            📅 Rotinas Visuais Estruturadas
+                        </button>
+                        <button class="quick-action-btn" onclick="sendQuickMessage('Preciso de estratégias para comunicação com TEA')">
+                            💬 Estratégias de Comunicação
+                        </button>
+                        <button class="quick-action-btn" onclick="sendQuickMessage('Como lidar com crises sensoriais?')">
+                            🧘‍♀️ Regulação Sensorial
+                        </button>
+                        <button class="quick-action-btn" onclick="sendQuickMessage('Atividades cognitivas para TEA')">
+                            🎯 Atividades Cognitivas
+                        </button>
+                        <button class="quick-action-btn" onclick="sendQuickMessage('Mentes Brilhantes')">
+                            🌟 Mentes Brilhantes
+                        </button>
+                        <button class="quick-action-btn" onclick="sendQuickMessage('Aplicativo')">
+                            📱 Aplicativo
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Container -->
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <textarea 
+                        class="message-input" 
+                        id="messageInput" 
+                        placeholder="Digite sua mensagem... Como posso ajudar você hoje?"
+                        rows="1"
+                    ></textarea>
+                    <button class="send-button" id="sendButton" type="button">
+                        ➤
+                    </button>
+                    <div class="footer-text">
+                        IA especializada em TEA • Projeto Mentes Brilhantes • ETEC Jardim Ângela
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variáveis globais
+        let chats = {
+            1: {
+                id: 1,
+                name: 'Chat 1',
+                messages: [],
+                isActive: true,
+                isBlocked: false
+            }
+        };
+
+        let currentChatId = 1;
+        let chatCounter = 1;
+        let isProcessing = false;
+        let messageInput, sendButton;
+        let globalBlockTimeout = null;
+
+        // Sistema anti-palavrão
+        // Sistema anti-palavrão
+        const offensiveWords = [
+            // Palavrões básicos e comuns
+            'porra', 'merda', 'caralho', 'buceta', 'puta', 'putinha', 'puto', 'putona',
+            'viado', 'viadinho', 'bicha', 'bichinha', 'filho da puta', 'fdp', 'f d p',
+            'desgraça', 'otário', 'otaria', 'idiota', 'burro', 'burra', 'estúpido', 'estupida',
+            'imbecil', 'retardado', 'retardada', 'cretino', 'cretina', 'babaca', 'bosta',
+            'bostinha', 'lixo', 'inútil', 'vagabundo', 'vagabunda', 'safado', 'safada',
+            'corno', 'corninho', 'corna', 'arrombado', 'arrombada', 'cu', 'cuzinho', 'rabo', 'rabinho',
+            'bunda', 'bundinha', 'xoxota', 'xavasca', 'piroca', 'pau', 'paura', 'cacete', 
+            'pica', 'picão', 'rola', 'rolão', 'caralhinho',
+
+            // Ofensas envolvendo família
+            'sua mãe', 'tua mãe', 'mãe dele', 'mãe dela', 'teu pai', 'pai dele', 'pai dela',
+            'avó puta', 'avô safado', 'irmã vadia', 'irmão corno',
+
+            // Frases ofensivas
+            'vai tomar no cu', 'vai tnc', 'vtnc', 'kys', 'se mata', 'morra', 'tomar no cu',
+            'vai se foder', 'vsf', 'vai se ferrar', 'vai pra merda', 'pnc', 'pau no cu',
+            'vai pra casa do caralho', 'te arromba', 'vai se lascar', 'vai se danar',
+            'vai pro inferno', 'vai lamber sabão', 'filho da égua',
+
+            // Ofensas e adjetivos pejorativos
+            'miserável', 'peste', 'praga', 'capeta', 'diabo', 'satanás', 'satanas', 'demônio',
+            'demonio', 'capiroto', 'maldito', 'maldita', 'escroto', 'escrota', 'nojento', 'nojenta',
+            'asqueroso', 'asquerosa', 'repugnante', 'imundo', 'imunda', 'canalha', 'crápula',
+            'patife', 'sarnento', 'sarnenta', 'corrupto', 'corrupta', 'larápio', 'larápia',
+
+            // Sexuais e obscenos
+            'tesão', 'tesuda', 'tesudo', 'punheta', 'punheteiro', 'punheteira', 'gozar', 'gozo',
+            'boquete', 'chupeta', 'chupador', 'chupadora', 'chupa', 'anal', 'vagina', 'penis',
+            'clitóris', 'clitoris', 'mamada', 'mamador', 'lamber', 'lambedor', 'putaria',
+            'orgia', 'luxúria', 'suruba', 'gang bang',
+
+            // Preconceito e discriminação
+            'traveco', 'travecão', 'travecona', 'maricona', 'boiola', 'florzinha', 'paneleiro',
+            'baitola', 'fresco', 'fresca', 'efeminado', 'efeminada', 'bichona', 'gayzinho',
+            'lesbiquinha', 'mulherzinha', 'viado de merda', 'bixa',
+
+            // Insultos regionais e criativos
+            'zé ruela', 'zé mané', 'zé ninguém', 'mané', 'lesado', 'mosca morta', 'pé rapado',
+            'pangaré', 'mequetrefe', 'fajuto', 'paspalho', 'trouxa', 'anta', 'jumento',
+            'mula', 'lerdo', 'panaca', 'pilantra', 'salafrário', 'vigarista', 'golpista', 'charlatão',
+            'cafajeste', 'mazela', 'sanguessuga', 'parasita', 'abestado', 'pobre diabo',
+            'cabeça de bagre', 'orelhudo', 'orelhuda', 'marmita de bandido', 'coió', 'bocó',
+
+            // Português de Portugal
+            'caralho de asa', 'puta que pariu', 'filho da mãe', 'filha da mãe', 'otário de merda',
+            'merdas', 'cabrão', 'cona', 'palhaço', 'palhaça', 'porcalhão', 'porcalhona',
+
+            // "Vadia" e variações
+            'vadia', 'vadiagem', 'vadio', 'vadinho', 'vadiona', 'v@dia', 'v4dia',
+            'v4d1a', 'vad1a', 'v@d14', 'vad1ona', 'v@d10na',
+
+            // Leetspeak e substituições
+            'p0rra', 'p0rr@', 'm3rd4', 'c4r4lh0', 'bvcet4', 'pvt@', 'v14d0', 'v14dinh0',
+            'f1lh0 d4 pvta', 'f1lh0 d4 put4', 'd3sgraç4', '0t4ri0', 'bvrro', 'arromb4d0',
+            'k1ll y0urs3lf', 's3 m4t4', 'vai t0m4r n0 c4', 'p1c4', 'r0l4', 'p1r0c4', 'x0x0t4',
+            'b0qu3t3'
+        ];
+
+        const blockPhrases = [
+            'você é', 'voce e', 'tu é', 'tu e', 'vc é', 'vc e',
+            'luna é', 'luna e', 'você ta', 'voce ta', 'seu lixo', 'sua bosta'
+        ];
+
+        // Função para detectar palavrões e ofensas
+        function detectViolation(message) {
+            const lowerMessage = message.toLowerCase()
+                .replace(/[^a-záàâãéèêíïóôõöúçñ0-9\s]/g, ' ') // Remove símbolos especiais
+                .replace(/\s+/g, ' ') // Normaliza espaços
+                .trim();
+            
+            // Verifica palavrões diretos
+            for (const word of offensiveWords) {
+                // Verifica se a palavra está presente (com limites de palavra para evitar falsos positivos)
+                const regex = new RegExp('\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+                if (regex.test(lowerMessage) || lowerMessage.includes(word)) {
+                    console.log('Palavra ofensiva detectada:', word);
+                    return true;
+                }
+            }
+            
+            // Verifica frases ofensivas direcionadas à IA
+            for (const phrase of blockPhrases) {
+                if (lowerMessage.includes(phrase)) {
+                    // Verifica se há palavrão após a frase
+                    const phraseIndex = lowerMessage.indexOf(phrase);
+                    const afterPhrase = lowerMessage.substring(phraseIndex + phrase.length);
+                    for (const word of offensiveWords) {
+                        if (afterPhrase.includes(word)) {
+                            console.log('Frase ofensiva direcionada detectada:', phrase, word);
+                            return true;
+                        }
+                    }
+                }
+            }
+            
+            return false;
+        }
+        // Função para bloquear o chat
+        function blockChat(duration = 300000) { // 5 minutos por padrão
+            chats[currentChatId].isBlocked = true;
+            
+            // Atualizar interface
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            const overlay = document.getElementById('blockedOverlay');
+            
+            statusDot.classList.add('blocked-status');
+            statusText.classList.add('blocked-text');
+            statusText.textContent = 'Bloqueado';
+            overlay.classList.add('show');
+            
+            // Desabilitar input
+            messageInput.disabled = true;
+            sendButton.disabled = true;
+            messageInput.placeholder = "Chat temporariamente bloqueado por violação das diretrizes.";
+            
+            // Limpar timeout anterior se existir
+            if (globalBlockTimeout) {
+                clearTimeout(globalBlockTimeout);
+            }
+            
+            // Definir timeout para desbloquear
+            globalBlockTimeout = setTimeout(() => {
+                unblockChat();
+            }, duration);
+        }
+
+        // Função para desbloquear o chat
+        function unblockChat() {
+            chats[currentChatId].isBlocked = false;
+            
+            // Restaurar interface
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            const overlay = document.getElementById('blockedOverlay');
+            
+            statusDot.classList.remove('blocked-status');
+            statusText.classList.remove('blocked-text');
+            statusText.textContent = 'Online';
+            overlay.classList.remove('show');
+            
+            // Reabilitar input
+            messageInput.disabled = false;
+            sendButton.disabled = false;
+            messageInput.placeholder = "Digite sua mensagem... Como posso ajudar você hoje?";
+            
+            // Limpar timeout
+            if (globalBlockTimeout) {
+                clearTimeout(globalBlockTimeout);
+                globalBlockTimeout = null;
+            }
+        }
+
+        // Função para obter horário atual formatado
+        function getCurrentTime() {
+            const now = new Date();
+            return now.toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Base de conhecimento expandida sobre TEA
+        const teaKnowledge = {
+            // Saudações e cumprimentos
+            greetings: {
+                keywords: ['oi', 'olá', 'hello', 'bom dia', 'boa tarde', 'boa noite', 'hey', 'opa', 'eai'],
+                responses: [
+                    "💙 Olá! É um prazer recebê-lo em nossa plataforma. Sou a Luna, sua assistente especializada em Transtorno do Espectro Autista. Estou aqui para oferecer suporte personalizado, orientações baseadas em evidências científicas e auxílio na construção de estratégias eficazes para o desenvolvimento no espectro autista. Como posso apoiá-lo hoje? Posso ajudar com rotinas estruturadas, estratégias de comunicação, regulação sensorial, atividades cognitivas ou qualquer questão relacionada ao TEA. 🌟",
+                    
+                    "🌟 Bem-vindo ao Mentes Brilhantes! Sou a Luna, sua assistente virtual especializada em apoio a pessoas com TEA, familiares e cuidadores. Minha missão é fornecer orientações profissionais e personalizadas para cada situação específica. Trabalho com base em metodologias validadas cientificamente, sempre priorizando o respeito à individualidade e às necessidades únicas de cada pessoa no espectro autista. Estou preparada para discutir temas como desenvolvimento de autonomia, inclusão social, estratégias educacionais, manejo comportamental e muito mais. Em que posso ajudá-lo especificamente? 💙"
+                ]
+            },
+
+            // Despedidas
+            farewells: {
+                keywords: ['tchau', 'até logo', 'até mais', 'bye', 'adeus', 'falou', 'xau', 'até'],
+                responses: [
+                    "💙 Foi uma honra poder contribuir com sua jornada! Lembre-se de que o desenvolvimento no espectro autista é um processo contínuo e único para cada indivíduo. Estou sempre aqui quando precisar de orientações especializadas, informações atualizadas ou simplesmente para esclarecer dúvidas. Continue firme nesse caminho de amor, dedicação e aprendizado. Juntos, construímos um futuro mais inclusivo e acolhedor. Até nossa próxima conversa! 🌟",
+                    
+                    "🌟 Até logo! Espero que nossas orientações tenham sido úteis e esclarecedoras. Lembre-se sempre: cada pequeno progresso é uma grande vitória, cada conquista merece ser celebrada. O caminho do desenvolvimento no TEA é feito de paciência, persistência e muito amor. Estarei aqui sempre que precisar de suporte profissional, estratégias personalizadas ou apenas uma palavra de encorajamento. Desejo muito sucesso em sua jornada! 💙"
+                ]
+            },
+
+            // Agradecimentos
+            thanks: {
+                keywords: ['obrigado', 'obrigada', 'valeu', 'thanks', 'gratidão', 'grato', 'grata', 'brigadão', 'vlw'],
+                responses: [
+                    "💙 Fico verdadeiramente honrada em poder contribuir com sua jornada no universo do TEA! Seu engajamento e dedicação são fundamentais para o sucesso de qualquer intervenção. Lembre-se de que cada pergunta feita, cada estratégia implementada e cada momento de cuidado representa um passo importante no desenvolvimento. Estou sempre aqui quando necessitar de orientações especializadas, esclarecimentos ou simplesmente para compartilhar suas conquistas. Continue assim - sua dedicação faz toda a diferença! 🌟",
+                    
+                    "🌟 A gratidão é mútua! É um privilégio poder apoiar famílias e cuidadores em sua jornada de amor e dedicação. Lembre-se de que o trabalho que você desenvolve tem impacto profundo e duradouro. Cada estratégia aplicada, cada rotina estruturada, cada momento de paciência contribui para um desenvolvimento mais harmônico e funcional. Não hesite em retornar sempre que surgirem novas dúvidas, desafios ou quando quiser compartilhar progressos. Juntos, construímos pontes para um futuro mais inclusivo! 💙"
+                ]
+            },
+
+            // Como está/tudo bem
+            wellbeing: {
+                keywords: ['como você está', 'como vai', 'tudo bem', 'como tem sido', 'tudo certo', 'como anda'],
+                responses: [
+                    "💙 Estou funcionando perfeitamente e totalmente dedicada a oferecer o melhor suporte possível para questões relacionadas ao TEA! Meus sistemas estão atualizados com as mais recentes pesquisas em neurociência aplicada, terapias comportamentais e estratégias de desenvolvimento. Estou sempre pronta para discutir rotinas estruturadas, técnicas de comunicação, regulação sensorial, atividades cognitivas e apoio familiar. Cada interação é uma oportunidade de contribuir positivamente com sua jornada. Como posso apoiá-lo hoje de forma mais específica? 🌟",
+                    
+                    "🌟 Estou operando em plena capacidade e extremamente motivada para ajudar! Minha base de conhecimento está constantemente sendo enriquecida com informações atualizadas sobre TEA, desde estratégias terapêuticas até recursos tecnológicos assistivos. Estou preparada para oferecer orientações personalizadas, esclarecer dúvidas técnicas, sugerir atividades adaptadas e fornecer suporte emocional para familiares e cuidadores. Cada conversa é uma oportunidade de fazer a diferença na vida de alguém no espectro autista. Em que posso focar minha atenção para ajudá-lo melhor? 💙"
+                ]
+            },
+
+            // Rotinas e organização
+            routines: {
+                keywords: ['rotina', 'agenda', 'visual', 'organizar', 'estrutura', 'cronograma', 'horário', 'planejamento', 'organização'],
+                responses: [
+                    "💙 As rotinas visuais são pilares fundamentais para o desenvolvimento de pessoas com TEA, oferecendo previsibilidade e segurança emocional. Baseando-me em evidências científicas atuais, recomendo a implementação de sistemas estruturados que combinem elementos visuais, temporais e sequenciais. A agenda visual deve incluir pictogramas padronizados de alta legibilidade, códigos cromáticos consistentes e sequenciamento lógico das atividades. É essencial iniciar com 3-4 atividades principais, expandindo gradualmente conforme a adaptação. Utilize materiais como velcro para permitir reorganização, inclua pausas para autorregulação sensorial e implemente sistemas de reforço positivo sistemático. O aplicativo Mentes Brilhantes oferece ferramentas digitais avançadas para personalização completa dessas rotinas, com lembretes programáveis e análise de progresso.",
+                    
+                    "🌟 A estruturação temporal é crucial para o bem-estar e funcionalidade de pessoas com TEA. Desenvolvimento de rotinas eficazes requer compreensão das necessidades individuais e implementação sistemática. Recomendo criar estruturas que incluam período matutino (autocuidado → alimentação → atividade estruturada), período vespertino (refeição → pausa regulatória → atividade lúdica) e período noturno (alimentação → relaxamento → preparo para repouso). Cada transição deve ser sinalizada claramente, utilizando recursos como timers visuais, música específica ou rituais de passagem. A flexibilidade deve ser introduzida gradualmente, sempre mantendo elementos âncora que proporcionem segurança. Importante documentar preferências individuais, horários de maior receptividade e estratégias que demonstrem maior eficácia para personalização contínua.",
+                    
+                    "💡 Rotinas bem estruturadas reduzem ansiedade, aumentam independência e promovem desenvolvimento de habilidades executivas. Para implementação eficaz, sugiro utilizar abordagem multissensorial: elementos visuais (pictogramas, fotografias, cores), auditivos (música, sinais sonoros) e táteis (texturas, objetos de referência). A rotina deve ser apresentada de forma sequencial e lógica, com início, meio e fim claramente definidos. Inclua momentos de escolha controlada para promover autonomia, espaços para interesses especiais como motivação e pausas programadas para autorregulação. O monitoramento constante permite ajustes necessários e celebração de progressos. Nossa plataforma oferece templates personalizáveis, sistema de recompensas gamificado e relatórios de adesão para otimização contínua das estratégias implementadas."
+                ]
+            },
+
+            // Comunicação
+            communication: {
+                keywords: ['comunicação', 'falar', 'linguagem', 'não verbal', 'gestos', 'pictogramas', 'conversar', 'verbal', 'expressão'],
+                responses: [
+                    "🗣️ A comunicação no TEA apresenta características únicas que requerem abordagens individualizadas e baseadas em evidências científicas robustas. O desenvolvimento de habilidades comunicativas deve considerar o perfil específico de cada pessoa, incluindo preferências sensoriais, interesses especiais e nível de desenvolvimento linguístico. Para comunicação verbal, recomendo utilizar linguagem clara e objetiva, ritmo pausado para permitir processamento adequado, estruturas frasais simples e repetição quando necessário. A comunicação não-verbal merece atenção especial: observação sistemática de sinais corporais, validação de todas as tentativas comunicativas e respeito ao espaço pessoal. Sistemas de Comunicação Alternativa e Aumentativa (CAA) incluem pictogramas padronizados (PECS), dispositivos tecnológicos especializados e aplicativos de comunicação visual como os disponíveis no Mentes Brilhantes.",
+                    
+                    "💬 O desenvolvimento comunicacional no espectro autista requer estratégias multifacetadas e sensibilidade às necessidades individuais. Cada pessoa possui um perfil comunicacional único, demandando adaptações específicas para otimização das interações sociais. Para facilitar a expressão, crie ambientes comunicativos ricos em estímulos apropriados: utilize suportes visuais consistentes, ofereça tempo adequado para processamento de informações, valide todas as formas de comunicação (verbal, gestual, pictográfica) e mantenha expectativas realistas e positivas. A implementação de rotinas comunicativas estruturadas inclui momentos específicos para diálogo, uso de objetos de referência para facilitar compreensão e criação de oportunidades naturais para prática. É fundamental celebrar progressos incrementais e adaptar estratégias conforme evolução das habilidades apresentadas.",
+                    
+                    "🎯 A comunicação efetiva no TEA envolve compreensão profunda das diferentes modalidades expressivas e receptivas. Estratégias de implementação incluem desenvolvimento de vocabulário funcional focado em necessidades cotidianas, utilização de interesses especiais como ponte para expansão comunicativa e criação de contextos significativos para prática. Para pessoas não-verbais, sistemas alternativos como PECS (Picture Exchange Communication System), gestos funcionais, tecnologia assistiva e comunicação através de comportamentos devem ser validados e estimulados. O ambiente comunicativo deve ser estruturado para reduzir ansiedade: minimizar distrações sensoriais excessivas, estabelecer rotinas de interação previsíveis e utilizar reforço positivo sistemático. Nossa plataforma oferece biblioteca de pictogramas personalizáveis, exercícios de desenvolvimento pragmático e ferramentas para monitoramento de progresso comunicativo."
+                ]
+            },
+
+            // Questões sensoriais
+            sensory: {
+                keywords: ['sensorial', 'crise', 'estímulo', 'barulho', 'luz', 'textura', 'sobrecarga', 'regulação', 'hipersensibilidade'],
+                responses: [
+                    "🧘‍♀️ As questões sensoriais no TEA requerem compreensão aprofundada do sistema nervoso e implementação de estratégias baseadas em neurociência aplicada. O processamento sensorial atípico pode manifestar-se através de hipersensibilidade (reações exageradas a estímulos) ou hipossensibilidade (busca por estímulos intensos), demandando abordagens personalizadas para cada perfil. Durante crises sensoriais, o protocolo recomendado inclui manutenção de calma absoluta, modulação da voz, redução imediata de estímulos ambientais e disponibilização de ambiente seguro para autorregulação. Técnicas respiratórias estruturadas (padrão 4-4-4-4), acesso a objetos de regulação sensorial e respeito ao tempo individual de recuperação são fundamentais. A prevenção envolve identificação sistemática de gatilhos, uso de equipamentos de proteção sensorial (fones, óculos, roupas específicas) e criação de kit de autorregulação portátil com itens personalizados.",
+                    
+                    "🌈 A regulação sensorial é processo fundamental para bem-estar, funcionalidade e qualidade de vida de pessoas com TEA. Cada indivíduo apresenta perfil sensorial único, requerendo avaliação especializada e desenvolvimento de estratégias individualizadas. A otimização do ambiente sensorial inclui controle de iluminação (preferencialmente regulável e difusa), paleta cromática neutra e calmante, controle acústico ambiental e criação de espaços de descompressão sensorial. Atividades de regulação incluem estimulação proprioceptiva controlada (exercícios de pressão, movimentos rítmicos), musicoterapia com frequências específicas, utilização de texturas variadas para dessensibilização gradual e implementação de pausas sensoriais programadas. O monitoramento constante permite identificação de padrões, ajustes ambientais necessários e desenvolvimento de estratégias de enfrentamento cada vez mais eficazes.",
+                    
+                    "⚡ O manejo eficaz de sobrecarga sensorial requer preparação, conhecimento técnico e implementação de protocolos estruturados. Sinais de sobrecarga incluem agitação motora, comportamentos repetitivos intensificados, dificuldades de comunicação e reações de fuga ou agressividade. Estratégias preventivas envolvem análise funcional do comportamento para identificação de antecedentes, monitoramento de variáveis ambientais (temperatura, umidade, ruído, luminosidade) e criação de cronogramas que respeitem limites individuais. Durante episódios de desregulação, evite contenção física desnecessária, ofereça alternativas de autorregulação, utilize comunicação visual e mantenha proximidade segura sem invasão do espaço pessoal. A recuperação pós-crise requer ambiente tranquilo, hidratação adequada, atividades de interesse especial para reorganização e análise posterior do episódio para prevenção futura."
+                ]
+            },
+
+            // Atividades e desenvolvimento cognitivo
+            activities: {
+                keywords: ['atividade', 'jogo', 'educativa', 'cognitiva', 'memória', 'aprendizado', 'desenvolvimento', 'exercício', 'brincadeira'],
+                responses: [
+                    "🎮 As atividades cognitivas para pessoas com TEA devem ser cuidadosamente estruturadas para otimizar desenvolvimento neurológico, respeitando perfis individuais de aprendizagem e interesses específicos. Exercícios de memória operacional incluem sequenciamento de estímulos visuais e auditivos progressivo, atividades de pareamento sistemático com complexidade gradual, jogos de cartas adaptados e quebra-cabeças com níveis crescentes de dificuldade. Para desenvolvimento de funções executivas, recomendo navegação em labirintos estruturados, identificação de diferenças visuais detalhadas, classificação categórica sistemática e exercícios de atenção sustentada com tempos progressivos. Atividades devem incorporar interesses especiais como motivação, utilizar reforço positivo consistente e permitir repetição para consolidação de aprendizados. O aplicativo Mentes Brilhantes oferece jogos adaptativos personalizados com progressão baseada em desempenho individual.",
+                    
+                    "🧠 O desenvolvimento cognitivo estruturado é essencial para maximizar potencial de aprendizagem e autonomia funcional. Atividades de desenvolvimento linguístico incluem narrativas com suporte pictográfico, exercícios de consciência fonológica adaptados, identificação categórica de objetos do cotidiano e sequenciamento lógico-temporal de eventos familiares. Para habilidades matemáticas, utilize quantificação com materiais concretos, classificação por múltiplos atributos, conceitos de quantidade e medida através de experiências práticas e sequenciamento numérico com suporte visual. Expressão criativa deve incluir pintura com exploração tátil controlada, modelagem com diferentes texturas, colagens multissensoriais e movimento corporal expressivo. Cada atividade deve respeitar tempo de processamento individual, oferecer múltiplas oportunidades de sucesso e conectar-se com experiências significativas da vida cotidiana.",
+                    
+                    "🎯 Atividades cognitivas eficazes combinam estimulação neurológica apropriada com engajamento motivacional sustentado. O desenvolvimento deve abordar múltiplas áreas: processamento visual-espacial através de puzzles e construções, habilidades de sequenciamento temporal com histórias e rotinas, desenvolvimento de teoria da mente através de jogos sociais adaptados e fortalecimento de memória de trabalho com exercícios progressivos. Para implementação bem-sucedida, utilize estrutura previsível em todas as atividades, ofereça escolhas controladas para promover autonomia, documente progressos sistematicamente e adapte complexidade conforme evolução apresentada. Importante integrar atividades de interesse especial como recompensa natural, criar conexões com habilidades funcionais do dia a dia e celebrar conquistas incrementais. Nossa plataforma disponibiliza biblioteca extensa de atividades validadas, sistema de personalização baseado em perfil individual e relatórios de progresso detalhados."
+                ]
+            },
+
+            // Apoio familiar
+            familySupport: {
+                keywords: ['família', 'pai', 'mãe', 'cuidador', 'ajuda', 'orientação', 'diagnóstico', 'luto', 'apoio', 'suporte'],
+                responses: [
+                    "💙 O suporte familiar é alicerce fundamental para desenvolvimento bem-sucedido de pessoas com TEA. Compreendo profundamente os desafios, emoções e necessidades únicas que famílias enfrentam nessa jornada. O processo de adaptação ao diagnóstico envolve diferentes estágios emocionais que devem ser respeitados e acolhidos com empatia. Estratégias de apoio sistêmico incluem validação de sentimentos e experiências familiares, reconhecimento de progressos incrementais como conquistas significativas, conexão com redes de apoio especializadas e profissionais qualificados, além de cuidado essencial com bem-estar físico e emocional do cuidador principal. É fundamental estabelecer rotinas de autocuidado estruturadas, participar de grupos de apoio especializados, construir rede de suporte sólida e acessar informações científicas atualizadas. Lembre-se sempre: seu amor, dedicação e comprometimento são elementos transformadores no desenvolvimento. Cada momento de paciência, cada estratégia implementada e cada conquista celebrada contribuem para um futuro mais promissor.",
+                    
+                    "🌟 Ser cuidador de uma pessoa com TEA é missão de amor que merece reconhecimento, apoio e orientação especializada. Sua dedicação diária faz diferença profunda e duradoura no desenvolvimento e qualidade de vida. Para organização eficaz do cuidado familiar, recomendo distribuição equilibrada de responsabilidades entre membros da família, implementação de rotinas que beneficiem todo o sistema familiar, utilização de recursos tecnológicos especializados como ferramentas de apoio e documentação sistemática de progressos para acompanhamento evolutivo. O autocuidado não é luxo, mas necessidade essencial: estabeleça momentos regulares para descanso, busque atividades prazerosas individuais, mantenha conexões sociais significativas e não hesite em solicitar ajuda quando necessário. Participação em grupos de apoio oferece troca de experiências valiosas, aprendizado de estratégias testadas por outras famílias e suporte emocional fundamental para sustentabilidade do cuidado a longo prazo.",
+                    
+                    "🤝 A jornada familiar no universo do TEA é única, repleta de desafios e descobertas que transformam perspectivas sobre desenvolvimento, amor e potencial humano. Reconheço a intensidade emocional desse processo e ofereço suporte especializado para cada etapa. Após o diagnóstico, é natural experienciar sentimentos diversos: negação, raiva, barganha, depressão e aceitação não seguem ordem linear e podem retornar ciclicamente. Isso é completamente normal e saudável. Estratégias de enfrentamento incluem busca por informações científicas confiáveis, conexão com profissionais especializados, participação em comunidades de apoio e manutenção de expectativas realistas e positivas. Celebrate conquistas incrementais: primeiro contato visual mantido, nova palavra pronunciada, comportamento autorregulado, interação social bem-sucedida. Cada progresso, independente do tamanho, representa vitória significativa. O Mentes Brilhantes oferece canal de comunicação profissional, área educativa baseada em evidências, sistema de acompanhamento evolutivo e comunidade qualificada para apoio contínuo."
+                ]
+            },
+
+            // Educação e inclusão
+            education: {
+                keywords: ['escola', 'educação', 'inclusão', 'professor', 'ensino', 'aprendizagem', 'sala de aula', 'adaptação'],
+                responses: [
+                    "📚 A educação inclusiva para pessoas com TEA requer compreensão profunda das necessidades individuais e implementação de estratégias pedagógicas especializadas. O ambiente escolar deve ser estruturado para promover aprendizagem efetiva, interação social positiva e desenvolvimento de autonomia. Adaptações fundamentais incluem criação de espaços sensorialmente apropriados, implementação de rotinas visuais claras, utilização de materiais didáticos adaptados e desenvolvimento de estratégias de comunicação personalizadas. Professores devem receber formação especializada sobre características do TEA, técnicas de manejo comportamental positivo, métodos de ensino estruturado e estratégias de inclusão social. A colaboração entre família, escola e profissionais especializados é essencial para desenvolvimento de Plano Educacional Individualizado (PEI) eficaz. Importante estabelecer metas realistas e mensuráveis, celebrar progressos incrementais e adaptar metodologias conforme evolução apresentada pelo estudante.",
+                    
+                    "🎓 A inclusão educacional bem-sucedida demanda preparação sistemática do ambiente escolar e capacitação adequada da equipe pedagógica. Estratégias de implementação incluem avaliação funcional das necessidades individuais, desenvolvimento de adaptações curriculares apropriadas, criação de sistemas de apoio visual e sensorial, além de estabelecimento de protocolos para situações de crise. O ambiente de aprendizagem deve minimizar distrações sensoriais excessivas, oferecer espaços de regulação quando necessário, utilizar tecnologias assistivas apropriadas e promover interações sociais estruturadas. A metodologia pedagógica deve incorporar interesses especiais como ferramentas motivacionais, utilizar ensino estruturado e sequencial, oferecer múltiplas formas de demonstração do conhecimento e implementar sistemas de reforço positivo consistentes. A parceria família-escola é fundamental para continuidade das estratégias entre ambientes, compartilhamento de informações relevantes e celebração conjunta dos progressos alcançados."
+                ]
+            },
+
+            // Comportamento e manejo
+            behavior: {
+                keywords: ['comportamento', 'birra', 'agressividade', 'autolesão', 'estereotipia', 'ritual', 'manejo', 'intervenção'],
+                responses: [
+                    "🎯 O manejo comportamental no TEA requer análise funcional aprofundada para compreensão das funções que cada comportamento desempenha na vida da pessoa. Comportamentos desafiadores frequentemente comunicam necessidades específicas: escape de situações aversivas, busca por atenção, acesso a itens desejados ou autorregulação sensorial. A intervenção eficaz envolve identificação de antecedentes (o que acontece antes), descrição objetiva do comportamento e análise das consequências. Estratégias de prevenção incluem modificação ambiental, ensino de habilidades alternativas funcionais, implementação de rotinas previsíveis e utilização de sistemas de comunicação apropriados. Durante episódios comportamentais, mantenha calma, garanta segurança de todos os envolvidos, evite reforçar comportamentos inadequados através de atenção excessiva e redirecione para atividades apropriadas quando possível. O desenvolvimento de habilidades de enfrentamento, comunicação funcional e autorregulação reduz significativamente a ocorrência de comportamentos desafiadores.",
+                    
+                    "🌟 Comportamentos repetitivos e rituais no TEA frequentemente servem funções importantes de autorregulação e organização interna. A abordagem deve ser respeitosa e funcional, distinguindo entre comportamentos que interferem no desenvolvimento e aqueles que oferecem conforto sem prejuízos. Para estereotipias motoras ou vocais, avalie se causam interferência em atividades funcionais ou aprendizagem. Se sim, desenvolva alternativas socialmente apropriadas que atendam a mesma função sensorial. Rituais e insistência em mesmice podem ser gradualmente flexibilizados através de introdução cuidadosa de variações mínimas, sempre respeitando o tempo individual de adaptação. Importante nunca interromper abruptamente comportamentos autorreguladores sem oferecer alternativas funcionais. O ensino de estratégias de enfrentamento apropriadas, desenvolvimento de tolerância à frustração e expansão gradual de repertório comportamental promovem maior flexibilidade e adaptação social."
+                ]
+            },
+
+            // Informações sobre o aplicativo
+            app: {
+                keywords: ['aplicativo', 'app', 'download', 'celular', 'tecnologia'],
+                responses: [
+                    "📱 O aplicativo Mentes Brilhantes representa revolução tecnológica no apoio especializado para TEA! Desenvolvido por equipe multidisciplinar de profissionais especializados e validado cientificamente, nosso app é 100% GRATUITO e oferece recursos inovadores para transformar a jornada no espectro autista. Recursos exclusivos incluem Agenda Visual Inteligente com personalização completa via IA, Jogos Cognitivos Adaptativos para estimulação neurológica progressiva, Diário Emocional Pictográfico para desenvolvimento do autoconhecimento, Biblioteca Educativa com conteúdo científico atualizado e Comunidade de Apoio para conexão entre famílias e profissionais. Nossa interface foi especialmente adaptada para necessidades de pessoas com TEA, incluindo controles sensoriais, navegação simplificada e design inclusivo. Disponível para Android (Google Play Store), iOS (App Store) e versão web para computadores. Com mais de 50.000 downloads e avaliação média de 4.9/5.0, o app oferece suporte técnico especializado 24/7, atualizações constantes baseadas em feedback dos usuários e proteção total de dados com criptografia avançada.",
+                    
+                    "🚀 Baixe GRATUITAMENTE o app Mentes Brilhantes e experimente tecnologia de ponta no suporte ao TEA! Nossa plataforma digital integra anos de pesquisa em neurociência aplicada, terapias comportamentais e tecnologia assistiva. Funcionalidades principais incluem sistema de rotinas personalizáveis com lembretes inteligentes, biblioteca de pictogramas com milhares de imagens categorizadas, exercícios de desenvolvimento cognitivo com adaptação automática de dificuldade, ferramentas de comunicação aumentativa e alternativa, relatórios de progresso detalhados para acompanhamento profissional e sistema gamificado de recompensas para motivação contínua. O aplicativo funciona offline para maior praticidade, sincroniza dados entre dispositivos da família e oferece modo de emergência com contatos rápidos para situações de crise. Nosso compromisso é democratizar o acesso a recursos especializados de qualidade, por isso mantemos o app completamente gratuito, sem propagandas intrusivas ou taxas ocultas. Junte-se à nossa comunidade de mais de 50.000 famílias e transforme sua experiência no universo do TEA!"
+                ]
+            },
+            app: {
+    keywords: ['aba', 'análise comportamental aplicada', 'treinamento comportamental', 'intervenção intensiva', 'método aba'],
+    responses: [
+        "🧠 A Análise Comportamental Aplicada (ABA) é uma metodologia científica amplamente reconhecida para o desenvolvimento de habilidades em pessoas no espectro autista. No Mentes Brilhantes, integramos princípios da ABA de forma adaptada à realidade familiar, permitindo que cuidadores e profissionais personalizem metas, reforços e registros de progresso dentro do app. Nossas ferramentas incluem painéis para análise de dados, geração automática de gráficos de evolução, lembretes estratégicos para manutenção de comportamentos aprendidos e biblioteca de reforçadores visuais e auditivos ajustados ao perfil sensorial de cada usuário. O objetivo é potencializar resultados, garantindo que cada intervenção seja mensurável, adaptativa e centrada na pessoa.",
+        "📊 O método ABA no Mentes Brilhantes é apresentado de forma acessível, mas sem perder a base científica. O app possibilita criar planos individualizados de ensino, programar reforçadores imediatos, monitorar frequência e duração de comportamentos, e gerar relatórios exportáveis para terapeutas. Tudo isso é integrado a uma interface intuitiva que reduz a sobrecarga cognitiva para o usuário final, mantendo a eficácia da intervenção. Essa abordagem híbrida garante que mesmo famílias sem formação técnica possam aplicar estratégias validadas pela ciência com o suporte da tecnologia."
+    ]
+},
+
+app: {
+    keywords: ['funções executivas', 'atenção seletiva', 'memória de trabalho', 'planejamento cognitivo', 'flexibilidade mental'],
+    responses: [
+        "🧩 As funções executivas — como atenção seletiva, memória de trabalho e flexibilidade cognitiva — são essenciais para autonomia e aprendizagem. O Mentes Brilhantes oferece jogos cognitivos adaptativos baseados em neurociência, que ajustam a dificuldade em tempo real, mantendo o equilíbrio entre desafio e motivação. As tarefas são projetadas para estimular simultaneamente múltiplas funções cognitivas, utilizando estímulos visuais e auditivos calibrados para evitar sobrecarga sensorial. Além disso, o app gera relatórios sobre desempenho, permitindo ajustes personalizados que maximizam o desenvolvimento neurocognitivo.",
+        "🎯 No Mentes Brilhantes, o treino das funções executivas vai além de simples jogos: cada atividade foi desenvolvida com base em estudos de plasticidade cerebral, garantindo estimulação direcionada e progressiva. O sistema de inteligência artificial analisa padrões de acerto, tempo de resposta e estratégias utilizadas pelo usuário, propondo novos desafios que incentivam a resolução criativa de problemas. Esse acompanhamento constante permite ganhos mais consistentes e mensuráveis ao longo do tempo."
+    ]
+},
+
+app: {
+    keywords: ['comunicação alternativa', 'CAA', 'pictogramas', 'pranchas de comunicação', 'aac'],
+    responses: [
+        "💬 A Comunicação Aumentativa e Alternativa (CAA) é uma ferramenta crucial para pessoas com TEA que apresentam dificuldades de fala. No Mentes Brilhantes, oferecemos uma biblioteca extensa de pictogramas organizados por categorias e contextos, permitindo a criação de pranchas personalizadas que podem ser usadas tanto online quanto offline. O sistema inclui síntese de voz natural, busca inteligente de símbolos e suporte para múltiplos idiomas, garantindo acessibilidade em diferentes cenários.",
+        "🖼️ Nosso módulo de CAA foi projetado para evoluir com o usuário. A IA do app sugere novos pictogramas e reorganiza automaticamente a prancha de comunicação conforme a frequência de uso, tornando a interação mais rápida e intuitiva. Também é possível sincronizar o conteúdo com outros dispositivos da família ou da equipe terapêutica, garantindo consistência e continuidade no processo comunicativo."
+    ]
+},
+
+app: {
+    keywords: ['integração sensorial', 'hipersensibilidade', 'hipossensibilidade', 'estímulos auditivos', 'terapia sensorial'],
+    responses: [
+        "🎵 A integração sensorial é um aspecto essencial no cuidado ao TEA, pois muitos indivíduos apresentam hiper ou hipossensibilidade a estímulos. No Mentes Brilhantes, desenvolvemos módulos de exposição gradual a sons, cores e texturas virtuais, sempre respeitando o limite de tolerância e a resposta emocional do usuário. O app conta com controle de intensidade de estímulos, temporizadores para pausas estratégicas e registro de reações, permitindo um acompanhamento preciso por terapeutas.",
+        "🌈 Nosso sistema de integração sensorial utiliza algoritmos que adaptam a experiência em tempo real, evitando sobrecarga e promovendo conforto. Por exemplo, se um som ou padrão visual estiver gerando estresse, o app pode automaticamente reduzir sua intensidade ou substituí-lo por um estímulo mais neutro. Isso garante que a terapia seja eficaz, segura e personalizada, criando um ambiente virtual de aprendizagem que respeita a individualidade sensorial de cada pessoa."
+    ]
+},
+
+app: {
+    keywords: ['intervenção precoce', 'diagnóstico inicial', 'estimulação infantil', 'primeiros sinais', 'desenvolvimento precoce'],
+    responses: [
+        "👶 A intervenção precoce é determinante para ampliar as oportunidades de desenvolvimento no TEA. O Mentes Brilhantes oferece módulos específicos para crianças pequenas, com atividades lúdicas baseadas em marcos do desenvolvimento infantil. O app orienta pais e cuidadores a identificar sinais de avanço ou dificuldade, gerando recomendações personalizadas e exercícios adaptativos para estimulação motora, cognitiva e comunicativa.",
+        "🔍 Sabemos que o diagnóstico precoce é apenas o primeiro passo. Por isso, nosso app fornece um plano estruturado de atividades e monitoramento para potencializar ganhos nos primeiros anos. As propostas incluem brincadeiras guiadas por voz, vídeos demonstrativos, e ferramentas de registro que facilitam o compartilhamento de informações com profissionais de saúde e educação, garantindo continuidade entre o cuidado domiciliar e terapias especializadas."
+    ]
+},
+
+app: {
+    keywords: ['monitoramento comportamental', 'rastreamento de progresso', 'dados terapêuticos', 'analytics', 'avaliação contínua'],
+    responses: [
+        "📈 O monitoramento comportamental no Mentes Brilhantes é feito de forma inteligente e discreta. O app registra dados sobre interações, respostas e tempo de execução de atividades, transformando-os em gráficos claros que ajudam a identificar padrões e tendências. Essas informações são essenciais para ajustar intervenções, reforçar comportamentos positivos e antecipar dificuldades.",
+        "🗂️ Nossa plataforma possui um painel de analytics terapêutico que organiza informações por períodos, tipos de atividade e objetivos definidos. Essa visão global permite que cuidadores e terapeutas acompanhem a evolução de maneira estratégica, utilizando dados concretos para embasar decisões e manter a motivação do usuário."
+    ]
+},
+
+app: {
+    keywords: ['rede de apoio', 'suporte familiar', 'comunidade virtual', 'troca de experiências', 'apoio profissional'],
+    responses: [
+        "🤝 No Mentes Brilhantes, acreditamos que o suporte não vem apenas da tecnologia, mas também das conexões humanas. Por isso, criamos uma comunidade virtual onde familiares, cuidadores e profissionais podem trocar experiências, compartilhar estratégias e oferecer suporte emocional mútuo. Esse ambiente é moderado por especialistas para garantir informações confiáveis e seguras.",
+        "💬 Nossa rede de apoio integra fóruns temáticos, grupos privados e eventos virtuais, permitindo que cada família encontre respostas e acolhimento. Além disso, o app envia notificações sobre encontros online, palestras e oficinas, fortalecendo o vínculo entre os membros e garantindo que ninguém enfrente sozinho os desafios e as conquistas do dia a dia."
+    ]
+}, diagnostico: {
+    keywords: ['avaliação neuropsicológica', 'diagnóstico precoce', 'triagem', 'DSM-5', 'CID-11'],
+    responses: [
+        "🧠 O diagnóstico precoce do TEA é essencial para otimizar o desenvolvimento e ampliar as oportunidades de intervenção eficaz. Utilizamos parâmetros estabelecidos pelo DSM-5 e pela CID-11, que descrevem critérios claros envolvendo comunicação social e padrões de comportamento restritos ou repetitivos. A avaliação neuropsicológica no Mentes Brilhantes é baseada em protocolos validados internacionalmente e conduzida por especialistas com experiência no espectro. Oferecemos também ferramentas de triagem digital para que famílias e profissionais possam identificar precocemente sinais de atenção, permitindo encaminhamento rápido para avaliação presencial. Nosso sistema de relatórios interativos integra dados de observações clínicas, escalas padronizadas e histórico de desenvolvimento, facilitando o planejamento terapêutico personalizado.",
+        "🔍 A identificação precoce do TEA requer uma análise abrangente de múltiplos fatores, como histórico de desenvolvimento, padrões de interação social e comportamentos repetitivos. No Mentes Brilhantes, desenvolvemos um módulo exclusivo que auxilia famílias e terapeutas no acompanhamento desses sinais desde a primeira infância. Ele é fundamentado nos critérios do DSM-5 e da CID-11, permitindo que os resultados sejam compreensíveis tanto para especialistas quanto para familiares. As informações são integradas a um painel de acompanhamento que gera gráficos evolutivos e relatórios com orientações baseadas em evidências científicas, proporcionando uma ponte entre avaliação clínica e intervenções personalizadas."
+    ]
+},
+
+lunaIA: {
+    keywords: ['Luna', 'assistente virtual', 'IA humanizada', 'chat inteligente', 'suporte interativo'],
+    responses: [
+        "🌙 A Luna é a assistente virtual do Mentes Brilhantes, projetada para oferecer suporte humanizado e informativo a pessoas com TEA, familiares e profissionais. Ela utiliza processamento de linguagem natural avançado para compreender perguntas complexas e responder com empatia, clareza e profundidade. Sua base de conhecimento é atualizada constantemente com informações científicas, estratégias terapêuticas, dicas práticas de manejo e recursos educacionais. Além disso, a Luna aprende com as interações para oferecer respostas cada vez mais personalizadas, mantendo sempre o compromisso com a ética, a privacidade e a confiabilidade.",
+        "🤖 Conheça a Luna, a inteligência artificial exclusiva do Mentes Brilhantes! Diferente de um chatbot comum, a Luna foi treinada para compreender não apenas o conteúdo das mensagens, mas também o contexto emocional de quem escreve. Ela responde com informações detalhadas sobre TEA, direitos, terapias, recursos pedagógicos e tecnologia assistiva, sempre com um tom acolhedor. Está disponível 24/7 para orientar, sugerir materiais de apoio e até conectar o usuário a profissionais parceiros. A Luna também atua como guia dentro do aplicativo, ajudando a explorar todas as funcionalidades de forma intuitiva."
+    ]
+},
+
+inclusaoEscolar: {
+    keywords: ['inclusão escolar', 'adaptação curricular', 'educação inclusiva', 'acessibilidade pedagógica', 'PEI'],
+    responses: [
+        "📚 A inclusão escolar de estudantes com TEA exige planejamento cuidadoso e colaboração entre escola, família e equipe multidisciplinar. O Mentes Brilhantes oferece recursos para elaboração de Planos Educacionais Individuais (PEI) com base nas necessidades de cada aluno. Disponibilizamos guias de adaptação curricular, estratégias de acessibilidade pedagógica, uso de tecnologia assistiva e orientações para capacitação docente. Nosso sistema também permite que professores e terapeutas acompanhem o progresso do estudante em tempo real, garantindo intervenções rápidas e eficazes.",
+        "🏫 A educação inclusiva vai além do acesso físico à escola: envolve criar condições para que o estudante com TEA participe plenamente do processo de aprendizagem. No Mentes Brilhantes, disponibilizamos modelos de adaptação curricular personalizados, materiais didáticos visuais e orientações sobre estratégias de ensino diferenciadas. Também oferecemos ferramentas para comunicação entre educadores e familiares, facilitando a atualização constante do PEI e garantindo que as adaptações pedagógicas sejam dinâmicas e eficazes."
+    ]
+},
+
+neuroplasticidade: {
+    keywords: ['neuroplasticidade', 'estimulação cognitiva', 'aprendizagem adaptativa', 'plasticidade cerebral', 'rede neural'],
+    responses: [
+        "🧬 A neuroplasticidade é a capacidade do cérebro de se reorganizar e formar novas conexões neurais ao longo da vida. No contexto do TEA, esse fenômeno é potencializado por meio de intervenções consistentes e bem estruturadas. O Mentes Brilhantes oferece jogos e atividades baseadas em princípios de estimulação cognitiva adaptativa, que ajustam a dificuldade automaticamente para desafiar o usuário de forma equilibrada. Esses recursos estimulam habilidades como atenção, memória de trabalho, raciocínio lógico e linguagem, apoiando o desenvolvimento global.",
+        "💡 No TEA, trabalhar a neuroplasticidade significa explorar oportunidades para fortalecer redes neurais relacionadas à comunicação, interação social e processamento sensorial. Nosso aplicativo incorpora módulos interativos que se adaptam ao desempenho de cada usuário, utilizando algoritmos para manter o nível de desafio ideal. Essa abordagem contribui para a evolução contínua das habilidades cognitivas e funcionais, e os resultados são apresentados em gráficos detalhados para acompanhamento por familiares e terapeutas."
+    ]
+},
+
+terapiaOcupacional: {
+    keywords: ['terapia ocupacional', 'habilidades funcionais', 'coordenação motora fina', 'integração sensorial', 'vida diária'],
+    responses: [
+        "🖐️ A terapia ocupacional desempenha papel central no desenvolvimento das habilidades funcionais de pessoas com TEA, auxiliando desde a coordenação motora fina até a autonomia em atividades de vida diária. O Mentes Brilhantes integra exercícios digitais e orientações práticas que podem ser realizadas em casa, com supervisão de um terapeuta. Nossos recursos incluem atividades lúdicas para fortalecimento motor, estratégias para organização pessoal e exercícios de integração sensorial, sempre adaptáveis às necessidades do usuário.",
+        "🎯 O objetivo da terapia ocupacional no TEA é promover independência e qualidade de vida, ajudando o indivíduo a superar barreiras sensoriais, motoras e cognitivas. No Mentes Brilhantes, disponibilizamos vídeos interativos, fichas de atividades personalizáveis e acompanhamento virtual por profissionais especializados. Esses recursos permitem que a prática seja contínua e integrada ao cotidiano, potencializando resultados e fortalecendo a relação entre terapeuta, família e usuário."
+    ]
+},
+
+comunicacaoAumentativa: {
+    keywords: ['CAA', 'comunicação aumentativa', 'pictogramas', 'pranchas de comunicação', 'fala funcional'],
+    responses: [
+        "🗣️ A Comunicação Aumentativa e Alternativa (CAA) é uma estratégia essencial para pessoas com TEA que apresentam dificuldades na fala funcional. No Mentes Brilhantes, oferecemos uma biblioteca extensa de pictogramas organizados por categorias, pranchas de comunicação personalizáveis e recursos auditivos para associação entre imagem e som. Essas ferramentas permitem ampliar a autonomia comunicativa e facilitar interações no dia a dia, seja na escola, em casa ou em ambientes públicos.",
+        "📲 A CAA no Mentes Brilhantes é projetada para ser intuitiva e eficiente. O usuário pode criar pranchas visuais personalizadas, integrar fotos próprias e configurar sons gravados por familiares para maior familiaridade. Além disso, o sistema acompanha o uso e sugere ajustes para otimizar a comunicação, sempre visando facilitar a expressão de necessidades, emoções e ideias de forma clara e respeitosa."
+    ]
+},
+
+legislacaoTEA: {
+    keywords: ['Lei Berenice Piana', 'direitos TEA', 'legislação', 'políticas públicas', 'inclusão legal'],
+    responses: [
+        "⚖️ No Brasil, a Lei nº 12.764/2012, conhecida como Lei Berenice Piana, estabelece a Política Nacional de Proteção dos Direitos da Pessoa com Transtorno do Espectro Autista. Essa legislação garante direitos como acesso a diagnóstico precoce, tratamento multiprofissional, inclusão escolar e proteção contra discriminação. O Mentes Brilhantes mantém um módulo educativo sobre legislação e direitos, com explicações detalhadas e atualizações periódicas para que famílias e profissionais estejam sempre informados.",
+        "📜 A proteção legal das pessoas com TEA envolve uma série de garantias previstas em leis federais, estaduais e municipais. No Mentes Brilhantes, criamos uma seção dedicada a orientar sobre como exercer esses direitos, incluindo acesso à educação inclusiva, atendimento prioritário, transporte adaptado e benefícios previdenciários. Nossa plataforma também indica órgãos de apoio e canais oficiais para denúncias em casos de violação de direitos."
+    ]
+},
+
+intervencaoPrecoce: {
+    keywords: ['estimulação precoce', 'primeira infância', 'desenvolvimento global', 'intervenção intensiva', 'janela de oportunidade'],
+    responses: [
+        "⏳ A intervenção precoce no TEA, especialmente nos primeiros anos de vida, é fundamental para maximizar o potencial de desenvolvimento. No Mentes Brilhantes, oferecemos programas digitais interativos baseados em evidências, que estimulam linguagem, habilidades motoras, cognição e interação social. Esses recursos são projetados para serem usados em conjunto com acompanhamento terapêutico presencial, potencializando resultados.",
+        "👶 A chamada 'janela de oportunidade' nos primeiros anos é um período em que o cérebro apresenta alta plasticidade para adquirir novas habilidades. Nosso aplicativo inclui atividades direcionadas à estimulação precoce, adaptadas para diferentes faixas etárias e níveis de desenvolvimento. Essas atividades são acompanhadas de orientações para familiares, garantindo que o aprendizado se estenda além das sessões terapêuticas."
+    ]
+},
+
+familiaTEA: {
+    keywords: ['rede de apoio', 'acolhimento familiar', 'orientação parental', 'capacitação de cuidadores', 'suporte emocional'],
+    responses: [
+        "💞 O impacto do diagnóstico de TEA não é apenas individual, mas envolve toda a família. No Mentes Brilhantes, valorizamos o papel da rede de apoio e oferecemos recursos de orientação parental, grupos de acolhimento e capacitação de cuidadores. Nosso objetivo é fortalecer vínculos, reduzir o estresse familiar e promover a construção de estratégias de enfrentamento positivas.",
+        "🤝 Cuidar de alguém com TEA exige conhecimento, paciência e suporte emocional. Nossa plataforma oferece materiais educativos, encontros virtuais e fóruns de discussão mediados por especialistas, para que familiares possam compartilhar experiências e encontrar soluções práticas para desafios do cotidiano."
+    ]
+},
+
+pesquisaCientifica: {
+    keywords: ['estudos clínicos', 'neurociência', 'avançado', 'publicações científicas', 'base de evidências'],
+    responses: [
+        "🔬 O Mentes Brilhantes mantém uma base de evidências atualizada com os principais estudos sobre TEA, abrangendo áreas como neurociência, genética, terapias comportamentais e intervenções tecnológicas. Nosso compromisso é traduzir descobertas científicas em linguagem acessível, para que famílias e profissionais possam aplicar o conhecimento na prática diária.",
+        "📑 Participamos de redes de pesquisa colaborativa com universidades e centros de excelência em TEA. A plataforma disponibiliza resumos comentados de artigos científicos, resultados de estudos clínicos e tendências em inovação terapêutica, fortalecendo a ponte entre ciência e aplicação prática."
+    ]
+},
+identificacaoTEA: {
+    keywords: ['diagnóstico precoce', 'sinais de autismo', 'níveis de TEA', 'avaliação comportamental', 'sintomas iniciais'],
+    responses: [
+        "🧩 A identificação do Transtorno do Espectro Autista envolve observar comportamentos e padrões de desenvolvimento desde os primeiros anos de vida. Isso inclui dificuldades na comunicação social, comportamentos repetitivos e interesses restritos. No Mentes Brilhantes, explicamos como cada nível de TEA (1, 2 e 3) apresenta desafios e necessidades diferentes, ajudando famílias a buscar avaliação profissional adequada.",
+        "📊 O diagnóstico do TEA é clínico e feito por profissionais especializados, como neurologistas, psiquiatras ou psicólogos, usando protocolos validados internacionalmente. Quanto mais cedo é feito o diagnóstico, maiores são as chances de implementar intervenções eficazes que favoreçam o desenvolvimento da criança."
+    ]
+},
+
+terapiasTEA: {
+    keywords: ['ABA', 'terapia ocupacional', 'fonoaudiologia', 'intervenção precoce', 'apoio multidisciplinar'],
+    responses: [
+        "👩‍⚕️ O tratamento do TEA geralmente envolve uma equipe multidisciplinar que pode incluir psicólogos, terapeutas ocupacionais, fonoaudiólogos e educadores especializados. Métodos como ABA (Análise do Comportamento Aplicada) ajudam a desenvolver habilidades sociais, cognitivas e de autonomia.",
+        "🛠️ No Mentes Brilhantes, explicamos como cada terapia contribui para o progresso da pessoa com TEA, desde exercícios para comunicação alternativa até atividades motoras que estimulam coordenação e autorregulação emocional."
+    ]
+},
+
+tecnologiaEAutismo: {
+    keywords: ['aplicativo Mentes Brilhantes', 'inclusão digital', 'suporte tecnológico', 'ferramentas interativas', 'plataforma online'],
+    responses: [
+        "📱 O aplicativo Mentes Brilhantes oferece recursos que conectam familiares, cuidadores e profissionais, permitindo registro de progresso, acesso a orientações personalizadas e comunicação facilitada. Essa tecnologia busca integrar cuidado humano com ferramentas digitais para ampliar a rede de suporte.",
+        "🌐 A plataforma foi projetada para ser intuitiva, acessível e adaptável a diferentes perfis, garantindo que mesmo usuários com pouca familiaridade tecnológica possam utilizá-la. Inclui funcionalidades como lembretes de atividades, acompanhamento terapêutico e integração com materiais educativos."
+    ]
+},
+
+criadoresMentesBrilhantes: {
+    keywords: ['história do projeto', 'fundadores', 'equipe de desenvolvimento', 'origem da ideia', 'impacto social'],
+    responses: [
+        "💡 O Mentes Brilhantes foi idealizado por um grupo de estudantes da ETEC Jardim Ângela, no curso de Desenvolvimento de Sistemas, como parte do Trabalho de Conclusão de Curso (TCC). A iniciativa nasceu do desejo de criar uma solução acessível para aproximar cuidadores, familiares e profissionais no acompanhamento de pessoas com TEA.",
+        "🤝 A equipe reúne talentos de diversas áreas, unindo conhecimento técnico em programação com sensibilidade social. O projeto tem como foco principal promover inclusão, facilitar comunicação e ampliar o acesso a informações confiáveis sobre autismo."
+    ]
+},
+
+convivenciaTEA: {
+    keywords: ['inclusão escolar', 'adaptações sociais', 'relações interpessoais', 'empatia', 'respeito às diferenças'],
+    responses: [
+        "🏫 A convivência com pessoas no espectro autista requer empatia, paciência e compreensão das necessidades específicas de cada indivíduo. Isso pode incluir ajustes na comunicação, no ambiente e nas expectativas sociais.",
+        "💬 No Mentes Brilhantes, incentivamos uma visão inclusiva, fornecendo orientações sobre como colegas, professores e familiares podem apoiar o desenvolvimento social e emocional de pessoas com TEA."
+    ]
+},
+
+mitosETEA: {
+    keywords: ['desinformação', 'crenças equivocadas', 'fake news', 'esclarecimento', 'verdades sobre o autismo'],
+    responses: [
+        "🚫 Existem muitos mitos sobre o TEA, como a ideia de que todas as pessoas autistas não se comunicam ou que o autismo é causado por vacinas — ambas afirmações falsas. Nosso papel é combater a desinformação com base científica e exemplos reais.",
+        "✅ No Mentes Brilhantes, desmistificamos conceitos errados, explicando que o espectro é amplo e diverso, e que cada indivíduo possui habilidades e desafios únicos."
+    ]
+},
+
+educacaoEAutismo: {
+    keywords: ['metodologias de ensino', 'adaptação curricular', 'educação inclusiva', 'professores preparados', 'estratégias pedagógicas'],
+    responses: [
+        "📚 A educação de pessoas com TEA deve considerar métodos de ensino que favoreçam a clareza, a previsibilidade e a personalização do conteúdo. Isso pode envolver uso de materiais visuais, rotinas estruturadas e suporte individualizado.",
+        "🎓 No Mentes Brilhantes, oferecemos guias para professores e instituições sobre como adaptar atividades e avaliar progresso, sempre respeitando o ritmo e a forma de aprendizagem de cada aluno."
+    ]
+},
+
+familiaETEA: {
+    keywords: ['rede de apoio', 'orientações familiares', 'desafios cotidianos', 'acolhimento', 'rotina em casa'],
+    responses: [
+        "🏠 O papel da família é fundamental no desenvolvimento e bem-estar da pessoa com TEA. Criar um ambiente estruturado, seguro e estimulante pode fazer toda a diferença na evolução das habilidades e na qualidade de vida.",
+        "💖 No Mentes Brilhantes, orientamos famílias sobre como estabelecer rotinas equilibradas, lidar com crises e fortalecer vínculos afetivos, sempre respeitando as características individuais."
+    ]
+},
+regulacaoEmocionalTEA: {
+    keywords: ['autorregulação', 'controle emocional', 'ansiedade no TEA', 'estratégias calmantes', 'técnicas de relaxamento'],
+    responses: [
+        "🧠 A regulação emocional é um desafio frequente para pessoas com TEA, pois mudanças de ambiente, ruídos ou situações inesperadas podem gerar sobrecarga sensorial. Técnicas como respiração guiada, uso de objetos calmantes e ambientes silenciosos ajudam a reduzir o estresse.",
+        "💡 O Mentes Brilhantes fornece orientações para cuidadores e educadores identificarem sinais de sobrecarga emocional e aplicarem estratégias preventivas, como pausas programadas, estímulos visuais tranquilos e comunicação clara."
+    ]
+},
+
+mercadoDeTrabalhoTEA: {
+    keywords: ['emprego inclusivo', 'adaptação no trabalho', 'oportunidades profissionais', 'acessibilidade laboral', 'capacitação para o trabalho'],
+    responses: [
+        "💼 Cada vez mais empresas reconhecem o potencial de profissionais com TEA, criando programas de inclusão e oferecendo adaptações no ambiente de trabalho. Isso pode incluir ajustes no espaço físico, horários flexíveis e suporte na comunicação.",
+        "📈 O Mentes Brilhantes apresenta guias para empregadores e pessoas no espectro sobre como construir uma relação profissional saudável, valorizando habilidades únicas e garantindo condições justas de trabalho."
+    ]
+},
+
+acessibilidadeTEA: {
+    keywords: ['adaptações físicas', 'acessibilidade sensorial', 'direitos de acessibilidade', 'ambientes inclusivos', 'projetos adaptados'],
+    responses: [
+        "🏗️ A acessibilidade para pessoas com TEA vai além de rampas e espaços físicos — inclui também recursos visuais claros, sinalização simples e controle de estímulos sensoriais como luz e som.",
+        "🌍 O Mentes Brilhantes propõe soluções de design inclusivo que beneficiam não apenas autistas, mas todos que frequentam o ambiente, tornando-o mais funcional, acolhedor e seguro."
+    ]
+},
+
+legislacaoTEA: {
+    keywords: ['leis de inclusão', 'direitos das pessoas com TEA', 'políticas públicas', 'benefícios assistenciais', 'acesso à educação'],
+    responses: [
+        "⚖️ No Brasil, a Lei nº 12.764/2012 reconhece a pessoa com TEA como pessoa com deficiência para todos os efeitos legais, garantindo direitos como acesso à educação, saúde e benefícios assistenciais.",
+        "📜 O Mentes Brilhantes oferece um guia simplificado sobre legislações nacionais e internacionais, ajudando famílias a conhecer e reivindicar seus direitos de forma segura e assertiva."
+    ]
+},
+
+geneticaEAutismo: {
+    keywords: ['causas do TEA', 'fatores genéticos', 'hereditariedade', 'pesquisas genômicas', 'predisposição genética'],
+    responses: [
+        "🧬 Pesquisas indicam que o TEA possui forte componente genético, envolvendo múltiplos genes que interagem com fatores ambientais. Não existe um único 'gene do autismo', mas sim um conjunto complexo de influências.",
+        "🔍 No Mentes Brilhantes, explicamos como a genética é estudada, quais avanços já existem e por que o autismo não é causado por vacinas ou comportamentos parentais, combatendo mitos e desinformações."
+    ]
+},
+
+iaNoTEA: {
+    keywords: ['inteligência artificial', 'tecnologia assistiva', 'diagnóstico com IA', 'inovação tecnológica', 'aprendizado de máquina'],
+    responses: [
+        "🤖 A inteligência artificial está sendo utilizada para identificar padrões de comportamento e auxiliar no diagnóstico precoce do TEA, além de criar recursos personalizados para o desenvolvimento de habilidades.",
+        "💻 O Mentes Brilhantes acompanha e traduz essas inovações para linguagem acessível, explicando como ferramentas digitais podem apoiar terapeutas, professores e famílias."
+    ]
+},
+
+intervencoesPrecoce: {
+    keywords: ['estimulação precoce', 'desenvolvimento infantil', 'janela de oportunidades', 'neuroplasticidade', 'intervenções na primeira infância'],
+    responses: [
+        "⏳ Intervenções precoces, iniciadas logo após o diagnóstico, aproveitam a fase de maior neuroplasticidade do cérebro infantil, aumentando as chances de progresso significativo em habilidades sociais, comunicativas e motoras.",
+        "🍼 O Mentes Brilhantes fornece planos de ação para pais e profissionais, com orientações sobre como iniciar estímulos adequados desde os primeiros sinais do TEA."
+    ]
+},
+
+sensibilidadeSensorialTEA: {
+    keywords: ['hipersensibilidade', 'hipossensibilidade', 'estímulos sensoriais', 'adaptação de ambientes', 'processamento sensorial'],
+    responses: [
+        "👂 Muitas pessoas com TEA apresentam sensibilidade aumentada ou diminuída a sons, luzes, texturas e cheiros. Isso pode gerar desconforto ou, ao contrário, busca intensa por determinados estímulos.",
+        "🏠 O Mentes Brilhantes ensina como identificar gatilhos sensoriais e adaptar ambientes para minimizar crises, garantindo mais conforto e segurança."
+    ]
+},
+
+habilidadesSociaisTEA: {
+    keywords: ['interação social', 'habilidades comunicativas', 'amizades no TEA', 'relacionamento interpessoal', 'desenvolvimento social'],
+    responses: [
+        "🤝 O desenvolvimento de habilidades sociais no TEA pode ser apoiado por atividades estruturadas, grupos de socialização e acompanhamento profissional especializado.",
+        "💬 No Mentes Brilhantes, sugerimos estratégias práticas para melhorar a comunicação, facilitar amizades e criar interações positivas no dia a dia."
+    ]
+},
+
+apoioACuidadores: {
+    keywords: ['orientação para cuidadores', 'saúde mental de cuidadores', 'rede de apoio', 'estratégias para cuidar', 'formação de cuidadores'],
+    responses: [
+        "👐 Cuidar de uma pessoa com TEA pode ser emocionalmente e fisicamente desafiador. Por isso, é essencial que cuidadores tenham suporte, tempo para descanso e acesso a informações de qualidade.",
+        "💙 O Mentes Brilhantes oferece materiais educativos e grupos de troca de experiências, fortalecendo a rede de apoio e evitando a sobrecarga."
+    ]
+},
+
+nivelDoAutismo: {
+    keywords: ['níveis do autismo', 'graus de autismo', 'classificação TEA', 'intensidade dos sintomas', 'dificuldades no espectro', 'nível do autismo', 'nivel de autismo'],
+    responses: [
+        "🔢 O Transtorno do Espectro Autista (TEA) é classificado em três níveis de acordo com a intensidade das necessidades de suporte que a pessoa apresenta: Nível 1 (necessita de suporte leve), Nível 2 (necessita de suporte moderado) e Nível 3 (necessita de suporte intensivo). Essa classificação ajuda profissionais e familiares a entender melhor as características e planejar intervenções adequadas.",
+        "📚 No Mentes Brilhantes, explicamos que essa divisão não significa que um nível é 'melhor' ou 'pior', mas que cada pessoa tem um perfil único e que o suporte deve ser personalizado para garantir o desenvolvimento e qualidade de vida."
+    ]
+},
+
+comoIdentificarAutismo: {
+    keywords: ['sinais de autismo', 'primeiros sintomas', 'identificação TEA', 'comportamentos comuns', 'suspeita de autismo'],
+    responses: [
+        "👀 Os sinais mais comuns de autismo incluem dificuldades na comunicação verbal e não verbal, pouca interação social, interesses restritos e comportamentos repetitivos. Esses sintomas podem variar muito de pessoa para pessoa, por isso a observação cuidadosa é fundamental.",
+        "🔍 Caso haja suspeita, o ideal é procurar um especialista para avaliação detalhada. No Mentes Brilhantes, ajudamos famílias a reconhecer esses sinais e a entender a importância do diagnóstico precoce para iniciar o tratamento o quanto antes."
+    ]
+},
+
+curaDoAutismo: {
+    keywords: ['existe cura', 'tratamento do autismo', 'melhorias no TEA', 'controle dos sintomas', 'autismo é reversível'],
+    responses: [
+        "❌ Atualmente, não existe cura para o autismo, pois ele é uma condição neurodesenvolvimental permanente. No entanto, com intervenções adequadas, muitas pessoas conseguem desenvolver habilidades importantes, melhorar a comunicação e ter uma vida plena e feliz.",
+        "🌟 O Mentes Brilhantes reforça que o foco do tratamento é no desenvolvimento do potencial de cada indivíduo, respeitando suas características e promovendo autonomia e inclusão social."
+    ]
+},
+
+hereditariedadeAutismo: {
+    keywords: ['autismo é hereditário', 'causas do autismo', 'fatores genéticos', 'risco de TEA na família', 'transmissão do autismo'],
+    responses: [
+        "🧬 O autismo tem forte componente genético, o que significa que pode ocorrer com maior frequência em algumas famílias, mas não é uma condição simples de herdar como outras doenças genéticas.",
+        "🔬 O Mentes Brilhantes explica que vários genes podem contribuir para o risco de TEA, e fatores ambientais também influenciam. Por isso, a hereditariedade não garante que uma pessoa terá autismo, apenas aumenta a probabilidade."
+    ]
+},
+
+diaADiaComTEA: {
+    keywords: ['rotina de pessoas autistas', 'desafios cotidianos', 'atividades diárias', 'organização para TEA', 'vivência diária'],
+    responses: [
+        "🕒 O dia a dia de uma pessoa com TEA pode envolver desafios como lidar com mudanças, estímulos sensoriais fortes e comunicação. Por isso, manter uma rotina estruturada e previsível ajuda a reduzir ansiedade e facilita o aprendizado.",
+        "🏡 No Mentes Brilhantes, orientamos famílias e cuidadores a criar ambientes organizados, usar agendas visuais e estabelecer horários regulares para atividades, garantindo mais segurança e conforto para a pessoa com autismo."
+    ]
+},
+
+familiaETAutismo: {
+    keywords: ['apoio para famílias', 'orientações para pais', 'lidar com o autismo em casa', 'rede de apoio familiar', 'cuidados no ambiente familiar'],
+    responses: [
+        "❤️ A família é um pilar fundamental no suporte à pessoa com TEA. É importante que os familiares busquem informações confiáveis, participem de grupos de apoio e estejam preparados para lidar com desafios, respeitando o ritmo e as particularidades de cada pessoa.",
+        "🤗 O Mentes Brilhantes oferece materiais educativos e ferramentas para ajudar famílias a construir uma rotina acolhedora e estimulante, fortalecendo vínculos afetivos e garantindo o bem-estar de todos."
+    ]
+},
+
+autismoEEscola: {
+    keywords: ['inclusão escolar', 'adaptação na escola', 'direitos na educação', 'apoio pedagógico', 'TEA na sala de aula'],
+    responses: [
+        "📚 A inclusão escolar para estudantes com TEA é um direito garantido por lei, e envolve adaptações pedagógicas, suporte especializado e sensibilização dos professores e colegas para promover um ambiente acolhedor e produtivo.",
+        "🎒 O Mentes Brilhantes orienta escolas e famílias sobre práticas que facilitam o aprendizado e a socialização, como o uso de recursos visuais, planejamento individualizado e acompanhamento interdisciplinar."
+    ]
+},
+
+mitosSobreAutismo: {
+    keywords: ['verdades e mitos', 'informações erradas', 'desmistificar autismo', 'falsas crenças', 'correção de ideias'],
+    responses: [
+        "🚫 Existem muitas informações equivocadas sobre o autismo, como a falsa ideia de que ele é causado por vacinas ou que todas as pessoas autistas têm deficiência intelectual. No Mentes Brilhantes, trabalhamos para corrigir esses mitos com base em evidências científicas.",
+        "✅ Nosso objetivo é oferecer informações claras que valorizem a diversidade dentro do espectro, promovendo respeito, inclusão e compreensão para todas as pessoas."
+    ]
+},
+
+autismoNaVidaAdulta: {
+    keywords: ['adultos autistas', 'vida adulta com TEA', 'independência', 'desafios e conquistas', 'apoio contínuo'],
+    responses: [
+        "🌟 O autismo não desaparece na idade adulta, mas muitas pessoas aprendem a lidar melhor com suas características ao longo da vida. Independência, trabalho e relacionamentos podem ser alcançados com suporte adequado e oportunidades inclusivas.",
+        "👥 O Mentes Brilhantes traz informações sobre serviços de apoio, direitos e estratégias para que adultos autistas vivam com autonomia, respeito e participação social plena."
+    ]
+},
+
+diferencaEntreTEAeOutrosTranstornos: {
+    keywords: ['diferenças TEA', 'autismo x outros transtornos', 'diagnóstico diferencial', 'confusão entre transtornos', 'características específicas'],
+    responses: [
+        "🔎 O TEA pode apresentar sintomas que às vezes se confundem com outros transtornos, como Transtorno de Déficit de Atenção e Hiperatividade (TDAH) ou Transtorno de Ansiedade. Por isso, o diagnóstico deve ser feito por especialistas capacitados, considerando o histórico e comportamento da pessoa.",
+        "🧩 No Mentes Brilhantes explicamos as particularidades do TEA, como o foco em dificuldades na comunicação social e padrões restritos de comportamento, que ajudam a diferenciá-lo de outras condições."
+    ]
+},
+tristezaETEA: {
+    keywords: ['tristeza no autismo', 'depressão', 'expressão emocional', 'sentimento de tristeza', 'apoio emocional', 'triste', 'chateado', 'abatido', 'desanimado', 'melancólico', 'sentimentos negativos', 'bravo', 'irritado', 'frustrado', 'aborrecido'],
+    responses: [
+        "😔 Pessoas com TEA também experimentam sentimentos como tristeza, frustração e irritação, que podem se manifestar de formas diferentes do que estamos acostumados a ver. Muitas vezes, a dificuldade em expressar essas emoções verbalmente pode fazer com que elas apareçam através de comportamentos ou alterações no humor.",
+        "💙 No Mentes Brilhantes, reforçamos a importância de um ambiente acolhedor e do acompanhamento profissional para ajudar a pessoa a identificar e expressar seus sentimentos, promovendo estratégias para lidar com a tristeza, a raiva e o desânimo de maneira saudável e respeitosa."
+    ]
+},
+raivaETEA: {
+    keywords: ['raiva no autismo', 'controle da raiva', 'explosões emocionais', 'frustração', 'comportamento agressivo', 'irritado', 'zangado', 'bravo', 'nervoso', 'raivoso'],
+    responses: [
+        "🔥 A raiva é uma emoção natural para todos, inclusive pessoas com TEA. Porém, dificuldades na comunicação e na regulação emocional podem tornar a expressão da raiva mais intensa, resultando em explosões comportamentais.",
+        "🛠️ O Mentes Brilhantes orienta a identificar gatilhos, usar técnicas de autorregulação como pausas e espaços calmos, e aplicar comunicação clara para ajudar a pessoa a expressar a raiva de forma segura e compreensível."
+    ]
+},
+
+ansiedadeETEA: {
+    keywords: ['ansiedade no autismo', 'medo e preocupação', 'estresse', 'crises de ansiedade', 'nervosismo', 'preocupado', 'tenso', 'apreensivo', 'inquieto'],
+    responses: [
+        "😰 A ansiedade é comum no TEA, causada por mudanças inesperadas, estímulos sensoriais fortes ou dificuldades sociais, podendo se manifestar em agitação ou isolamento.",
+        "🧘‍♀️ O Mentes Brilhantes recomenda preparação antecipada, técnicas de relaxamento e suporte emocional para reduzir crises e melhorar o bem-estar."
+    ]
+},
+
+alegriaETEA: {
+    keywords: ['alegria no autismo', 'expressão de felicidade', 'emoções positivas', 'sorriso', 'feliz', 'contente', 'animado', 'entusiasmado', 'satisfeito'],
+    responses: [
+        "😄 Pessoas com TEA sentem alegria e felicidade, mesmo que expressem de formas diferentes, como gestos ou interesses intensos.",
+        "🎉 O Mentes Brilhantes incentiva o reconhecimento dessas expressões e promove atividades que reforcem o bem-estar e a autoestima."
+    ]
+},
+
+medoETEA: {
+    keywords: ['medo no autismo', 'fobias', 'reações ao medo', 'situações assustadoras', 'apavorado', 'assustado', 'temeroso', 'nervoso'],
+    responses: [
+        "😨 O medo pode ser intenso em pessoas com TEA, especialmente frente a situações novas ou barulhos altos, causando evasão ou crises.",
+        "🛡️ O Mentes Brilhantes orienta a criar ambientes seguros e preparar a pessoa para minimizar o impacto do medo."
+    ]
+},
+
+frustracaoETEA: {
+    keywords: ['frustração no autismo', 'dificuldade em lidar com frustração', 'comportamentos desafiadores', 'tolerância à frustração', 'decepcionado', 'chateado', 'aborrecido'],
+    responses: [
+        "😣 A frustração ocorre quando a pessoa com TEA não consegue expressar suas necessidades ou enfrenta obstáculos inesperados, podendo levar a crises emocionais.",
+        "🧩 O Mentes Brilhantes apresenta técnicas para desenvolver tolerância à frustração, usando reforço positivo e comunicação alternativa."
+    ]
+},
+
+isolamentoETEA: {
+    keywords: ['isolamento social', 'dificuldade em socializar', 'solidão', 'longe', 'sozinho', 'afastado', 'retraído'],
+    responses: [
+        "🌱 Muitas pessoas com TEA podem se sentir isoladas devido a dificuldades na interação social, embora queiram conexão.",
+        "🤝 O Mentes Brilhantes sugere socialização gradual, grupos de apoio e ambientes adaptados para facilitar vínculos e diminuir a solidão."
+    ]
+},
+
+confusaoEmocionalETEA: {
+    keywords: ['confusão emocional', 'dificuldade em entender sentimentos', 'emocional confuso', 'sentimentos mistos', 'nervoso', 'ansioso', 'chateado'],
+    responses: [
+        "🌀 Pessoas com TEA podem ter dificuldade para identificar e entender suas próprias emoções, resultando em confusão e comportamento inesperado.",
+        "💡 O Mentes Brilhantes orienta o uso de recursos visuais, apoio terapêutico e técnicas de reconhecimento emocional para melhorar a compreensão dos sentimentos."
+    ]
+},
+
+calmaETEA: {
+    keywords: ['calma', 'tranquilidade', 'paz interior', 'relaxamento', 'quieto', 'sereno', 'descansado', 'calmo'],
+    responses: [
+        "🌿 A sensação de calma é muito benéfica para pessoas com TEA, ajudando a diminuir a ansiedade e melhorar a concentração.",
+        "🧘‍♂️ O Mentes Brilhantes recomenda ambientes tranquilos, técnicas de respiração e pausas para promover o relaxamento e o bem-estar."
+    ]
+},
+
+frustracaoComMudancasETEA: {
+    keywords: ['mudanças e autismo', 'dificuldade com rotina', 'adaptação a novidades', 'reação a mudanças', 'suporte para transições', 'incomodado', 'desconfortável', 'chateado'],
+    responses: [
+        "🔄 Pessoas com TEA geralmente preferem rotinas previsíveis e podem apresentar grande dificuldade para lidar com mudanças repentinas, gerando ansiedade e comportamentos desafiadores.",
+        "🔔 O Mentes Brilhantes indica preparar a pessoa para transições com avisos antecipados, cronogramas visuais e ambientes seguros para favorecer a adaptação."
+    ]
+},
+
+sentimentoDeRejeicaoETEA: {
+    keywords: ['rejeição', 'exclusão', 'não aceito', 'sentir-se rejeitado', 'isolamento', 'triste', 'chateado', 'decepcionado'],
+    responses: [
+        "💔 O sentimento de rejeição pode ser muito doloroso para pessoas com TEA, afetando sua autoestima e desejo de se relacionar com os outros.",
+        "🤗 O Mentes Brilhantes enfatiza a importância de ambientes acolhedores, reforço positivo e apoio emocional para ajudar a superar esses sentimentos e construir confiança."
+    ]
+},
+sonoETEA: {
+    keywords: ['sono no autismo', 'dificuldade para dormir', 'insônia', 'rotina do sono', 'descanso', 'cansaço', 'falta de sono'],
+    responses: [
+        "😴 Muitas pessoas com TEA têm dificuldades para dormir devido a alterações na rotina, ansiedade ou sensibilidade sensorial. Isso pode afetar o humor e a capacidade de aprendizado.",
+        "🛌 O Mentes Brilhantes orienta sobre a importância de criar uma rotina regular para o sono, ambientes tranquilos e técnicas relaxantes para melhorar a qualidade do descanso."
+    ]
+},
+
+alimentacaoETEA: {
+    keywords: ['alimentação', 'restrições alimentares', 'seletividade alimentar', 'nutrição', 'hábitos alimentares', 'dieta', 'recusa de comida'],
+    responses: [
+        "🍽️ É comum que pessoas com TEA apresentem seletividade alimentar, preferindo poucos alimentos ou rejeitando texturas e sabores específicos.",
+        "🥦 No Mentes Brilhantes, indicamos estratégias para introduzir novos alimentos de forma gradual, respeitando o tempo e as preferências individuais, garantindo uma alimentação equilibrada e saudável."
+    ]
+},
+
+lazerETEA: {
+    keywords: ['atividades de lazer', 'hobbies', 'tempo livre', 'brincadeiras', 'diversão', 'interesses especiais'],
+    responses: [
+        "🎨 O lazer é fundamental para o bem-estar e desenvolvimento das pessoas com TEA. Atividades que respeitam seus interesses e habilidades promovem relaxamento e socialização.",
+        "⚽ O Mentes Brilhantes sugere opções de brincadeiras, esportes e hobbies adaptados, valorizando o que traz prazer e conforto para cada pessoa."
+    ]
+},
+
+interacaoComAnimaisETEA: {
+    keywords: ['animais de estimação', 'terapia assistida por animais', 'interação com pets', 'benefícios dos animais', 'amizade com animais'],
+    responses: [
+        "🐾 A interação com animais pode ser muito benéfica para pessoas com TEA, ajudando a desenvolver habilidades sociais, reduzir ansiedade e promover momentos de alegria.",
+        "🐶 O Mentes Brilhantes explica como a terapia assistida por animais é usada em tratamentos e como a presença dos pets em casa pode fortalecer vínculos afetivos."
+    ]
+},
+
+tecnologiaETEA: {
+    keywords: ['uso da tecnologia', 'apps para autismo', 'ferramentas digitais', 'dispositivos eletrônicos', 'tempo de tela', 'jogos educativos'],
+    responses: [
+        "📱 A tecnologia pode ser uma aliada importante no desenvolvimento de pessoas com TEA, oferecendo recursos para comunicação, aprendizado e organização da rotina.",
+        "💻 No Mentes Brilhantes, orientamos sobre o uso equilibrado de dispositivos eletrônicos, escolhendo aplicativos educativos e evitando excessos que possam causar superestimulação."
+    ]
+},
+
+comunicacaoAlternativaETEA: {
+    keywords: ['comunicação alternativa', 'PECS', 'pranchas de comunicação', 'gestos', 'linguagem não verbal', 'apoio comunicativo'],
+    responses: [
+        "🗣️ Muitas pessoas com TEA utilizam sistemas alternativos de comunicação, como o PECS (Picture Exchange Communication System) ou pranchas com figuras, para expressar necessidades e sentimentos.",
+        "📚 O Mentes Brilhantes ensina como essas ferramentas facilitam a interação social e promovem maior autonomia para quem tem dificuldades na fala."
+    ]
+},
+
+desenvolvimentoMotorETEA: {
+    keywords: ['coordenação motora', 'habilidades motoras', 'desenvolvimento físico', 'terapia motora', 'atividade física'],
+    responses: [
+        "🏃 Pessoas com TEA podem apresentar atrasos ou dificuldades na coordenação motora fina e grossa, o que pode afetar atividades diárias como escrever, correr ou se alimentar.",
+        "🤸 No Mentes Brilhantes, indicamos terapias ocupacionais e exercícios que estimulam o desenvolvimento motor, favorecendo a independência e a qualidade de vida."
+    ]
+},
+
+autoestimaETEA: {
+    keywords: ['autoestima', 'confiança', 'valorização pessoal', 'imagem positiva', 'sentimento de valor próprio'],
+    responses: [
+        "🌟 A autoestima é essencial para o desenvolvimento saudável de qualquer pessoa, incluindo aquelas com TEA. Sentir-se valorizado e capaz ajuda a enfrentar desafios e a construir relações positivas.",
+        "💖 O Mentes Brilhantes orienta famílias e educadores a reconhecer conquistas, incentivar habilidades e promover um ambiente acolhedor que fortaleça a autoconfiança."
+    ]
+},
+
+relacionamentosFamiliaresETEA: {
+    keywords: ['relações familiares', 'dinâmica familiar', 'apoio familiar', 'conflitos familiares', 'união familiar'],
+    responses: [
+        "🏠 O autismo pode impactar a dinâmica familiar, exigindo adaptação, paciência e comunicação aberta entre todos os membros.",
+        "🤝 O Mentes Brilhantes oferece dicas para fortalecer os relacionamentos dentro da família, promovendo compreensão, respeito e apoio mútuo."
+    ]
+},
+
+transicoesETEA: {
+    keywords: ['transições', 'mudanças de fase', 'adaptação a novos ambientes', 'transição escolar', 'mudança de rotina'],
+    responses: [
+        "🔄 Transições, como mudança de escola, rotina ou fase da vida, podem ser desafiadoras para pessoas com TEA por envolverem novidades e incertezas.",
+        "🔔 O Mentes Brilhantes recomenda preparação antecipada, uso de materiais visuais e suporte emocional para facilitar essas mudanças e reduzir ansiedade."
+    ]
+},
+perguntasFrequentesAutismo: {
+    keywords: ['o que é autismo', 'definição de autismo', 'explicação sobre TEA', 'autismo é doença?', 'autismo é transtorno'],
+    responses: [
+        "🌟 O autismo, ou Transtorno do Espectro Autista (TEA), é uma condição neurológica que afeta a forma como a pessoa percebe o mundo, se comunica e se relaciona com os outros. Não é uma doença, mas uma maneira diferente de viver e sentir.",
+        "💡 Cada pessoa com autismo é única, com seus próprios talentos e desafios, e merece ser compreendida e valorizada por sua singularidade."
+    ]
+},
+
+comoSaberSeMeuFilhoETEA: {
+    keywords: ['como saber se tem autismo', 'sinais de autismo em crianças', 'diagnóstico precoce', 'meu filho tem autismo?', 'sintomas autismo'],
+    responses: [
+        "👶 Observar o comportamento da criança é o primeiro passo. Alguns sinais podem ser dificuldades na comunicação, pouca interação social, interesses restritos e movimentos repetitivos.",
+        "🔍 Se houver dúvidas, o ideal é buscar uma avaliação com profissionais especializados, que podem orientar sobre os próximos passos para o cuidado e desenvolvimento."
+    ]
+},
+
+autismoAfetaInteligencia: {
+    keywords: ['autismo e inteligência', 'pessoas autistas são inteligentes?', 'QI no autismo', 'capacidade intelectual', 'autismo e habilidades'],
+    responses: [
+        "🧠 O autismo não define a inteligência. Pessoas com TEA podem ter desde dificuldades cognitivas até talentos extraordinários em áreas específicas, como música, matemática ou arte.",
+        "🌈 O importante é valorizar cada pessoa pelo que ela pode fazer, respeitando suas particularidades e potencialidades."
+    ]
+},
+
+autismoTemTratamento: {
+    keywords: ['tem tratamento para autismo', 'cura do autismo', 'melhora no autismo', 'intervenção no TEA', 'tratamento eficaz'],
+    responses: [
+        "🌱 Embora o autismo não tenha cura, existem muitas formas de intervenção que ajudam a pessoa a desenvolver habilidades, melhorar a comunicação e alcançar autonomia.",
+        "🌻 O Mentes Brilhantes destaca que o acompanhamento especializado e o apoio familiar fazem toda a diferença para uma vida plena e feliz."
+    ]
+},
+
+autismoEVacina: {
+    keywords: ['vacina causa autismo', 'mito autismo vacina', 'vacinação e autismo', 'verdade sobre vacina', 'autismo não é causado por vacina'],
+    responses: [
+        "❌ O autismo não é causado por vacinas. Essa ideia já foi amplamente desmentida por inúmeros estudos científicos confiáveis.",
+        "💉 Vacinar é fundamental para proteger a saúde de todas as crianças e não tem nenhuma relação com o desenvolvimento do TEA."
+    ]
+},
+
+autismoEInclusaoSocial: {
+    keywords: ['inclusão social autismo', 'aceitação social', 'autismo e convivência', 'inclusão escolar', 'direitos das pessoas autistas'],
+    responses: [
+        "🤝 A inclusão social é essencial para que pessoas com TEA possam participar plenamente da comunidade, desenvolver habilidades e construir relacionamentos significativos.",
+        "🌍 O Mentes Brilhantes apoia a criação de ambientes acolhedores e acessíveis, onde a diversidade seja respeitada e valorizada."
+    ]
+},
+
+comoAjudarUmaPessoaComAutismo: {
+    keywords: ['como ajudar autista', 'apoio para autistas', 'ajuda para pessoas com TEA', 'apoio emocional', 'como agir com autista'],
+    responses: [
+        "💙 A melhor forma de ajudar é com respeito, paciência e escuta atenta. Cada pessoa com autismo tem suas particularidades, por isso é importante conhecer suas necessidades e preferências.",
+        "🤗 Oferecer ambientes calmos, comunicação clara e apoio nas dificuldades faz muita diferença no dia a dia."
+    ]
+},
+
+autismoERelacionamentos: {
+    keywords: ['relacionamentos e autismo', 'amizade com autistas', 'socialização', 'como relacionar com autista', 'vida social autista'],
+    responses: [
+        "💞 Pessoas com TEA podem construir relações afetivas e amizades profundas, embora possam expressar isso de formas diferentes.",
+        "🌟 Com compreensão e apoio, é possível fortalecer vínculos e criar conexões verdadeiras, baseadas no respeito e na empatia."
+    ]
+},
+
+autismoETrabalho: {
+    keywords: ['autismo e emprego', 'inclusão no trabalho', 'trabalho para autistas', 'capacitação profissional', 'oportunidades para autistas'],
+    responses: [
+        "💼 Muitas pessoas com TEA possuem habilidades valiosas que podem contribuir no ambiente profissional, especialmente em tarefas que exigem atenção a detalhes e concentração.",
+        "📈 Com adaptações e apoio adequados, o mercado de trabalho pode ser um espaço de crescimento, realização pessoal e inclusão."
+    ]
+},
+
+sinaisDeAutismoEmAdultos: {
+    keywords: ['sinais de autismo adulto', 'diagnóstico tardio', 'autismo em adultos', 'como identificar autismo adulto', 'autismo não diagnosticado'],
+    responses: [
+        "🔍 Alguns sinais de autismo em adultos incluem dificuldades em entender expressões sociais, preferir rotinas rígidas, interesses intensos e desafios na comunicação.",
+        "👥 Muitas pessoas descobrem o diagnóstico na vida adulta, o que pode explicar dificuldades antigas e permitir acesso a apoios e estratégias para melhorar a qualidade de vida."
+    ]
+}
+
+
+
+
+        };
+
+        // Função principal para gerar respostas
+        function generateResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            // Verificar violação antes de processar
+            if (detectViolation(message)) {
+                blockChat();
+                return "⚠️ **Violação das Diretrizes Detectada**\n\nSeu chat foi temporariamente bloqueado por 5 minutos devido ao uso de linguagem inadequada ou ofensiva. O Mentes Brilhantes mantém ambiente respeitoso e acolhedor para todas as famílias e pessoas que buscam apoio especializado em TEA.\n\n🔒 **Política de Uso:**\n• Linguagem respeitosa e construtiva\n• Foco em questões relacionadas ao TEA\n• Ambiente seguro para todos os usuários\n• Tolerância zero com ofensas ou palavrões\n\nAguarde a reativação automática do chat para continuar recebendo orientações especializadas. Obrigada pela compreensão.";
+            }
+
+            // Processar respostas normais
+            for (const [category, data] of Object.entries(teaKnowledge)) {
+                for (const keyword of data.keywords) {
+                    if (lowerMessage.includes(keyword)) {
+                        const randomResponse = data.responses[Math.floor(Math.random() * data.responses.length)];
+                        return randomResponse;
+                    }
+                }
+            }
+
+            // Verificar perguntas específicas sobre Mentes Brilhantes
+            if (lowerMessage.includes('mentes brilhantes') && !lowerMessage.includes('aplicativo')) {
+                return "🌟 **Mentes Brilhantes - Transformando Vidas no Espectro Autista**\n\n💙 Somos organização dedicada ao desenvolvimento integral de pessoas com Transtorno do Espectro Autista, suas famílias e comunidades de apoio. Nossa missão é promover inclusão social efetiva, desenvolver tecnologias assistivas especializadas, capacitar famílias e profissionais da área, criar redes de apoio estruturadas e qualificadas, além de difundir conhecimento científico atualizado sobre TEA. Acreditamos que cada pessoa no espectro autista possui potencial único e merece oportunidades de desenvolvimento pleno. Trabalhamos com metodologias validadas cientificamente, sempre priorizando dignidade, respeito e individualidade. Nosso impacto social inclui mais de 50.000 famílias atendidas, rede de 500+ profissionais capacitados, tecnologia acessível e gratuita, além de pesquisa contínua em neurociência aplicada. Juntos, construímos mundo mais inclusivo e acolhedor para toda a comunidade TEA! Nossa abordagem integra suporte familiar, orientação profissional, recursos tecnológicos avançados e advocacy social para garantir direitos e oportunidades equitativas.";
+            }
+
+            // Respostas para dúvidas gerais ou temas não específicos
+            const defaultResponses = [
+                "💙 Agradeço sua pergunta e reconheço a importância do tema abordado. Como assistente especializada em TEA, ofereço orientações mais precisas em áreas específicas do espectro autista. Posso fornecer suporte detalhado em estruturação de rotinas visuais personalizadas, desenvolvimento de estratégias comunicacionais eficazes, técnicas de regulação sensorial baseadas em evidências, atividades de estimulação cognitiva apropriadas, manejo comportamental positivo, apoio sistêmico para famílias e cuidadores, orientações para inclusão educacional, além de informações sobre recursos tecnológicos especializados. Minha base de conhecimento é constantemente atualizada com pesquisas científicas atuais, metodologias terapêuticas validadas e práticas recomendadas por organizações internacionais especializadas em TEA. Como posso redirecionar nossa conversa para oferecer orientação mais específica e útil dentro de minha área de expertise? 🌟",
+                
+                "🌟 Compreendo seu interesse e valorizo a oportunidade de contribuir com informações relevantes. Para oferecer orientação mais precisa e personalizada, gostaria de entender melhor o contexto de sua consulta. Refere-se a situação específica envolvendo pessoa com TEA? Qual faixa etária e nível de suporte necessário? Trata-se de questão relacionada ao cotidiano familiar, ambiente educacional ou desenvolvimento de habilidades específicas? Minha expertise é mais eficaz quando focada em temas como desenvolvimento de autonomia funcional, estratégias de inclusão social, técnicas de comunicação alternativa, manejo de questões sensoriais, atividades terapêuticas estruturadas e apoio para transições de vida. Compartilhe mais detalhes para que eu possa oferecer orientações verdadeiramente úteis e baseadas em evidências científicas atualizadas! 💙",
+                
+                "💡 Sua curiosidade demonstra engajamento genuíno com questões importantes. Embora minha especialização seja direcionada especificamente para Transtorno do Espectro Autista, sempre busco contribuir de forma construtiva e informativa. Se sua consulta relaciona-se com desenvolvimento de habilidades sociais, técnicas de autorregulação emocional, estratégias de aprendizagem diferenciadas, criação de ambientes sensorialmente apropriados, implementação de tecnologias assistivas, orientação para advocacy e direitos, ou qualquer aspecto do universo TEA, posso fornecer diretrizes específicas e atualizadas. Caso contrário, recomendo consulta com profissionais especializados na área correspondente. Nossa plataforma Mentes Brilhantes também oferece rede de profissionais qualificados para referenciamento quando necessário. Como posso melhor direcionar meu suporte para atender suas necessidades específicas? 🌟",
+                
+                "🤔 Percebo que sua pergunta pode requerer abordagem mais ampla do que minha especialização em TEA permite oferecer com total precisão. Para garantir que você receba informações verdadeiramente úteis e confiáveis, prefiro ser transparente sobre os limites de minha expertise. Meu conhecimento é profundamente focado em questões relacionadas ao espectro autista: características neurológicas, desenvolvimento cognitivo e social, estratégias terapêuticas, apoio familiar, inclusão educacional e recursos tecnológicos especializados. Se puder reformular sua consulta conectando-a com aspectos do TEA, ficarei muito feliz em oferecer orientações detalhadas e baseadas em evidências científicas. Caso contrário, recomendo buscar profissionais especializados na área específica de seu interesse. Lembre-se de que nossa comunidade Mentes Brilhantes conta com rede ampla de especialistas para diversos tipos de suporte! 💙"
+            ];
+            
+            return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+        }
+
+        // Função para extrair as primeiras palavras de uma mensagem
+        function extractChatTitle(message) {
+            // Remove emojis, formatação e caracteres especiais
+            const cleanMessage = message
+                .replace(/[💙🌟💡🎯✨🧘‍♀️🗣️💬🤝👨‍👩‍👧‍👦🏠🎮🧠🔢🎨📅📋🔊🤲⚡🛡️🌈💝📚🎯💪🤔]/g, '')
+                .replace(/\*\*(.*?)\*\*/g, '$1')
+                .replace(/\*(.*?)\*/g, '$1')
+                .replace(/[•\n]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            
+            // Pega as primeiras 3-4 palavras
+            const words = cleanMessage.split(' ').slice(0, 4);
+            let title = words.join(' ');
+            
+            // Limita o tamanho máximo
+            if (title.length > 25) {
+                title = title.substring(0, 22) + '...';
+            }
+            
+            return title || `Chat ${chatCounter}`;
+        }
+
+        // Função para atualizar o nome da aba
+        function updateChatTitle(chatId, aiResponse) {
+            const chatTab = document.querySelector(`[data-chat-id="${chatId}"]`);
+            if (chatTab) {
+                const titleSpan = chatTab.querySelector('span:last-child');
+                const newTitle = extractChatTitle(aiResponse);
+                
+                chats[chatId].name = newTitle;
+                titleSpan.textContent = newTitle;
+            }
+        }
+
+        // Função para criar novo chat
+        function createNewChat() {
+            chatCounter++;
+            const newChatId = chatCounter;
+            
+            // Criar novo chat
+            chats[newChatId] = {
+                id: newChatId,
+                name: `Chat ${newChatId}`,
+                messages: [],
+                isActive: false,
+                isBlocked: false
+            };
+            
+            // Adicionar aba na sidebar
+            const chatHistory = document.getElementById('chatHistory');
+            const newTab = document.createElement('div');
+            newTab.className = 'chat-tab';
+            newTab.setAttribute('data-chat-id', newChatId);
+            newTab.innerHTML = `
+                <span class="chat-tab-icon">💬</span>
+                <span>Chat ${newChatId}</span>
+            `;
+            newTab.addEventListener('click', () => switchToChat(newChatId));
+            chatHistory.appendChild(newTab);
+            
+            // Mudar para o novo chat
+            switchToChat(newChatId);
+            
+            // Fechar sidebar no mobile
+            if (window.innerWidth <= 768) {
+                closeSidebar();
+            }
+        }
+
+        // Função para mudar entre chats
+        function switchToChat(chatId) {
+            // Remover ativo de todas as abas
+            document.querySelectorAll('.chat-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Ativar aba atual
+            const activeTab = document.querySelector(`[data-chat-id="${chatId}"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+            
+            // Salvar mensagens do chat atual antes de mudar
+            if (chats[currentChatId]) {
+                chats[currentChatId].messages = getCurrentMessages();
+            }
+            
+            // Mudar chat atual
+            currentChatId = chatId;
+            chats[currentChatId].isActive = true;
+            
+            // Verificar se o chat está bloqueado e atualizar interface
+            if (chats[currentChatId].isBlocked) {
+                blockChat(0); // Não inicia novo timeout, apenas atualiza interface
+            } else {
+                unblockChat();
+            }
+            
+            // Carregar mensagens do novo chat
+            loadChatMessages(chatId);
+        }
+
+        // Função para obter mensagens atuais
+        function getCurrentMessages() {
+            const messages = [];
+            const messageElements = document.querySelectorAll('.message');
+            
+            messageElements.forEach(element => {
+                const isUser = element.classList.contains('user');
+                const contentElement = element.querySelector('.message-content');
+                const timestampElement = element.querySelector('.message-timestamp');
+                
+                if (contentElement) {
+                    const content = contentElement.innerHTML;
+                    const timestamp = timestampElement ? timestampElement.textContent : getCurrentTime();
+                    
+                    messages.push({
+                        sender: isUser ? 'user' : 'ai',
+                        content: content.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '').trim(),
+                        timestamp: timestamp
+                    });
+                }
+            });
+            
+            return messages;
+        }
+
+        // Função para carregar mensagens do chat
+        function loadChatMessages(chatId) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const chat = chats[chatId];
+            
+            if (chat.messages.length === 0) {
+                // Mostrar mensagem de boas-vindas
+                messagesContainer.innerHTML = `
+                    <div class="welcome-message">
+                        <h2>Olá! Eu sou a Luna 👧</h2>
+                        <p>Sua assistente virtual do Mentes Brilhantes especializada em apoio a pessoas com Transtorno do Espectro Autista (TEA), familiares e cuidadores. Ofereço suporte personalizado, informações fundamentadas e auxílio na organização de rotinas estruturadas.</p>
+                        
+                        <div class="quick-actions">
+                            <button class="quick-action-btn" onclick="sendQuickMessage('Como posso criar uma rotina visual para meu filho?')">
+                                📅 Rotinas Visuais Estruturadas
+                            </button>
+                            <button class="quick-action-btn" onclick="sendQuickMessage('Preciso de estratégias para comunicação com TEA')">
+                                💬 Estratégias de Comunicação
+                            </button>
+                            <button class="quick-action-btn" onclick="sendQuickMessage('Como lidar com crises sensoriais?')">
+                                🧘‍♀️ Regulação Sensorial
+                            </button>
+                            <button class="quick-action-btn" onclick="sendQuickMessage('Atividades cognitivas para TEA')">
+                                🎯 Atividades Cognitivas
+                            </button>
+                            <button class="quick-action-btn" onclick="sendQuickMessage('Mentes Brilhantes')">
+                                🌟 Mentes Brilhantes
+                            </button>
+                            <button class="quick-action-btn" onclick="sendQuickMessage('Aplicativo')">
+                                📱 Aplicativo
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Carregar mensagens existentes
+                messagesContainer.innerHTML = '';
+                chat.messages.forEach(message => {
+                    addMessageToDOM(message.content, message.sender, false, message.timestamp);
+                });
+            }
+        }
+
+        // Funções globais para sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+        }
+
+        function sendQuickMessage(message) {
+            if (!isProcessing && messageInput && !chats[currentChatId].isBlocked) {
+                messageInput.value = message;
+                sendMessage();
+            }
+        }
+
+        // Função principal para enviar mensagem
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            
+            if (!message || isProcessing || chats[currentChatId].isBlocked) return;
+
+            isProcessing = true;
+            sendButton.disabled = true;
+
+            // Hide welcome message
+            const welcomeMessage = document.querySelector('.welcome-message');
+            if (welcomeMessage) {
+                welcomeMessage.style.display = 'none';
+            }
+
+            const timestamp = getCurrentTime();
+
+            // Add user message
+            addMessageToDOM(message, 'user', true, timestamp);
+            chats[currentChatId].messages.push({ sender: 'user', content: message, timestamp: timestamp });
+            
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+
+            // Show typing indicator
+            showTypingIndicator();
+
+            // Simulate AI response delay
+            setTimeout(() => {
+                hideTypingIndicator();
+                const response = generateResponse(message);
+                const responseTimestamp = getCurrentTime();
+                
+                // Check if response is a violation message
+                if (response.includes('Violação das Diretrizes Detectada')) {
+                    addMessageToDOM(response, 'ai', true, responseTimestamp, true);
+                } else {
+                    addMessageToDOM(response, 'ai', true, responseTimestamp);
+                }
+                
+                chats[currentChatId].messages.push({ sender: 'ai', content: response, timestamp: responseTimestamp });
+                
+                // Atualizar o nome da aba com as primeiras palavras da resposta da IA
+                // apenas se for a primeira resposta no chat
+                if (chats[currentChatId].messages.length === 2 && !response.includes('Violação das Diretrizes Detectada')) {
+                    updateChatTitle(currentChatId, response);
+                }
+                
+                // Re-enable input after response (only if not blocked)
+                if (!chats[currentChatId].isBlocked) {
+                    isProcessing = false;
+                    sendButton.disabled = false;
+                    messageInput.focus();
+                } else {
+                    isProcessing = false;
+                }
+            }, 1500 + Math.random() * 1000);
+        }
+
+        function addMessageToDOM(content, sender, animate = false, timestamp = null, isViolation = false) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            if (!animate) {
+                messageDiv.style.animation = 'none';
+            }
+
+            const messageTimestamp = timestamp || getCurrentTime();
+
+            if (sender === 'ai') {
+                const violationClass = isViolation ? ' violation' : '';
+                messageDiv.innerHTML = `
+                    <div class="ai-mini-avatar">👧</div>
+                    <div class="message-wrapper">
+                        <div class="message-content${violationClass}">${formatMessage(content)}</div>
+                        <div class="message-timestamp">${messageTimestamp}</div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="message-wrapper">
+                        <div class="message-content">${formatMessage(content)}</div>
+                        <div class="message-timestamp">${messageTimestamp}</div>
+                    </div>
+                    <div class="user-avatar">U</div>
+                `;
+            }
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function formatMessage(message) {
+            // Enhanced markdown-like formatting
+            return message
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function showTypingIndicator() {
+            const messagesContainer = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message ai';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <div class="ai-mini-avatar">🌙</div>
+                <div class="typing-indicator" style="display: block;">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            `;
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        // Initialize quando DOM carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            messageInput = document.getElementById('messageInput');
+            sendButton = document.getElementById('sendButton');
+            
+            // Auto-resize textarea
+            messageInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            });
+
+            // Send message on Enter (but allow Shift+Enter for new line)
+            messageInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (!isProcessing && !chats[currentChatId].isBlocked) {
+                        sendMessage();
+                    }
+                }
+            });
+
+            // Send button click handler
+            sendButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (!isProcessing && !chats[currentChatId].isBlocked) {
+                    sendMessage();
+                }
+            });
+            
+            messageInput.focus();
+            
+            // Adicionar event listeners para as abas existentes
+            document.querySelectorAll('.chat-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const chatId = parseInt(tab.getAttribute('data-chat-id'));
+                    switchToChat(chatId);
+                });
+            });
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                const toggle = document.querySelector('.sidebar-toggle');
+                
+                if (!sidebar.contains(e.target) && !toggle.contains(e.target) && sidebar.classList.contains('open')) {
+                    closeSidebar();
+                }
+            }
+        });
+
+        // Make functions globally available
+        window.sendQuickMessage = sendQuickMessage;
+        window.toggleSidebar = toggleSidebar;
+        window.closeSidebar = closeSidebar;
+        window.createNewChat = createNewChat;
+    </script>
+</body>
+</html>
